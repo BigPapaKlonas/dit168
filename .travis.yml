@@ -1,2 +1,3 @@
 language: cpp
 compiler: gcc
+scripts: ./build && make && make test
