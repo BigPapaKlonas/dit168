@@ -1,2 +1,0 @@
-/Users/jeberlen/documents/project/dit168/build/CMakeFiles/rebuild_cache.dir
-/Users/jeberlen/documents/project/dit168/build/CMakeFiles/edit_cache.dir
