@@ -2,12 +2,29 @@ cmake_minimum_required(VERSION 3.2)
 project(dashFTab)
 set(CMAKE_CXX_STANDARD 14)
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/modules)
+# Link to cmake modules
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
+# Treat warnings as errors
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror")
+
+# Use for Unit testing
+find_package(cppunit)
+
+# Use to detect bugs and dangerous code constructs
+find_package(cppcheck)
+
+# Use to autogenerate docs
+find_package(Doxygen)
+
+# Use for styling checks
 find_package(vera++)
-find_package(valgrind)
-find_package(lcov)
-find_package(flawfinder)
+
+# Use for memory checks
+find_program( MEMORYCHECK_COMMAND Valgrind )
+set( MEMORYCHECK_COMMAND_OPTIONS "--trace-children=yes --leak-check=full" )
+
+# Set up vera tests
 file(GLOB_RECURSE srcs
   ${CMAKE_SOURCE_DIR}/src/*.cpp
   ${CMAKE_SOURCE_DIR}/src/*.h)
