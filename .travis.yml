@@ -1,3 +1,3 @@
 language: cpp
 compiler: gcc
-script: "./build && make && make test"
+script: "mkdir build && cd build && cmake .. && make"
