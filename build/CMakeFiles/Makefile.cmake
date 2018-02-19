@@ -31,6 +31,8 @@ set(CMAKE_MAKEFILE_DEPENDS
   "/usr/local/Cellar/cmake/3.10.2/share/cmake/Modules/Platform/Darwin-Initialize.cmake"
   "/usr/local/Cellar/cmake/3.10.2/share/cmake/Modules/Platform/Darwin.cmake"
   "/usr/local/Cellar/cmake/3.10.2/share/cmake/Modules/Platform/UnixPaths.cmake"
+  "/usr/local/lib/vera++/vera++-config-version.cmake"
+  "/usr/local/lib/vera++/vera++-config.cmake"
   )
 
 # The corresponding makefile is:
@@ -46,5 +48,4 @@ set(CMAKE_MAKEFILE_PRODUCTS
 
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
-  "CMakeFiles/vera.dir/DependInfo.cmake"
   )

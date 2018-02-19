@@ -110,19 +110,6 @@ depend:
 	$(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
-#=============================================================================
-# Target rules for targets named vera
-
-# Build rule for target.
-vera: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 vera
-.PHONY : vera
-
-# fast build rule for target.
-vera/fast:
-	$(MAKE) -f CMakeFiles/vera.dir/build.make CMakeFiles/vera.dir/build
-.PHONY : vera/fast
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -131,7 +118,6 @@ help:
 	@echo "... depend"
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
-	@echo "... vera"
 .PHONY : help
 
 
