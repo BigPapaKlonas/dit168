@@ -1,6 +1,7 @@
 before_install:
-  - sudo add-apt-repository ppa:chrberger/libcluon -y
   - sudo apt-get -qq update
+  - sudo add-apt-repository ppa:chrberger/libcluon -y
+  - sudo apt-get update	
   - sudo apt-get install libcluon -y
   - sudo apt-get install doxygen -y
   - sudo apt-get install cppcheck -y
