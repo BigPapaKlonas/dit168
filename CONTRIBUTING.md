@@ -18,19 +18,34 @@ Make sure that every contributed feature is accompanied by appropriate tests.
 
 Prerequisite to building and running a docker image is to have docker installed. [See documentation for instructions how to install docker](https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-repository)
 
+
+#### Build Docker images
+Navigate to the folder containing the Dockerfile and run 
+
+`docker build -t imageName .`. 
+
+A Docker image will be created and tested (assuming tests are included in the Dockerfile) in accordance to the specifications of the Dockerfile. Follow the instructions below to save, load and run images.
+
 #### Saving software bundle
 
 The project is easily distributed by saving docker images as a tar archive. This is done with the following command 
 
-`docker save imagename > bundleName.tar`
+`docker save imageName > bundleName.tar`
 
 #### Load software bundle 
-You want to load the software bundle onto the miniature smart vehicle. This can be done either by cloning the project and building, or by importing the software bundle. Load the software bundle by running
+You want to load the software bundle onto the miniature smart vehicle. This can be done either by cloning the project and building, or by importing the software bundle. Load the software bundle by navigating to the where the bundle is located and run
 
 `cat bundleName.tar | docker load`
 
-navigate to folder, then run
+#### Run software bundle
+To run a Docker image in a container you may simply run `docker run imageName`.
+If you, however, wants to run our example programs you have to make sure that you are enabling the following flags:
+`--rm` Docker to automatically clean up the container and remove the file system when the container exits
+`-ti` Opens an interactive terminal
+`--net=host` Provide the container, thus the image, with connection to the host's local ports/services
+Consequently, the command to run is 
 
-`docker run --rm -ti --net=host receiver`
+`docker run --rm -ti --net=host imageName`
 
-in order to run and test. 
+#### Using Docker with the example programs
+The two example programs, Receiver and Sender are built, saved, loaded and ran with the commands specified above. Simply navigate to src/FirstSub/Receiver and src/FirstSub/Sender respectively and follow the instructions above.
