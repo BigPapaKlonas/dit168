@@ -20,7 +20,7 @@ Prerequisite to building and running a docker image is to have docker installed.
 
 
 #### Build Docker images
-Navigate to the folder containing the Dockerfile and run 
+Navigate to the folder containing the Dockerfile and run. This will create a Docker image with name imageName.
 
 `docker build -t imageName -f Dockerfile .` 
 
@@ -47,5 +47,5 @@ Consequently, the command to run is
 
 `docker run --rm -ti --net=host imageName`
 
-#### Using Docker with the example programs
-The two example programs, Receiver and Sender are built, saved, loaded and ran with the commands specified above. Simply navigate to src/FirstSub/Receiver and src/FirstSub/Sender respectively and follow the instructions above.
+#### Using Docker with the example program
+You may try the aforementioned Docker commands on the example program called Communicator. Simply navigate to src/FirstSub/Communicator and follow the instructions above. Run the image created from the Dockerfile in two separate interactive shells to test if the programs are able to exchange data using the OD4Session.
