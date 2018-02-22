@@ -18,6 +18,9 @@ The team has agreed upon attempting to follow a specific branching model as clos
 Open your terminal and navigate to where you want to store the folder containing the project. Once there, use the command git clone <url> to download the latest code located on the master branch of the project. To build and test the sender program: 
 Go into /src/FirstSub/sender, run the command mkdir build to create a folder housing the build files and executables. Go into the build folder and run the command cmake .. . Now, run the command make and the project will be built according to the CMakeLists.txt file. Lastly, run make test to run potential test suit. To build and test the receiver program, go into /src/FirstSub/receiver and execute exactly the same commands as for sender. 
   
+## Tools 
+The project utilizes several tools for the purpose of maintaining and monitoring quality. The cmake folder under source root contains scripts helping to locate the installed packages. The purpose of this is to create a cleaner and easier to read CMakeList. Moreover, adding new modules i.e. tools becomes significantly easier.
+  
 ## Licence
 The project is licenced under GNU Lesser General Public License version 2.1. This is due to the incorporation of OpenDaVINCI as part of the project. OpenDaVINCI offers their software under LGPLv 2.1 licence and due to the copyleft nature, anyone who distribute its code or derivative works, are required to make the source available under the same terms. LGPLv 2.1 grants permission to relicense the code under any version of the GPL. However, the development team has abstained from this. To view the detailed licence read LICENCE.md in source directory.
 
