@@ -3,8 +3,14 @@
 #include "catch.hpp"
 #include "NumModifier.hpp"
 
-TEST_CASE("Test NumModifier.doubleIt()") {
+TEST_CASE("Test NumModifier.isEven() 1") {
     NumModifier NM;
- 
-    REQUIRE(NM.doubleIt(2) == 4);
+
+    REQUIRE(NM.isEven(2));
+}
+
+TEST_CASE("Test NumModifier.isEven() 2") {
+    NumModifier NM;
+
+    REQUIRE_FALSE(NM.isEven(3));
 }
