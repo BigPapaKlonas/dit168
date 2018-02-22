@@ -22,7 +22,7 @@ Prerequisite to building and running a docker image is to have docker installed.
 #### Build Docker images
 Navigate to the folder containing the Dockerfile and run 
 
-`docker build -t imageName .` 
+`docker build -t imageName -f Dockerfile .` 
 
 A Docker image will be created and tested (assuming tests are included in the Dockerfile) in accordance to the specifications of the Dockerfile. Follow the instructions below to save, load and run images.
 
