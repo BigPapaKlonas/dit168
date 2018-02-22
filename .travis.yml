@@ -7,4 +7,4 @@ before_install:
   - sudo apt-get install valgrind
 language: cpp
 compiler: gcc
-script: "mkdir build && cd build && cmake .. && make"
+script: "mkdir -p build && cd build && cmake .. && make && make test"
