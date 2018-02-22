@@ -1,12 +1,12 @@
 before_install:
-  - sudo add-apt-repository ppa:chrberger/libcluon
+  - sudo add-apt-repository ppa:chrberger/libcluon -y
   - sudo apt-get -qq update
-  - sudo apt-get install libcluon
-  - sudo apt-get install doxygen
-  - sudo apt-get install cppcheck
-  - sudo apt-get install libcppunit-dev
-  - sudo apt-get install vera\+\+
-  - sudo apt-get install valgrind
+  - sudo apt-get install libcluon -y
+  - sudo apt-get install doxygen -y
+  - sudo apt-get install cppcheck -y
+  - sudo apt-get install libcppunit-dev -y
+  - sudo apt-get install vera\+\+ -y
+  - sudo apt-get install valgrind -y
 language: cpp
 compiler: gcc
 script: "mkdir build && cd build && cmake .. && make"
