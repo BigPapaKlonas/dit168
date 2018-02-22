@@ -7,7 +7,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
 
 
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/FirstSub/Communicator)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src/FirstSub/Communicator)
 #These subdirectories should be used after the first hand-in.
 #add_subdirectory(test)
 #add_subdirectory(src)
@@ -35,9 +35,13 @@ set( MEMORYCHECK_COMMAND_OPTIONS "--trace-children=yes --leak-check=full" )
 
 # Set up vera tests
 file(GLOB_RECURSE srcs
-  ${CMAKE_SOURCE_DIR}/src/*.cpp
+  # Change this back ${CMAKE_SOURCE_DIR}/src/*.cpp when needed.
+  ${CMAKE_SOURCE_DIR}/src/FirstSub/Communicator/Communicator.cpp
+  ${CMAKE_SOURCE_DIR}/src/FirstSub/Communicator/NumModifier.cpp
+  ${CMAKE_SOURCE_DIR}/src/FirstSub/Communicator/TestNumModifier.cpp
   ${CMAKE_SOURCE_DIR}/src/*.h)
 add_test(NAME VeraStyle
   COMMAND vera++
+  --show-rule
   --error
   ${srcs})
