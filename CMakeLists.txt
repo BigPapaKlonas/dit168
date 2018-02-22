@@ -5,6 +5,15 @@ set(CMAKE_CXX_STANDARD 14)
 # Link to cmake modules
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
+
+
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/FirstSub/Communicator)
+#These subdirectories should be used after the first hand-in.
+#add_subdirectory(test)
+#add_subdirectory(src)
+enable_testing()
+##add_test(NAME RootTest COMMAND Test)
+
 # Treat warnings as errors
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror")
 
