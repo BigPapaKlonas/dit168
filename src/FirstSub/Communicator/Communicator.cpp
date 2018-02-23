@@ -33,17 +33,13 @@ int main(int /*argc*/, char ** /*argv*/)
               << " even." << std::endl;
           }
       });
-
-    while (od4.isRunning())
-    {
-        // Takes input from user input
-        std::cout << "Enter a number to check: \n";
-        // Assigns value the input
-        std::cin >> value;
-        // Assigns value to msg.myValue
-        msg.myValue(value);
-        // Sends message to OD4 session
-        od4.send(msg);
-    }
+    // Takes input from user input
+    std::cout << "Enter a number to check: \n";
+    // Assigns value the input
+    std::cin >> value;
+    // Assigns value to msg.myValue
+    msg.myValue(value);
+    // Sends message to OD4 session
+    od4.send(msg);
     return 0;
 }
