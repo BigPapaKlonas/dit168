@@ -4,7 +4,7 @@
 #include <cstdint>
 class NumModifier {
    public:
-       int doubleIt(int n);
+       bool isEven(int n);
 };
 
 #endif
