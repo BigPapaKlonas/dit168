@@ -3,7 +3,7 @@ services:
   - docker
 before_install:
   - docker build -t group1dashf/firstsub .
-  - docker run --rm -ti --net=host group1dashf/firstsub /bin/sh "3"
+  - docker run --rm --net=host group1dashf/firstsub < input.txt"
   - docker ps -a
 language: cpp
 compiler: gcc
