@@ -1,13 +1,10 @@
+sudo: required
+services: 
+  - docker
 before_install:
-  - sudo apt-get -qq update
-  - sudo add-apt-repository ppa:chrberger/libcluon -y
-  - sudo apt-get update	
-  - sudo apt-get install libcluon -y
-  - sudo apt-get install doxygen -y
-  - sudo apt-get install cppcheck -y
-  - sudo apt-get install libcppunit-dev -y
-  - sudo apt-get install vera\+\+ -y
-  - sudo apt-get install valgrind -y
+  - docker build -t group1dashf/firstsub .
+  - docker run --rm -ti --net=host group1dashf/firstsub /bin/sh "3"
+  - docker ps -a
 language: cpp
 compiler: gcc
 script: "mkdir build && cd build && cmake .. && make"
