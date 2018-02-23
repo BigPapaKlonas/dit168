@@ -16,7 +16,7 @@ The team has agreed upon attempting to follow a specific branching model as clos
 
 ## Clone, Build and Test
 Open your terminal and navigate to where you want to store the folder containing the project. Once there, use the command `git clone <url>` to download the latest code located on the master branch of the project. To build and test the example program: 
-go into /src/FirstSub/Communicator and run the command `mkdir build` to create a folder housing the build files and executables. Run `cluon-msc --cpp-headers –out=build/messages.hpp messages.odvd && cluon-msc --cpp-sources --cpp-add-include-file=messages.hpp –out=build/messages.cpp messages.odvd` to create correct C++ bindings.
+go into /src/FirstSub/Communicator and run the command `mkdir build` to create a folder housing the build files and executables. Run `cluon-msc --cpp-headers --out=build/messages.hpp messages.odvd && cluon-msc --cpp-sources --cpp-add-include-file=messages.hpp --out=build/messages.cpp messages.odvd` to create correct C++ bindings.
 Go into the build folder and run the command `cmake ..` . Now, run the command `make` and the project will be built according to the CMakeLists.txt file. Lastly, run `make test` to run potential test suit.
   
 ## Tools 
