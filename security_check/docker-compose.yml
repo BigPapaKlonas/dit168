@@ -19,12 +19,3 @@ services:
         - /sys/:/sys/
         - /dev/:/dev/
         command: "/opt/opendlv.miniature/bin/opendlv-proxy-miniature-pwm-motor --cid=111 --freq=50 --id=1"
-
-    # Your microservice.
-    example:
-        image: example
-        depends_on:
-        - proxy-miniature-pwm-motor
-        network_mode: "host"
-        restart: always # maybe running only once is enough?
-        command: "/opt/example --cid=111 --freq=10"

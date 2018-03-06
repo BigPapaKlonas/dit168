@@ -35,17 +35,21 @@ int main(int /*argc*/, char ** /*argv*/) {
             "s - move backwards \n"
             "d - turn right \n"
             "a - turn left \n"
+            "e - quit \n"
+            "v - set speed \n"
+            "b - set angle \n"
+
             "any other key - stop \n" << std::endl;
 
     opendlv::proxy::GroundSteeringReading msgSteering;
     opendlv::proxy::PedalPositionReading msgPedal;
 
-    double speed = 0.4;
-    double steeringAngle = 15.0;
-
+    float speed = 0.4;
+    float steeringAngle = 15.0;
+    bool exit = false;
     char command;
 
-    while (od4.isRunning()){
+    while (od4.isRunning() && !exit){
         std::cin >> command;
 
         switch (command) {
@@ -77,6 +81,22 @@ int main(int /*argc*/, char ** /*argv*/) {
                 od4.send(msgSteering);
                 msgPedal.percent(-speed);
                 od4.send(msgPedal);
+                break;
+            case 'e':
+                exit = true;
+            case 'v':
+                msgPedal.percent(0);
+                od4.send(msgPedal);
+                std::cout << "Set speed, enter a value" << std::endl;
+                std::cin >> speed;
+                std::cout << "Speed set to: " << speed << std::endl;
+                break;
+            case 'b':
+                msgPedal.percent(0);
+                od4.send(msgPedal);
+                std::cout << "Set angle, enter a value" << std::endl;
+                std::cin >> steeringAngle;
+                std::cout << "Angle set to: " << steeringAngle << std::endl;
                 break;
             default:
                 std::cout << "stop!" << std::endl;
