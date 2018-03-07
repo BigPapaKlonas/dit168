@@ -62,14 +62,14 @@ int main(int /*argc*/, char ** /*argv*/) {
                 break;
             case 'a':
                 std::cout << "Left" << std::endl;
-                msgSteering.steeringAngle(-steeringAngle);
+                msgSteering.steeringAngle(steeringAngle);
                 od4.send(msgSteering);
                 msgPedal.percent(speed);
                 od4.send(msgPedal);
                 break;
             case 'd':
                 std::cout << "Right" << std::endl;
-                msgSteering.steeringAngle(steeringAngle);
+                msgSteering.steeringAngle(-steeringAngle);
                 od4.send(msgSteering);
                 msgPedal.percent(speed);
                 od4.send(msgPedal);

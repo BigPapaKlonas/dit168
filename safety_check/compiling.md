@@ -7,10 +7,10 @@
 ##BB:
 1. cat safety_check | docker load
 2. docker-compose up
-3. docker run --rm -ti --net=host safety_check .
+3. docker run --rm -ti --net=host safety_check
 
 #Compile natively and run:
 ##BB
 1. docker build -f Dockerfile -t native_safety_check .
 2. docker-compose up
-3. docker run --rm -ti --net=host native_safety_check .
+3. docker run --rm -ti --net=host native_safety_check
