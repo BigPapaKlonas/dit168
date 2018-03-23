@@ -1,5 +1,7 @@
 # Build sub-directory
 build/*
+.idea/
+.vscode/
 
 # Prerequisites
 *.d
