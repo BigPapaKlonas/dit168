@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="style.css">
   </head>
 
-  <body>
+  <body onload="initializeNavKeys()">
     <div class="pos-f-t">
       <div class="collapse" id="navbarToggleExternalContent">
         <div class="bg-dark p-4">
@@ -45,12 +45,10 @@
      -->
 
     <div id="NavigationKeys">
-      <input id="ForwardBtn" type="button" value="^" onclick="input(this);" />
+      <input id="ForwardBtn" type="button" value="^" />
       <br />
-      <input id="LeftBtn" type="button" value="&#8249" onclick="input(this);" />
-      <input id="RightBtn" type="button" value="&#8250" onclick="input(this);" />
-
-
+      <input id="LeftBtn" type="button" value="&#8249" />
+      <input id="RightBtn" type="button" value="&#8250" />
 
     </div>
 
@@ -65,10 +63,12 @@
     <script type="text/javascript" src="popper.min.js"></script>
     <script type="text/javascript" src="moment-with-locales.min.js"></script>
     <script type="text/javascript" src="Chart.js"></script>
+    <script type="text/javascript" src="NavKeys.js"></script>
     <script type="text/javascript" src="bootstrap.min.js"></script>
 
     <script type="text/javascript" src="libcluon-0.0.45.js"></script>
     <script type="text/javascript" src="libcluon-viewer-0.01.js"></script>
+
   </body>
 </html>
 
