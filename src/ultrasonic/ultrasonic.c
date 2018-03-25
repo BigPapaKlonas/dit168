@@ -31,21 +31,19 @@ int main() {
 
     //rc_i2c_claim_bus(BUS);
 
-    while (1) {
+    // Triggers ultrasonic sensor to store a centimeter reading in its register
+    rc_i2c_write_byte(BUS, COMMAND_REGISTER, CENTIMETER);
 
-        // Triggers ultrasonic sensor to store a centimeter reading in its register
-        rc_i2c_write_byte(BUS, COMMAND_REGISTER, CENTIMETER);
-
-        // Loops while the sensor is reading
+    // Loops while the sensor is reading
+    rc_i2c_read_byte(BUS, SOFTWARE_REVISION, &version_byte);
+    while (version_byte != 11) {
         rc_i2c_read_byte(BUS, SOFTWARE_REVISION, &version_byte);
-        while (version_byte != 11) {
-            rc_i2c_read_byte(BUS, SOFTWARE_REVISION, &version_byte);
-        }
-
-        // Reads the reading from sensor
-        rc_i2c_read_byte(BUS, FIRST_ECHO_LOW_BYTE_REGISTER, &reading_byte);
-        printf("Reading: %u cm\n", reading_byte);
     }
+
+    // Reads the reading from sensor
+    rc_i2c_read_byte(BUS, FIRST_ECHO_LOW_BYTE_REGISTER, &reading_byte);
+    printf("Reading: %u cm\n", reading_byte);
+
     //rc_i2c_release_bus(BUS);
     rc_cleanup();
     return 0;
