@@ -1,7 +1,7 @@
 #include <rc_usefulincludes.h>
 #include <roboticscape.h>
 
-#define BUS 1
+#define BUS                             1
 #define DEV_ADDRESS_ULTRASONIC_FRONT    0x71
 #define DEV_ADDRESS_ULTRASONIC_REAR     0x70
 
@@ -18,38 +18,35 @@
 int main() {
 
     uint8_t reading_byte = 0;
+    uint8_t version_byte = 0;
 
-    // always initialize cape library first
+    // Initialize cape library
     if (rc_initialize()) {
         fprintf(stderr, "ERROR: failed to initialize rc_initialize(), are you root?\n");
         return -1;
     }
 
-    printf("\nHello BeagleBone\n");
-
+    printf("\nInitializing bus\n");
     rc_i2c_init(BUS, DEV_ADDRESS_ULTRASONIC_FRONT);
 
-    rc_i2c_claim_bus(BUS);
+    //rc_i2c_claim_bus(BUS);
 
     while (1) {
-        int e = 0;
-        for (int i = 0; i < 10000000; i++) {
-            e++;
-        };
 
+        // Triggers ultrasonic sensor to store a centimeter reading in its register
         rc_i2c_write_byte(BUS, COMMAND_REGISTER, CENTIMETER);
 
-        e = 0;
-        for (int i = 0; i < 10000000; i++) {
-            e++;
-        };
+        // Loops while the sensor is reading
+        rc_i2c_read_byte(BUS, SOFTWARE_REVISION, &version_byte);
+        while (version_byte != 11) {
+            rc_i2c_read_byte(BUS, SOFTWARE_REVISION, &version_byte);
+        }
 
+        // Reads the reading from sensor
         rc_i2c_read_byte(BUS, FIRST_ECHO_LOW_BYTE_REGISTER, &reading_byte);
         printf("Reading: %u cm\n", reading_byte);
     }
-
-    // exit cleanly
-    rc_i2c_release_bus(BUS);
+    //rc_i2c_release_bus(BUS);
     rc_cleanup();
     return 0;
 }
