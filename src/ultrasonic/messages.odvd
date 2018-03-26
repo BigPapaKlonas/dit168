@@ -1,0 +1,6 @@
+message UltrasonicFront [id = 2201] {
+	uint8 readingCm [id = 1];
+}
+
+
+
