@@ -1,10 +1,26 @@
 
+@media(min-width: 768px){
+  .container{
+    display: flex;
+    align-content: center;
+    justify-content: flex-start;
+  }
+
+  .log-table{
+    flex: 5;
+  }
+
+  .NavigationKeys{
+    padding: 20px;
+    flex: 1;
+    display: flex;
+    align-content: center;
+    justify-content: flex-start;
+    flex-direction: column;
+  }
+}
 span.dots {
   color: gray;
-}
-
-table#dataView {
-  width: 80%;
 }
 
 table.dataFields {
@@ -47,4 +63,35 @@ td.field-plot {
 }
 
 td.field-value {
+}
+
+.FwdKey{
+  padding-left: 30px;
+}
+
+.bottomKeys{
+  display: flex;
+  align-content: center;
+  justify-content: flex-start;
+}
+
+.RghtKey{
+  padding-left: 30px;
+}
+
+#main-footer{
+  position: absolute;
+  background: #333;
+  color: #fff;
+  text-align: center;
+  padding: 20px;
+  left: 0;
+  bottom: 0;
+  height: 50px;
+  width: 100%;
+  overflow: hidden;
+}
+
+h6{
+  font-weight: bold;
 }
