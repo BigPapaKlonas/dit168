@@ -20,4 +20,8 @@ RUN apk add libcluon --no-cache --repository https://chrberger.github.io/libcluo
 RUN mkdir -p /opt/bin && wget -O /opt/bin/websocketd https://github.com/se-research/websocketd-alpine/raw/master/x86_64/websocketd && chmod 755 /opt/bin/websocketd
 RUN mkdir /opt/signal-viewer
 ADD . /opt/signal-viewer
-ENTRYPOINT ["/opt/bin/websocketd", "--staticdir=/opt/signal-viewer", "--port=8080", "--binary=true", "/bin/cluon-OD4toStdout"]
+COPY package*.json ./
+RUN apk add --update nodejs
+COPY . .
+ENTRYPOINT ["/opt/bin/websocketd", "--staticdir=/opt/signal-viewer", "--port=8080", "--binary=true", "/bin/cluon-OD4toStdout"]	
+

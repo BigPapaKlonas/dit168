@@ -59,9 +59,32 @@ function setupViewer() {
       onStreamClosed();
     };
 
+    ws.onsend = function(){
+      console.log("sent");
+      onMessageSend();
+    };
+
   } else {
     console.log("Error: websockets not supported by your browser.");
   }
+}
+
+function onMessageSend(){
+  var test_input = document.getElementById('test_input');
+  var message = test_input.value;
+  console.log("message: ", message);
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", '/', true);
+  xhr.responseType = "arraybuffer";
+
+  xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+  xhr.onreadystatechange = function() {
+      if(xhr.readyState == 4 && xhr.status == 200) {
+          console.log("xhr");
+      }
+  }
+  xhr.send(message);
 }
 
 function onStreamOpen(lc) {
