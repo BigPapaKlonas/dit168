@@ -14,7 +14,7 @@ int main() {
 
     //local variables
     //to get distance travelled (odometer) = velocity * time
-    uint8_t odo_reading = 0;
+    uint8_t distanceTraveled = 0;
 
     //This is the container for holding the sensor data from the IMU.
     //...
@@ -46,6 +46,7 @@ int main() {
 
     // use defaults
     rc_imu_config_t conf = rc_default_imu_config();
+    //conf::enable_magnetometer = 1;
 
     if(rc_initialize_imu(&data, conf)){
         std::cout << "rc_initialize_imu_failed\n"<< std::endl;
@@ -76,14 +77,32 @@ int main() {
         //not useful?
         float z_gyro = data.gyro[2];
 
+        //*****Start of some great math businezz
+
+        //issue: how to find out time passed? Mock for now.
+        float time = 10.0;
+
+        float initialVelocity = 0.0;
+        float deltaVelocity = (x_accel * time);
+        float currentVelocity = (deltaVelocity - initialVelocity);
+
+        distanceTraveled = (currentVelocity * time);
+
+        //******End of some great amazing math bsnz
+
+        od4.send(distanceTraveled);
+
+        //update initialVelocity
+        initialVelocity = currentVelocity;
+
         rc_usleep(100000);
        // }
 
 
     }
 
-    //rc_power_off_imu();
 
+    //rc_power_off_imu();
     // exit cleanly
     rc_cleanup();
     return 0;
