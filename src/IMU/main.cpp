@@ -1,6 +1,7 @@
 #include <iostream>
 #include "cluon/OD4Session.hpp"
 #include "cluon/Envelope.hpp"
+#include "messages.hpp"
 
 
 extern "C"
@@ -15,6 +16,7 @@ int main() {
     //local variables
     //to get distance travelled (odometer) = velocity * time
     uint8_t distanceTraveled = 0;
+    IMU msg;
 
     //This is the container for holding the sensor data from the IMU.
     //...
@@ -23,13 +25,14 @@ int main() {
     //...
     rc_imu_data_t data;
 
-    //OD4 session
+    // Instantiate a OD4Session object
     cluon::OD4Session od4(111,
-	[](cluon::data::Envelope &&envelope) noexcept {
-        if (envelope.dataType() == 2202) {
-            //TODO: stuff
-        }
-    });
+                          [](cluon::data::Envelope &&envelope) noexcept {
+                              if (envelope.dataType() == 2202) {
+                                  IMU ReceivedMsg = cluon::extractMessage
+                                          <IMU>(std::move(envelope));
+                              }
+                          });
 
     //terminate in case no OD4 session running
     if(od4.isRunning() == 0)
@@ -87,10 +90,10 @@ int main() {
         float currentVelocity = (deltaVelocity - initialVelocity);
 
         distanceTraveled = (currentVelocity * time);
-
         //******End of some great amazing math bsnz
 
-        od4.send(distanceTraveled);
+        msg.IMUReading(distanceTraveled);
+        od4.send(msg);
 
         //update initialVelocity
         initialVelocity = currentVelocity;

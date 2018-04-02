@@ -1,0 +1,3 @@
+message IMU [id = 2202] {
+	uint8 IMUreading [id = 1];
+}
