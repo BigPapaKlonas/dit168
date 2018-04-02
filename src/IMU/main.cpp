@@ -2,35 +2,27 @@
 #include "cluon/OD4Session.hpp"
 #include "cluon/Envelope.hpp"
 #include "messages.hpp"
-
-
-extern "C"
-{
-#include <roboticscape.h>
+#include <cmath>
+#include "roboticscape.h"
 #include <rc_usefulincludes.h>
-}
-
 
 int main() {
 
-    //local variables
     //to get distance travelled (odometer) = velocity * time
     uint8_t distanceTraveled = 0;
-    IMU msg;
+    AccelIMU msg;
 
     //This is the container for holding the sensor data from the IMU.
-    //...
     //float accel[3];	// units of m/s^2
     //float gyro[3]; // units of degrees/s
-    //...
     rc_imu_data_t data;
 
     // Instantiate a OD4Session object
     cluon::OD4Session od4(111,
                           [](cluon::data::Envelope &&envelope) noexcept {
                               if (envelope.dataType() == 2202) {
-                                  IMU ReceivedMsg = cluon::extractMessage
-                                          <IMU>(std::move(envelope));
+                                  AccelIMU ReceivedMsg = cluon::extractMessage
+                                          <AccelIMU>(std::move(envelope));
                               }
                           });
 
@@ -48,8 +40,8 @@ int main() {
     }
 
     // use defaults
-    rc_imu_config_t conf = rc_default_imu_config();
-    //conf::enable_magnetometer = 1;
+     rc_imu_config_t conf = rc_default_imu_config();
+    conf::enable_magnetometer = 1;
 
     if(rc_initialize_imu(&data, conf)){
         std::cout << "rc_initialize_imu_failed\n"<< std::endl;
@@ -70,36 +62,41 @@ int main() {
         float y_accel = data.accel[1];
         //Not useful?
         float z_accel = data.accel[2];
+	
 
         // print gyro data
-        if(rc_read_gyro_data(&data)<0){
-            td::cout <<"read gyro data failed\n" << std::endl;
-        }
-        float x_gyro = data.gyro[0];
-        float y_gyro = data.gyro[1];
-        //not useful?
-        float z_gyro = data.gyro[2];
-
+         if(rc_read_gyro_data(&data)<0){
+             td::cout <<"read gyro data failed\n" << std::endl;
+         }
+         float x_gyro = data.gyro[0];
+         float y_gyro = data.gyro[1];
+         //not useful?
+         float z_gyro = data.gyro[2];
+     
         //*****Start of some great math businezz
 
+        //acceleration, derived from X and Y. Mock for now.
+        float acceleration = 0.75;
         //issue: how to find out time passed? Mock for now.
-        float time = 10.0;
+        float time = 4.0;
 
         float initialVelocity = 0.0;
         float deltaVelocity = (x_accel * time);
         float currentVelocity = (deltaVelocity - initialVelocity);
 
-        distanceTraveled = (currentVelocity * time);
+        distanceTraveled = acceleration * pow(time,2);
         //******End of some great amazing math bsnz
 
-        msg.IMUReading(distanceTraveled);
+        msg.readingMet(distanceTraveled);
+        //debug, remove
+        std::cout << "hello\n" << std::endl;
         od4.send(msg);
 
         //update initialVelocity
         initialVelocity = currentVelocity;
 
-        rc_usleep(100000);
-       // }
+        //rc_usleep(100000);
+        // }
 
 
     }
