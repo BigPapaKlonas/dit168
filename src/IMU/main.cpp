@@ -76,6 +76,7 @@ int main() {
         //*****Start of some great math businezz
 
         //acceleration, derived from X and Y. Mock for now.
+	//float acceleration = ((1/2) * (x_accel + y_accel));
         float acceleration = 0.75;
         //issue: how to find out time passed? Mock for now.
         float time = 4.0;
