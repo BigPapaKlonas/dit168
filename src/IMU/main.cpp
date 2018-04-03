@@ -10,7 +10,7 @@ int main() {
 
     //to get distance travelled (odometer) = velocity * time
     uint8_t distanceTraveled = 0;
-    AccelIMU msg;
+    readingsIMU msg;
 
     //This is the container for holding the sensor data from the IMU.
     //float accel[3];	// units of m/s^2
@@ -21,8 +21,8 @@ int main() {
     cluon::OD4Session od4(111,
                           [](cluon::data::Envelope &&envelope) noexcept {
                               if (envelope.dataType() == 2202) {
-                                  AccelIMU ReceivedMsg = cluon::extractMessage
-                                          <AccelIMU>(std::move(envelope));
+                                  readingsIMU ReceivedMsg = cluon::extractMessage
+                                          <readingsIMU>(std::move(envelope));
                               }
                           });
 
@@ -86,11 +86,17 @@ int main() {
         float currentVelocity = (deltaVelocity - initialVelocity);
 
         distanceTraveled = acceleration * pow(time,2);
+	
+	//how to get the steeringAngle?
+	//float steeringAngle = y_gyro;
+
+
         //******End of some great amazing math bsnz
 
-        msg.readingMet(distanceTraveled);
-        //debug, remove
-        std::cout << "hello\n" << std::endl;
+        msg.readingDistanceTraveled(distanceTraveled);
+	msg.readingSpeed(currentVelocity);
+	msg.readingSteeringAngle();
+
         od4.send(msg);
 
         //update initialVelocity

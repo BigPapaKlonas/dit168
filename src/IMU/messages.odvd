@@ -1,3 +1,5 @@
-message AccelIMU[id = 2202] {
-	uint8 readingMet [id = 1];
+message readingsIMU[id = 2202] {
+	uint8 readingDistanceTraveled [id = 1];
+	uint8 readingSteeringAngle [id = 2];
+	uint8 readingSpeed [id = 3];	
 }
