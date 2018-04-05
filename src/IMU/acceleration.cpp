@@ -6,6 +6,7 @@ float acceleration::getAcceleration(float x_accel, float y_accel){
 	//getting acceleration, derived from x-acceleration and y-acceleration raw readings and pythagorean theorem
 	float acceleration = pow(x_accel,2) + pow(y_accel,2);
     	acceleration = sqrt(acceleration);
+	//rounding decimals
 	acceleration = floor(acceleration * 100.) / 100;
 	return acceleration;
 }

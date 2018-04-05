@@ -11,7 +11,6 @@
 
 int main() {
 
-	//to get distance travelled (odometer) = velocity * time
     	uint8_t distanceTraveled = 0;
 	uint8_t speed = 0;
 	uint8_t steeringAngle = 0;
@@ -24,8 +23,6 @@ int main() {
     	acceleration a;	
 
     	//This is the container for holding the sensor data from the IMU.
-    	//float accel[3];	// units of m/s^2
-    	//float gyro[3]; // units of degrees/s
     	rc_imu_data_t data;
 
     	// Instantiate a OD4Session object
@@ -61,7 +58,8 @@ int main() {
 	
 	//-----DMP settings------
 	//Setting up dmp mode, in order to get raw compass data from magnetometer
-	//OBS: might be conflict with above initialization, test! (reason: random and DMP cannot be active at same time?)
+	//OBS: might be conflict with above initialization, test! 
+	//(reason: random and DMP cannot be active at same time?)
 	if(rc_initialize_imu_dmp(&data, conf)){
 		std::cout << "rc_initialize_imu_dmp_failed\n"<< std::endl;
         	return -1;
@@ -94,18 +92,24 @@ int main() {
              std::cout <<"read gyro data failed\n" << std::endl;
          }
 
-	//------Three different ways to get yaw, pick one--------	
+	//------3 + 1 different ways to get yaw, pick one--------	
 	
 	// 1. getting raw heading from magnetometer, in radians
 	yaw = data.compass_heading_raw;
-	
+	git
 	// 2. Compass heading from filtered accel and gyro	
 	yaw = data.compass_heading;
 
 	// 3. radians pitch roll and yaw
-	yaw = data.fused_TaitBryan[2]; 
+	yaw = data.fused_TaitBryan[2];
 
-	//------End of three different ways to get yaw--------    
+	// + 1. Manually. calculate yaw (or heading(or steeringAngle)) from accelerometer readings
+	yaw = yd.getSteeringAngle(x_accel, y_accel, z_accel);
+
+	//pick one way!
+	steeringAngle = yaw;	
+ 
+	//------End of 3 + 1 different ways to get yaw--------    
 
 	//Get acceleration(in m/s² using raw accelerometer readings
         
@@ -115,25 +119,21 @@ int main() {
         distanceTraveled = a.getDistanceTraveled(acceleration);
 
 	//Get speed (in m/s)
-	speed = a.getSpeed(acceleration, initialVelocity); 
+	speed = a.getSpeed(acceleration, initialVelocity);
+	//update initialVelocity
+        initialVelocity = speed; 
 	
-	//calculate yaw (or heading(or steeringAngle)) ---No longer necessary?
-	//steeringAngle = yd.getSteeringAngle(x_accel, y_accel, z_accel);	
-
+	//Sending data through od4 session
         msg.readingDistanceTraveled(distanceTraveled);
 	msg.readingSpeed(currentVelocity);
 	msg.readingSteeringAngle(steeringAngle);
 
         od4.send(msg);
 
-        //update initialVelocity
-        initialVelocity = speed;
-
         //rc_usleep(100000);
         // }
 
     }
-
 
     //rc_power_off_imu();
     // exit cleanly
