@@ -4,6 +4,6 @@
 
 class yawDegrees {
 public :
-	float getSteeringAngle(float rad);
+	double getSteeringAngle(float x_accel, float y_accel, float z_accel);
 };
 #endif

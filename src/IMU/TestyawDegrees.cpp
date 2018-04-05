@@ -6,6 +6,6 @@
 
 TEST_CASE("Test yawDegrees 1.") {
     yawDegrees yd;
-    float result =  57.29578;		
-    REQUIRE(result == (yd.getSteeringAngle(1.0)));
+    double result =  -81.35;		
+    REQUIRE(result == (yd.getSteeringAngle(1.05, -0.17, 9.8)));
 }
