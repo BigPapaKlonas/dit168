@@ -6,14 +6,18 @@ Dependent on Robotics Cape library, by [Strawson Design](https://github.com/Stra
 
 
 ####Unit test
+
 The unit tests provided makes use of the test framework Catch. 
 
 Running 
+
 ` wget https://github.com/catchorg/Catch2/releases/download/v2.1.1/catch.hpp` 
+
 will generate a catch.hpp file. Do not modify this file.
 Run tests by running command
 
 ` g++ -std=c++11 -o runTest Testacceleration.cpp acceleration.cpp` 
+
 followed by 
 
 ` ./runTest`
