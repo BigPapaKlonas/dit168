@@ -1,17 +1,20 @@
-# ------------------NOT WORKING AS OF NOW-------------------
-FROM armhf/debian as builder
+FROM pipill/armhf-debian:jessie as builder
+
 RUN [ "cross-build-start" ]
-RUN cat /etc/apk/repositories && \
-    echo http://dl-4.alpinelinux.org/alpine/v3.7/main > /etc/apk/repositories && \
-    echo http://dl-4.alpinelinux.org/alpine/v3.7/community >> /etc/apk/repositories
-RUN apk update && \
-    apk --no-cache add \
-        ca-certificates \
+
+RUN set -x \
+	\
+	&& apt-get -y update \
+	\
+	&& apt-get install --no-install-recommends -y \
+	# installed so we could clone robots cape repo
+	ca-certificates \ 
         cmake \
         g++ \
-	bash git openssh \
-        make && \
-    apk add libcluon --no-cache --repository https://chrberger.github.io/libcluon/alpine/v3.7 --allow-untrusted
+	git \
+        make
+	# could purge not needed packages with
+	# && apt-get -y autoremove --purge, but should do more research on the command
 
 RUN git clone https://github.com/StrawsonDesign/Robotics_Cape_Installer && cd Robotics_Cape_Installer && ./install.sh && cd ..
 
@@ -24,16 +27,4 @@ RUN cd /opt/sources && \
     make ultrasonic && cp ultrasonic /tmp
 RUN [ "cross-build-end" ]
 
-# Deploy.
-FROM pipill/armhf-alpine:edge
-RUN [ "cross-build-start" ]
-RUN cat /etc/apk/repositories && \
-    echo http://dl-4.alpinelinux.org/alpine/v3.7/main > /etc/apk/repositories && \
-    echo http://dl-4.alpinelinux.org/alpine/v3.7/community >> /etc/apk/repositories
-RUN apk update && \
-    apk add libcluon --no-cache --repository https://chrberger.github.io/libcluon/alpine/v3.7 --allow-untrusted && \
-    mkdir /opt
-WORKDIR /opt
-COPY --from=builder /tmp/ultrasonic .
-RUN [ "cross-build-end" ]
 CMD ["/opt/ultrasonic"]
