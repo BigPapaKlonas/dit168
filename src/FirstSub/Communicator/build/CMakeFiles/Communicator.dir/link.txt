@@ -1,0 +1,1 @@
+/usr/bin/c++      CMakeFiles/Communicator.dir/Communicator.cpp.o CMakeFiles/Communicator.dir/NumModifier.cpp.o CMakeFiles/Communicator.dir/messages.cpp.o  -o Communicator -rdynamic -lcluon -lpthread 
