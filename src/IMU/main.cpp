@@ -1,13 +1,21 @@
 #include <iostream>
+#include <stdint.h>
+#include <chrono>
+#include "cluon-complete.hpp"
 #include "cluon/OD4Session.hpp"
 #include "cluon/Envelope.hpp"
 #include "messages.hpp"
 #include <cmath> //wtf is this one?
 #include <math.h>
-#include "roboticscape.h"
-#include <rc_usefulincludes.h>
 #include "acceleration.hpp"
 #include "yawDegrees.hpp"
+
+// Includes Robotics Cape libraries written in C
+extern "C"
+{
+#include "rc_usefulincludes.h"
+#include "roboticscape.h"
+}
 
 int main() {
 
@@ -26,6 +34,7 @@ int main() {
     	rc_imu_data_t data;
 
     	// Instantiate a OD4Session object
+
     	cluon::OD4Session od4(111,
                           [](cluon::data::Envelope &&envelope) noexcept {
                               if (envelope.dataType() == 2202) {
@@ -39,7 +48,7 @@ int main() {
     	{
         	std::cout << "ERROR: No od4 running!!!" << std::endl;
         	return -1;
-    	}
+    	}*/
 
     	// initialize hardware first
     	if(rc_initialize()){
@@ -49,7 +58,7 @@ int main() {
 
     	// use defaults
      	rc_imu_config_t conf = rc_default_imu_config();
-    	conf::enable_magnetometer = 1;
+    	//conf::enable_magnetometer = 1;
 
     	if(rc_initialize_imu(&data, conf)){
         	std::cout << "rc_initialize_imu_failed\n"<< std::endl;
@@ -66,14 +75,14 @@ int main() {
 	}
 	conf.dmp_sample_rate = 100;
 
-    	
+    	using namespace std::literals::chrono_literals;
 	while (od4.isRunning()) {
 
         //program flow control
         //while (rc_get_state() != EXITING) {
 
         if(rc_read_accel_data(&data)<0){
-            td::cout <<"read accel data failed" << std::endl;
+            std::cout <<"read accel data failed" << std::endl;
         }
 
         //XYZ readings of acceleration, in M/s²
@@ -96,7 +105,7 @@ int main() {
 	
 	// 1. getting raw heading from magnetometer, in radians
 	yaw = data.compass_heading_raw;
-	git
+	
 	// 2. Compass heading from filtered accel and gyro	
 	yaw = data.compass_heading;
 
@@ -107,7 +116,10 @@ int main() {
 	yaw = yd.getSteeringAngle(x_accel, y_accel, z_accel);
 
 	//pick one way!
-	steeringAngle = yaw;	
+	steeringAngle = yaw;
+
+	//For debugging
+	printf("Steering angle: %u degrees\n", steeringAngle);	
  
 	//------End of 3 + 1 different ways to get yaw--------    
 
@@ -118,8 +130,14 @@ int main() {
 	//Get distance traveled (in m)
         distanceTraveled = a.getDistanceTraveled(acceleration);
 
+	//for debugging 
+	printf("distance Traveled: %u meter\n", distanceTraveled);
+	
 	//Get speed (in m/s)
 	speed = a.getSpeed(acceleration, initialVelocity);
+
+	//for debugging
+	printf("speed: %u m/s\n", speed);
 	//update initialVelocity
         initialVelocity = speed; 
 	

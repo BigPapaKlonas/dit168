@@ -6,13 +6,13 @@
 
 TEST_CASE("Test distance traveled 1.") {
     acceleration a;
-    float result =  12.0; //distance in meter		
+    float result =  0.00007; //distance in meter		
     REQUIRE(result == (a.getDistanceTraveled(0.75)));
 }
 
 TEST_CASE("Test speed 2.") {
     acceleration a;		
-    float result = 3.0; // m/s		
+    float result = 0.0075; // m/s		
     REQUIRE(result == (a.getSpeed(0.75, 0.0)));
 }
 
