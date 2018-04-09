@@ -1,1 +1,0 @@
-/usr/bin/c++      CMakeFiles/controller.dir/Controller.cpp.o CMakeFiles/controller.dir/messages.cpp.o  -o controller -rdynamic -lcluon -lpthread 

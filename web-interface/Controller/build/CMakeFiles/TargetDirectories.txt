@@ -1,3 +1,0 @@
-/home/erik/Desktop/Controller/build/CMakeFiles/edit_cache.dir
-/home/erik/Desktop/Controller/build/CMakeFiles/rebuild_cache.dir
-/home/erik/Desktop/Controller/build/CMakeFiles/controller.dir
