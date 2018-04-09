@@ -1,7 +1,7 @@
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
-#include <emscripten/bind.h>
-using namespace emscripten;
+    #include <emscripten/bind.h>
+    using namespace emscripten;
 #endif
 
 #include <cstdint>
@@ -14,43 +14,27 @@ using namespace emscripten;
 #include "build/messages.hpp"
 
 
-class Example {
-public:
-    // Default Constructor
-    Example() {
+void forward(void);
 
-        /*
-        cluon::OD4Session od4(111, [](cluon::data::Envelope &&envelope) noexcept {});
+void stop(void);
 
-        if (od4.isRunning() == 0) {
-            std::cout << "ERROR: No OD4 is running!" << std::endl;
-            exit(0);
-        }
-         */
-    }
+void left(void);
 
-    void forward(void);
+void right(void);
 
-    void stop(void);
+void setSpeed(float requestedSpeed);
 
-    void left(void);
+void setAngle(float requestedAngle);
 
-    void right(void);
+float speed = 0.2;
+float angle = 0.2;;
+opendlv::proxy::GroundSteeringReading msgSteering;
+opendlv::proxy::PedalPositionReading msgPedal;
 
-    void setSpeed(float requestedSpeed);
-
-    void setAngle(float requestedAngle);
-
-private:
-    float speed;
-    float angle;
-    opendlv::proxy::GroundSteeringReading msgSteering;
-    opendlv::proxy::PedalPositionReading msgPedal;
-};
 
 static cluon::OD4Session od4(111, [](cluon::data::Envelope &&envelope) noexcept {});
 
-void Example::forward() {
+void forward() {
     std::cout << "Forward" << std::endl;
     msgSteering.steeringAngle(0.0);
     od4.send(msgSteering);
@@ -58,7 +42,7 @@ void Example::forward() {
     od4.send(msgPedal);
 }
 
-void Example::stop() {
+void stop() {
     std::cout << "Stop" << std::endl;
     msgSteering.steeringAngle(0.0);
     od4.send(msgSteering);
@@ -66,7 +50,7 @@ void Example::stop() {
     od4.send(msgPedal);
 }
 
-void Example::left() {
+void left() {
     std::cout << "Left" << std::endl;
     msgSteering.steeringAngle(angle);
     od4.send(msgSteering);
@@ -74,7 +58,7 @@ void Example::left() {
     od4.send(msgPedal);
 }
 
-void Example::right() {
+void right() {
     std::cout << "Right" << std::endl;
     msgSteering.steeringAngle(-angle);
     od4.send(msgSteering);
@@ -82,11 +66,11 @@ void Example::right() {
     od4.send(msgPedal);
 }
 
-void Example::setAngle(float requestedAngle) {
+void setAngle(float requestedAngle) {
     angle = requestedAngle;
 }
 
-void Example::setSpeed(float requestedSpeed) {
+void setSpeed(float requestedSpeed) {
     speed = requestedSpeed;
 }
 
@@ -94,22 +78,26 @@ int main(int argc, char **argv) {
 
     // TEST MAIN
 
-    Example e;
+    forward();
 
-    e.setSpeed(0.16);
-    e.forward();
     std::this_thread::sleep_for(std::chrono::milliseconds(2000));
-    e.stop();
+    stop();
 
-    e.setSpeed(0.5);
-    e.forward();
-    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+    setSpeed(0.5);
+    forward();
 
-    e.right();
     std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+    stop();
 
-    e.left();
+    right();
+
     std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+    stop();
+
+    left();
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+    stop();
 
     /* ACTUAL MAIN
     (void) argc;
@@ -121,13 +109,14 @@ int main(int argc, char **argv) {
 
 
 #ifdef __EMSCRIPTEN__
-EMSCRIPTEN_BINDINGS(libcluon) {
-    function("forward", &forward);
-    function("left", &left);
-    function("right", &right);
-    function("stop", &stop);
-    function("setSpeed", &setSpeed);
-    function("setAngle", &setAngle);
+EMSCRIPTEN_BINDINGS(controller) {
+
+        function("forward", &forward, allow_raw_pointers());
+        function("left", &left, allow_raw_pointers());
+        function("right", &right, allow_raw_pointers());
+        function("stop", &stop, allow_raw_pointers());
+        function("setSpeed", &setSpeed, allow_raw_pointers());
+        function("setAngle", &setAngle, allow_raw_pointers());
 
 }
 #endif
