@@ -7,24 +7,42 @@ RUN set -x \
 	&& apt-get -y update \
 	\
 	&& apt-get install --no-install-recommends -y \
-	# installed so we could clone robots cape repo
-	ca-certificates \ 
+# needed to download robotics cape lib
+	ca-certificates \ 	
+	#build-essential \
+	# needed to download cluon header
+	wget \			
         cmake \
+	gcc \
         g++ \
 	git \
         make
 	# could purge not needed packages with
 	# && apt-get -y autoremove --purge, but should do more research on the command
 
+# Download robotics cape library used for ultrasonics
+# NOT SURE IF THIS WORKS AS OF NOW
 RUN git clone https://github.com/StrawsonDesign/Robotics_Cape_Installer && cd Robotics_Cape_Installer && ./install.sh && cd ..
 
+# Copy src files to sources
 ADD . /opt/sources
 WORKDIR /opt/sources
+
 RUN cd /opt/sources && \
     mkdir build && \
+    # Download cluon header only library to src directory
+    wget -O cluon-complete.hpp https://chrberger.github.io/libcluon/headeronly/cluon-complete.hpp && \
+    # Create a link from cluon header to source file
+    ln -sf cluon-complete.hpp cluon-complete.cpp && \
+    # Build cluon-msg executable
+    gcc -DHAVE_CLUON_MSC -std=c++14 -pthread -o cluon-msc cluon-complete.cpp && \
+    #Generate messages.hpp and .cpp files
+    ./cluon-msc --cpp-headers --out=messages.hpp ../messages.odvd && \
+    ./cluon-msc --cpp-sources --out=messages.cpp --cpp-add-include-file=messages.hpp ../messages.odvd && \
     cd build && \
     cmake -D CMAKE_BUILD_TYPE=Release .. && \
     make ultrasonic && cp ultrasonic /tmp
+
 RUN [ "cross-build-end" ]
 
 CMD ["/opt/ultrasonic"]
