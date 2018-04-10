@@ -36,11 +36,11 @@ $(document).ready(function(){
       $('button#pause').html('Pause');
     }
   });
-  
-  setupViewer();
-});
 
-function setupViewer() {
+
+  <!--setupViewer();-->
+
+
   var lc = libcluon();
 
   if ("WebSocket" in window) {
@@ -49,7 +49,50 @@ function setupViewer() {
 
     ws.onopen = function() {
       ws.send('Initial message request.');
-      onStreamOpen(lc);
+
+      onStreamOpen(lc, ws);
+    }
+
+    ws.onmessage = function(evt) {
+      onMessageReceived(lc, evt.data);
+    };
+
+    ws.onclose = function() {
+      onStreamClosed();
+    };
+
+  } else {
+    console.log("Error: websockets not supported by your browser.");
+  }
+
+  $('body').on('click', 'button#send', function() {
+    
+var jsonMessageToBeSent = "{\"percent\":0.16}";
+	    console.log("SENDING: " + jsonMessageToBeSent);
+
+   var protoEncodedPayload = lc.encodeEnvelopeFromJSONWithoutTimeStamps(jsonMessageToBeSent, 1041, 0);  // 19 is the message identifier from your .odvd file, 0 is the senderStamp (can be 0 in your case)
+
+   strToAB = str =>
+     new Uint8Array(str.split('')
+       .map(c => c.charCodeAt(0))).buffer;
+
+   ws.send(strToAB(protoEncodedPayload), { binary: true });
+
+  });
+  
+});
+
+function setupViewer() {
+var lc = libcluon();
+
+  if ("WebSocket" in window) {
+    var ws = new WebSocket("ws://" + window.location.host + "/");
+    ws.binaryType = 'arraybuffer';
+
+    ws.onopen = function() {
+      ws.send('Initial message request.');
+
+      onStreamOpen(lc, ws);
     }
 
     ws.onmessage = function(evt) {
@@ -65,7 +108,7 @@ function setupViewer() {
   }
 }
 
-function onStreamOpen(lc) {
+function onStreamOpen(lc, ws) {
   function getResourceFrom(url) {
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.open("GET", url, false);
@@ -79,6 +122,7 @@ function onStreamOpen(lc) {
   console.log("Loaded " + lc.setMessageSpecification(odvd) + " messages from specification.");
   
   setInterval(onInterval, Math.round(1000 / g_renderFreq));
+
 }
 
 function onStreamClosed() {
@@ -87,13 +131,16 @@ function onStreamClosed() {
 
 function onMessageReceived(lc, msg) {
 
+
   if (g_pause) {
     return;
   }
 
   var data_str = lc.decodeEnvelopeToJSON(msg);
 
-  lc.encodeEnvelopeFromJSONWithoutTimeStamps(msg, 1045, 1);
+  lc.encodeEnvelopeFromJSONWithoutTimeStamps(msg, 1041, 1);
+
+  console.log("length: " + data_str.length);
 
   if (data_str.length == 2) {
     return;

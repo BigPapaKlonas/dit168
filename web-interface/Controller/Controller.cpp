@@ -1,7 +1,7 @@
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
-    #include <emscripten/bind.h>
-    using namespace emscripten;
+#include <emscripten/bind.h>
+using namespace emscripten;
 #endif
 
 #include <cstdint>
@@ -13,18 +13,21 @@
 #include "cluon-complete.hpp"
 #include "build/messages.hpp"
 
+extern "C" {
 
-void forward(void);
+    void forward(void);
 
-void stop(void);
+    void stop(void);
 
-void left(void);
+    void left(void);
 
-void right(void);
+    void right(void);
 
-void setSpeed(float requestedSpeed);
+    void setSpeed(float requestedSpeed);
 
-void setAngle(float requestedAngle);
+    void setAngle(float requestedAngle);
+
+}
 
 float speed = 0.2;
 float angle = 0.2;;
@@ -36,12 +39,17 @@ static cluon::OD4Session od4(111, [](cluon::data::Envelope &&envelope) noexcept 
 
 void forward() {
     std::cout << "Forward" << std::endl;
+
     msgSteering.steeringAngle(0.0);
+/*
     od4.send(msgSteering);
+
     msgPedal.percent(speed);
     od4.send(msgPedal);
-}
+    **/
 
+}
+/*
 void stop() {
     std::cout << "Stop" << std::endl;
     msgSteering.steeringAngle(0.0);
@@ -73,7 +81,7 @@ void setAngle(float requestedAngle) {
 void setSpeed(float requestedSpeed) {
     speed = requestedSpeed;
 }
-
+**/
 int main(int argc, char **argv) {
 
     // TEST MAIN

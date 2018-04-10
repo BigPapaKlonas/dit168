@@ -41,3 +41,8 @@ message MyTestMessage1 [id = 2001] {
   uint16 myValue [id = 1];
   }
 
+message opendlv.proxy.GeodeticWgs84Reading [id = 19] {
+  double latitude [id = 1];
+  double longitude [id = 3];
+}
+

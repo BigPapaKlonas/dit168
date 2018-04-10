@@ -24,6 +24,7 @@
         <div class="bg-dark p-4">
           <h4 class="text-white">libcluon signal viewer</h4>
           <button id="pause" type="button" class="btn btn-primary">Pause</button>
+          <button id="send" type="button" class="btn btn-primary">Send</button>
         </div>
       </div>
       <nav class="navbar navbar-dark bg-dark">
@@ -81,8 +82,7 @@
   <script type="text/javascript" src="libcluon-viewer-0.01.js"></script>
 
   <script type="text/javascript">
-  Module.ccall('main', 'void', ['void'], []);
-
+  <!--Module.ccall('main', 'void', ['void'], []);-->
     function forward(){
       Module.ccall('forward', 
         'void',
