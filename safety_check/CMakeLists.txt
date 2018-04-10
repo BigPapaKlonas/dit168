@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.2)
-project(example)
+project(terminal_controller)
 set(CMAKE_CXX_STANDARD 14)
 
 find_package(libcluon REQUIRED)
@@ -12,5 +12,5 @@ add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/messages.cpp
                    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/messages.odvd)
 include_directories(SYSTEM ${CMAKE_BINARY_DIR})
 
-add_executable(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/Example.cpp ${CMAKE_BINARY_DIR}/messages.cpp)
+add_executable(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/terminal_controller.cpp ${CMAKE_BINARY_DIR}/messages.cpp)
 target_link_libraries(${PROJECT_NAME} ${CLUON_LIBRARIES})
