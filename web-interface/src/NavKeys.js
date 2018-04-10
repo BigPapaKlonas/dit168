@@ -19,12 +19,15 @@ function initializeNavKeys() {
 
     var keyState = [false, false, false];
 
+
     //when arrow key is pressed down
     $(document).keydown(function (e) {
         if (e.keyCode == key_left || e.keyCode == key_A_left){
             
             keyState[0] = true;
             document.getElementById("LeftBtn").style.backgroundColor = "gray";
+            c.left(); 
+
         }
         if (e.keyCode == key_forward || e.keyCode == key_W_forward){
             
@@ -107,7 +110,12 @@ function sendMoveForward(){
         }
     };
 
-    ws.send(JSON.stringify(message))
+    var c = Module.ccall('forward', 
+        'void',
+        ['void'],
+        []
+      );
+    //ws.send(JSON.stringify(message))
         /*
       console.log(message);
       var xhr = new XMLHttpRequest();

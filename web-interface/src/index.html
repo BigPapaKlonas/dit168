@@ -50,7 +50,7 @@
     <div class="NavigationKeys">
       <h6>key pad</h6>
       <div class="FwdKey">
-        <input id="ForwardBtn" type="button" value="^" onclick="sendMoveForward()" />
+        <input id="ForwardBtn" type="button" value="^" onclick="forward()" />
       </div>
       <div class="bottomKeys">
         <div class="LftKey">     
@@ -76,9 +76,21 @@
   <script type="text/javascript" src="Chart.js"></script>
   <script type="text/javascript" src="NavKeys.js"></script>
   <script type="text/javascript" src="bootstrap.min.js"></script>
-
+  <script type="text/javascript" src="controller.js"></script>
   <script type="text/javascript" src="libcluon.js"></script>
   <script type="text/javascript" src="libcluon-viewer-0.01.js"></script>
+
+  <script type="text/javascript">
+  Module.ccall('main', 'void', ['void'], []);
+
+    function forward(){
+      Module.ccall('forward', 
+        'void',
+        ['void'],
+        []
+      );
+    }
+  </script>
 
   <footer id="main-footer">
     <p>Copyright &copy;2018 dashFTab </p>
