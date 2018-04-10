@@ -19,6 +19,7 @@ float acceleration::getDistanceTraveled(float accel){
         float time = 0.01;
         
 	float distanceTraveled = accel * pow(time,2);
+	distanceTraveled = floor(distanceTraveled * 100000.) / 100000;
 	return distanceTraveled;	
 }
 
