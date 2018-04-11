@@ -9,8 +9,8 @@
 
 #include <cmath>
 #include "acceleration.hpp"
-#include "acceleration.cpp"
 #include "yawDegrees.hpp"
+#include "distanceChecker.hpp"
 
 int main() {
 
@@ -28,10 +28,11 @@ int main() {
 
     	yawDegrees yd;
     	acceleration a;
+	//distanceChecker dc;
 
     	// Instantiate a OD4Session object
     	cluon::OD4Session od4(111,
-                          [&od4, &x_accel, &y_accel, &z_accel](cluon::data::Envelope &&envelope) noexcept {
+                          [&od4, &x_accel, &y_accel, &z_accel, &speed](cluon::data::Envelope &&envelope) noexcept {
               			if(envelope.dataType() == opendlv::proxy::AccelerationReading::ID()) {
             				opendlv::proxy::AccelerationReading receivedMsg = cluon::extractMessage<opendlv::proxy::AccelerationReading>(
 						std::move(envelope));
@@ -41,6 +42,13 @@ int main() {
 						z_accel = receivedMsg.accelerationZ();
 						std::cout << "Received x-acceleration: " << receivedMsg.accelerationX() << "." << std::endl;
 				}
+				/*else if(envelope.dataType() == opendlv::proxy::GroundSpeedReading::ID()){
+					opendlv::proxy::GroundSpeedReading receivedMsg = cluon::extractMessage<opendlv::proxy::GroundSpeedReading>(
+						std::move(envelope));
+						speed = receivedMsg.groundSpeed();
+						std::cout << "Received speed: " << receivedMsg.groundSpeed() << "." << std::endl;
+						
+					}*/
                           });
 
     	//terminate in case no OD4 session running
@@ -52,20 +60,21 @@ int main() {
 
     	//using namespace std::literals::chrono_literals;
 	while (od4.isRunning()) {
-		// + 1. Manually. calculate yaw (or heading(or steeringAngle)) from accelerometer readings
+		
 		steeringAngle = yd.getSteeringAngle(x_accel, y_accel, z_accel);
-
+		
 		//Get acceleration(in m/s² using raw accelerometer readings
-        	float acceleration = a.getAcceleration(x_accel, y_accel);
-	 
-		//Get distance traveled (in m)
-        	distanceTraveled = a.getDistanceTraveled(acceleration);
+        	float final_acceleration = a.getAcceleration(x_accel, y_accel);
+	 	
+        	distanceTraveled = a.getDistanceTraveled(final_acceleration);
 	
 		//Get speed (in m/s)
-		speed = a.getSpeed(acceleration, initialVelocity);
+		speed = a.getSpeed(final_acceleration, initialVelocity);
 
 		//update initialVelocity
         	initialVelocity = speed; 
+
+		//distanceTraveled = dc.getDistance(speed);
 	
 		//Sending data through od4 session, using v2v protocol
         	msg.readingDistanceTraveled(distanceTraveled);
@@ -77,8 +86,6 @@ int main() {
    
     return 0;
 }
-
-
 
 
 

@@ -7,13 +7,23 @@ Dependent on Robotics Cape library, by [Strawson Design](https://github.com/Stra
 
 #### Unit test
 
+###### Compiling unit tests manually
+
 The unit tests provided makes use of the test framework Catch. 
 
 Included is a generated catch.hpp file. Do not modify this file.
 Run tests by running command
 
-` g++ -std=c++11 -o runTest Testacceleration.cpp acceleration.cpp` 
+` g++ -std=c++11 -o runTest Testacceleration.cpp acceleration.cpp ` 
 
 followed by 
 
-` ./runTest`
+` ./runTest `
+
+###### Compiling unit tests using cmake
+
+Run the following commands in order to complie unit tests using CMakeLists:
+
+` mkdir build && cd build `
+` cmake .. ` 
+` make && make test`

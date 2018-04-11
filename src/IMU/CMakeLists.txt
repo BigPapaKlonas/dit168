@@ -12,10 +12,15 @@ add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/messages.cpp
                    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/messages.odvd)
 include_directories(SYSTEM ${CMAKE_BINARY_DIR})
 
-add_executable(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/imu.cpp ${CMAKE_CURRENT_SOURCE_DIR}/acceleration.cpp ${CMAKE_CURRENT_SOURCE_DIR}/yawDegrees.cpp ${CMAKE_BINARY_DIR}/messages.cpp)
+add_executable(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/imu.cpp ${CMAKE_CURRENT_SOURCE_DIR}/acceleration.cpp ${CMAKE_CURRENT_SOURCE_DIR}/yawDegrees.cpp ${CMAKE_CURRENT_SOURCE_DIR}/distanceChecker.cpp ${CMAKE_BINARY_DIR}/messages.cpp)
+
 target_link_libraries(${PROJECT_NAME} ${CLUON_LIBRARIES})
 
 enable_testing()
-add_executable(${PROJECT_NAME}-RunAccelTest Testacceleration.cpp ${CMAKE_CURRENT_SOURCE_DIR}/acceleration.cpp ${CMAKE_BINARY_DIR}/messages.cpp)
-target_link_libraries(${PROJECT_NAME}-RunAccelTest ${CLUON_LIBRARIES})
-add_test(NAME ${PROJECT_NAME}-RunAccelTest COMMAND ${PROJECT_NAME}-RunAccelTest)
+add_executable(${PROJECT_NAME}-runnerAccel Testacceleration.cpp ${CMAKE_CURRENT_SOURCE_DIR}/acceleration.cpp ${CMAKE_BINARY_DIR}/messages.cpp)
+target_link_libraries(${PROJECT_NAME}-runnerAccel ${CLUON_LIBRARIES})
+add_test(NAME ${PROJECT_NAME}-runnerAccel COMMAND ${PROJECT_NAME}-runnerAccel)
+
+add_executable(${PROJECT_NAME}-runnerYaw TestyawDegrees.cpp ${CMAKE_CURRENT_SOURCE_DIR}/yawDegrees.cpp ${CMAKE_BINARY_DIR}/messages.cpp)
+target_link_libraries(${PROJECT_NAME}-runnerYaw ${CLUON_LIBRARIES})
+add_test(NAME ${PROJECT_NAME}-runnerYaw COMMAND ${PROJECT_NAME}-runnerYaw)
