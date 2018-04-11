@@ -31,25 +31,21 @@ int main() {
 	//distanceChecker dc;
 
     	// Instantiate a OD4Session object
-    	cluon::OD4Session od4(111,
-                          [&od4, &x_accel, &y_accel, &z_accel, &speed](cluon::data::Envelope &&envelope) noexcept {
-              			if(envelope.dataType() == opendlv::proxy::AccelerationReading::ID()) {
-            				opendlv::proxy::AccelerationReading receivedMsg = cluon::extractMessage<opendlv::proxy::AccelerationReading>(
-						std::move(envelope));
-
-						x_accel = receivedMsg.accelerationX();
-						y_accel = receivedMsg.accelerationY();
-						z_accel = receivedMsg.accelerationZ();
-						std::cout << "Received x-acceleration: " << receivedMsg.accelerationX() << "." << std::endl;
-				}
-				/*else if(envelope.dataType() == opendlv::proxy::GroundSpeedReading::ID()){
-					opendlv::proxy::GroundSpeedReading receivedMsg = cluon::extractMessage<opendlv::proxy::GroundSpeedReading>(
-						std::move(envelope));
-						speed = receivedMsg.groundSpeed();
-						std::cout << "Received speed: " << receivedMsg.groundSpeed() << "." << std::endl;
-						
-					}*/
-                          });
+    cluon::OD4Session od4(111,[&od4, &x_accel, &y_accel, &z_accel, &speed](cluon::data::Envelope &&envelope) noexcept {
+        if (envelope.dataType() == opendlv::proxy::AccelerationReading::ID()) {
+	
+            opendlv::proxy::AccelerationReading receivedMsg = cluon::extractMessage<opendlv::proxy::AccelerationReading>(std::move(envelope));
+            	x_accel = receivedMsg.accelerationX();
+		y_accel = receivedMsg.accelerationY();
+		z_accel = receivedMsg.accelerationZ();
+		std::cout << "Received x-acceleration: " << receivedMsg.accelerationX() << "." << std::endl;
+        }
+        else if (envelope.dataType() == opendlv::proxy::GroundSpeedReading::ID()) {
+            opendlv::proxy::GroundSpeedReading receivedMsg = cluon::extractMessage<opendlv::proxy::GroundSpeedReading>(std::move(envelope));
+            	speed = receivedMsg.groundSpeed();
+		std::cout << "Received speed: " << receivedMsg.groundSpeed() << "." << std::endl;
+        }
+    });
 
     	//terminate in case no OD4 session running
     	if(od4.isRunning() == 0)
