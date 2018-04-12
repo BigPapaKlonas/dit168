@@ -14,11 +14,24 @@ message FollowResponse [id = 1003] {
 message StopFollow [id = 1004] {
 }
 
+message opendlv.proxy.PedalPositionReading [id = 1041] {
+  float percent [id = 1];
+}
+
+message opendlv.proxy.GroundSteeringReading [id = 1045] {
+  float steeringAngle [id = 1];
+}
+
 message LeaderStatus [id = 2002] {
   uint32 timestamp [id = 1];
   uint8 speed [id = 2];
   uint8 steeringAngle [id = 3];
   uint8 distanceTraveled [id = 4];
+}
+
+
+message UltrasonicFront [id = 2201] {
+	uint8 readingCm [id = 1];
 }
 
 message FollowerStatus [id = 3001] {
@@ -28,21 +41,3 @@ message FollowerStatus [id = 3001] {
   uint8 distanceFront [id = 4];
   uint8 distanceTraveled [id = 5];
 }
-
-message opendlv.proxy.GroundSteeringReading [id = 1045] {
-  float steeringAngle [id = 1];
-}
-
-message opendlv.proxy.PedalPositionReading [id = 1041] {
-  float percent [id = 1];
-}
-
-message MyTestMessage1 [id = 2001] {
-  uint16 myValue [id = 1];
-  }
-
-message opendlv.proxy.GeodeticWgs84Reading [id = 19] {
-  double latitude [id = 1];
-  double longitude [id = 3];
-}
-
