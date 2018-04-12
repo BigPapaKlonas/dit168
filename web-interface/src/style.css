@@ -71,7 +71,7 @@ td.field-value {
 }
 
 .FwdKey{
-  padding-left: 30px;
+    text-align: center;
 }
 
 .bottomKeys{
@@ -81,7 +81,22 @@ td.field-value {
 }
 
 .RghtKey{
+  padding-left: 60px;
+}
+
+.LftKey{
   padding-left: 30px;
+}
+.slidecontainer{
+    width: 100%; /* Width of the outside container */
+}
+
+#speed{
+    padding-top: 60px;
+}
+
+#angle{
+    padding-top: 15px;
 }
 
 #main-footer{
@@ -99,4 +114,5 @@ td.field-value {
 
 h6{
   font-weight: bold;
+  text-align: center;
 }

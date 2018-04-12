@@ -24,7 +24,6 @@
         <div class="bg-dark p-4">
           <h4 class="text-white">libcluon signal viewer</h4>
           <button id="pause" type="button" class="btn btn-primary">Pause</button>
-          <button id="send" type="button" class="btn btn-primary">Send</button>
         </div>
       </div>
       <nav class="navbar navbar-dark bg-dark">
@@ -49,10 +48,9 @@
     </div>
 
     <div class="NavigationKeys">
-      <h6>key pad</h6>
+      <h6>Controls</h6>
       <div class="FwdKey">
-        <button id="send">send</button>
-      </div>
+         <input id="ForwardBtn" type="button" value="^"" />
       <div class="bottomKeys">
         <div class="LftKey">     
           <input id="LeftBtn" type="button" value="&#8249" />
@@ -61,36 +59,30 @@
           <input id="RightBtn" type="button" value="&#8250" />
         </div>
       </div>
-    </div>
-  </div><!-- /container-->
+        
+      </div>
+      <h6 id="speed">Speed</h6>
+      <div class="slidecontainer">
+          <input type="range" min="15" max="100" value="1" class="slider" id="speedRange">
+      </div>
+      <h6 id="angle">Steering angle</h6>
+      <div class="slidecontainer">
+          <input type="range" min="1" max="38" value="1" class="slider" id="angleRange">
+      </div>
+  </div>
 
-<!--
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment-with-locales.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-  -->
+
   <script type="text/javascript" src="jquery-3.2.1.slim.min.js"></script>
   <script type="text/javascript" src="popper.min.js"></script>
   <script type="text/javascript" src="moment-with-locales.min.js"></script>
   <script type="text/javascript" src="Chart.js"></script>
-  <script type="text/javascript" src="NavKeys.js"></script>
   <script type="text/javascript" src="bootstrap.min.js"></script>
-  <script type="text/javascript" src="controller.js"></script>
   <script type="text/javascript" src="libcluon.js"></script>
   <script type="text/javascript" src="libcluon-viewer-0.01.js"></script>
+  <script type="text/javascript" src="NavKeys.js"></script>
 
-  <script type="text/javascript">
-  <!--Module.ccall('main', 'void', ['void'], []);-->
-    function forward(){
-      Module.ccall('forward', 
-        'void',
-        ['void'],
-        []
-      );
-    }
-  </script>
+
+
 
   <footer id="main-footer">
     <p>Copyright &copy;2018 dashFTab </p>

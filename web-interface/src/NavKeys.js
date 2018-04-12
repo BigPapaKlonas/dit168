@@ -1,8 +1,8 @@
 /*!
  * NavKeys.js
- * Version 1.0
+ * Version 2.0
  *
- * Used to mark(grey) pressed navigation keys in web-interface
+ * Used to mark(grey) pressed navigation keys and call their functions in web-interface
  */
 
 //ASCII codes for arrow keys
@@ -20,24 +20,25 @@ function initializeNavKeys() {
     var keyState = [false, false, false];
 
 
-    //when arrow key is pressed down
+    //when arrow key is pressed down and keyState is false
     $(document).keydown(function (e) {
-        if (e.keyCode == key_left || e.keyCode == key_A_left){
+        if ((e.keyCode == key_left || e.keyCode == key_A_left) && !keyState[0]){
             
             keyState[0] = true;
             document.getElementById("LeftBtn").style.backgroundColor = "gray";
-            c.left(); 
-
+            turn("left");
         }
-        if (e.keyCode == key_forward || e.keyCode == key_W_forward){
-            
+        if ((e.keyCode == key_forward || e.keyCode == key_W_forward ) && !keyState[1]){
             keyState[1] = true;
+            
             document.getElementById("ForwardBtn").style.backgroundColor = "gray";
+            move("forward");
         }
-        if (e.keyCode == key_right || e.keyCode == key_D_right){
+        if ((e.keyCode == key_right || e.keyCode == key_D_right) && !keyState[2]){
             
             keyState[2] = true;
             document.getElementById("RightBtn").style.backgroundColor = "gray";
+            turn("right");
         }
     });
 
@@ -46,106 +47,17 @@ function initializeNavKeys() {
         if (e.keyCode == key_left || e.keyCode == key_A_left){
             keyState[0] = false;
             document.getElementById("LeftBtn").style.backgroundColor = "";
+            turn("straight");
         }
         if (e.keyCode == key_forward || e.keyCode == key_W_forward){
             keyState[1] = false;
             document.getElementById("ForwardBtn").style.backgroundColor = "";
+            move("stop");
         }
         if (e.keyCode == key_right || e.keyCode == key_D_right){
             keyState[2] = false;
             document.getElementById("RightBtn").style.backgroundColor = "";
+            turn("straight");
         }
     });
 }
-
-
-function sendTurnRight(){
-      var message = 15;
-      console.log("message: ", message);
-      var xhr = new XMLHttpRequest();
-      xhr.open("POST", '/', true);
-      xhr.responseType = "arraybuffer";
-
-      xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-
-      xhr.onreadystatechange = function() {
-          if(xhr.readyState == 4 && xhr.status == 200) {
-              console.log("xhr");
-          }
-      }
-      xhr.send(message);
-}
-
-function sendTurnLeft(){
-      var message = -15;
-      console.log("message: ", message);
-      var xhr = new XMLHttpRequest();
-      xhr.open("POST", '/', true);
-      xhr.responseType = "arraybuffer";
-
-      xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-
-      xhr.onreadystatechange = function() {
-          if(xhr.readyState == 4 && xhr.status == 200) {
-              console.log("xhr");
-          }
-      }
-      xhr.send(message);
-}
-
-function sendMoveForward(){
-
-    var message = 
-    {
-        "dataType": 1045,
-        "payload": {
-            "fields": [
-                {
-                    "name": "percent",
-                    "type": "number",
-                    "value": 35
-                }  
-            ],
-            "name": "opendlv.proxy.PedalPositionReading"
-        }
-    };
-
-    var c = Module.ccall('forward', 
-        'void',
-        ['void'],
-        []
-      );
-    //ws.send(JSON.stringify(message))
-        /*
-      console.log(message);
-      var xhr = new XMLHttpRequest();
-      xhr.open("POST", '/', true);
-      xhr.responseType = "arraybuffer";
-
-      xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-
-      xhr.onreadystatechange = function() {
-          if(xhr.readyState == 4 && xhr.status == 200) {
-              
-          }
-      }
-      xhr.send(message);
-      */
-}
-
-/*
-{
-    dataType: [id]
-    payload: {
-        fields: [
-            {
-                name: [name],
-                type: [type],
-                value: [value]
-            }
-        ],
-        name: [name of data type]
-    }
-}
-*/
-

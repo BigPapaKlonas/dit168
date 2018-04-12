@@ -1,3 +1,0 @@
-/home/erik/Documents/Term_4/dit168/web-interface/Controller/build/CMakeFiles/edit_cache.dir
-/home/erik/Documents/Term_4/dit168/web-interface/Controller/build/CMakeFiles/rebuild_cache.dir
-/home/erik/Documents/Term_4/dit168/web-interface/Controller/build/CMakeFiles/controller.dir

@@ -21,6 +21,17 @@ var g_chartConfigs = new Map();
 var g_data = new Map();
 var g_pause = false;
 
+var ws = null;
+var lc = null;
+
+var sliderSpeed = document.getElementById("speedRange");
+sliderSpeed.value = 20;
+speed = sliderSpeed.value/100;
+
+var sliderAngle = document.getElementById("angleRange");
+sliderAngle.value = 30;
+angle = sliderAngle.value/100;
+
 $(document).ready(function(){
   
   $('body').on('click', 'tr.dataHeader', function() {
@@ -37,37 +48,25 @@ $(document).ready(function(){
     }
   });
 
+ setupViewer();
 
-  <!--setupViewer();-->
-
-
-  var lc = libcluon();
-
-  if ("WebSocket" in window) {
-    var ws = new WebSocket("ws://" + window.location.host + "/");
-    ws.binaryType = 'arraybuffer';
-
-    ws.onopen = function() {
-      ws.send('Initial message request.');
-
-      onStreamOpen(lc, ws);
-    }
-
-    ws.onmessage = function(evt) {
-      onMessageReceived(lc, evt.data);
-    };
-
-    ws.onclose = function() {
-      onStreamClosed();
-    };
-
-  } else {
-    console.log("Error: websockets not supported by your browser.");
+  sliderSpeed.oninput = function() {
+    speed = this.value/100;
   }
 
-  $('body').on('click', 'button#send', function(err) {
-    var jsonMessageToBeSent = "{\"percent\":0.16}";
-  	console.log("SENDING: " + jsonMessageToBeSent);
+  sliderAngle.oninput = function() {
+    angle = this.value/100;
+  }
+
+});
+
+  function move(direction) {
+
+    var jsonMessageToBeSent = "{\"percent\":0.0}";      
+
+    if (direction == "forward"){
+          jsonMessageToBeSent = "{\"percent\":" + speed + "}";      
+    }
 
    var protoEncodedPayload = lc.encodeEnvelopeFromJSONWithoutTimeStamps(jsonMessageToBeSent, 1041, 0);  // 19 is the message identifier from your .odvd file, 0 is the senderStamp (can be 0 in your case)
 
@@ -78,19 +77,38 @@ $(document).ready(function(){
    let logMsg = strToAB(protoEncodedPayload);
     ws.send(logMsg, { binary: true });
 
-    onMessageReceived(lc, logMsg);
+      onMessageReceived(lc, logMsg);
 
+  };
 
+    function turn(direction) {
+    
+    var jsonMessageToBeSent = "{\"steeringAngle\":0.0}";      
 
-  });
-  
-});
+    if (direction == "left"){
+          jsonMessageToBeSent = "{\"steeringAngle\":-" + angle + "}";      
+    }else if (direction == "right"){
+          jsonMessageToBeSent = "{\"steeringAngle\":" + angle + "}";      
+    }
+
+   var protoEncodedPayload = lc.encodeEnvelopeFromJSONWithoutTimeStamps(jsonMessageToBeSent, 1045, 0);  // 19 is the message identifier from your .odvd file, 0 is the senderStamp (can be 0 in your case)
+
+   strToAB = str =>
+     new Uint8Array(str.split('')
+       .map(c => c.charCodeAt(0))).buffer;
+
+   let logMsg = strToAB(protoEncodedPayload);
+    ws.send(logMsg, { binary: true });
+
+      onMessageReceived(lc, logMsg);
+
+  };
 
 function setupViewer() {
-var lc = libcluon();
+lc = libcluon();
 
   if ("WebSocket" in window) {
-    var ws = new WebSocket("ws://" + window.location.host + "/");
+    ws = new WebSocket("ws://" + window.location.host + "/");
     ws.binaryType = 'arraybuffer';
 
     ws.onopen = function() {
@@ -143,8 +161,6 @@ function onMessageReceived(lc, msg) {
   var data_str = lc.decodeEnvelopeToJSON(msg);
 
   lc.encodeEnvelopeFromJSONWithoutTimeStamps(msg, 1041, 1);
-
-  console.log("length: " + data_str.length);
 
   if (data_str.length == 2) {
     return;
