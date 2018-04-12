@@ -1,0 +1,95 @@
+\documentclass[12pt]{article}
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx} 		% Used to for importing images
+\usepackage{indentfirst}	% Indents 1st paragraph (by default its off)
+\usepackage{longtable} 		% Tables than can span over multiple pages
+
+\setlength{\parindent}{20pt}
+
+\begin{document}
+
+\begin{titlepage}
+
+% Defines a new command to draw horizontal lines
+\newcommand{\Line}{\rule{\linewidth}{0.5mm}} 
+
+% Center everything on the page
+\center
+ 
+% textsc - capitalizes every letter
+\textsc{\LARGE University of Gothenburg}
+% Define gap after text line
+\\[3.5cm] 
+
+% Course code and name
+\textsc{\Large DIT168}\\[0.3cm]
+\textsc{\large Project: Industrial IT and Embedded Systems}\\[0.5cm]
+
+% Use the defined command to draw lines
+\Line \\[0.4cm]
+{\huge \bfseries Software Architectural Document}\\[0.4cm]
+\Line \\[0.5cm]
+ 
+% Large italic text
+\Large \textit{Authors:}
+\\Erik Laurin
+\\Isabelle Törnqvist
+\\Joacim Eberlen
+\\Justinas Stirbys \\[4cm]
+
+% Original date for the vision
+{\large Group 01} \\[0.3cm]
+{\large March 30th, 2018}
+
+% Fills the remaining page with whitespace
+\vfill
+
+\end{titlepage}
+
+% Creating table of contents
+\tableofcontents
+\pagebreak
+
+% SAD start
+
+% Add SAD history of changes table
+\section{Revision History}
+The evolution of the Software Architectural Document for project dashFTABs is detailed under this section. Emphasis is put on changes incorporated, via Description column, the date and the author. In situation where all members have contributed to a change the author will be listed as Group 01.
+% Define 4 aligned columns; l = left, c = center, r = right, the | = means vertical line    % \hline -> Draw horizontal line
+% p{xcm} -> specifies how much space the column should take up, 
+% 0.x\linewidth is used to make it p{} command more dynamic
+\begin{longtable}{ | l | l | p{0.7\linewidth} | l | }\hline 
+    Date & Version & Description & Author \\ \hline
+   	27th March, 2018 & 0.1 & Added Functional Requirements & Group 01\\ \hline
+   	4th April, 2018 & 0.2 & Added Introduction & Justinas\\ \hline
+   	5th April, 2018 & 0.3 & Added Use Case View & Justinas\\ \hline
+   	12th April, 2018 & 0.4 & Added Sequence Diagrams0 for UC1-UC3 & Justinas\\ \hline
+\end{longtable}
+\pagebreak
+
+% Adding section detailing architecture motivations
+\section{Architectural Drivers}
+\subsection{Functional Requirements}
+Functional requirements were used to identify and narrow down the project scope. The requirements are prioritized using MoSCoW notation i.e. requirements are divided into Must, Shoulds, Coulds, and Wont’s. Must dictates requirements that are mandatory for the final demonstration. Should expresses requirements that are significant, but do not have a defined deadline. Could expresses requirements/features that would improve the project quality, but are not necessarily implemented. Lastly, Won’t is used to track identified requirements that will not be implemented, due to product owner dislike or disapproval, time and budgetary constraints.\par
+
+% Functional requirement table
+% Define 4 aligned columns; l = left, c = center, r = right, the | = means vertical line    % \hline -> Draw horizontal line
+\begin{longtable}{| p{0.05\linewidth} | p{0.15\linewidth} | p{0.45\linewidth} | p{0.25\linewidth} | p{0.1\linewidth} |}\hline 
+    ID & Requirement & Description & Status & Priority \\ \hline
+   	F1 & Message Log & A web page must contain a message log of everything that has been sent internally and externally within the car & Not Implemented & Must\\ \hline
+   	F2 & Remote Controller & A web page must contain a graphical remote controller that communicates and controls Dash, when the car is the leader of the platoon & Not Implemented & Must\\ \hline
+   	F3 & Ultrasonics & Dash will support ultrasonic sensors; will be able to broadcast distance sensor data to the local OD4 session & Not Implemented & Must\\ \hline
+   	F4 & Leader Connection & The car, Dash, must be able to support Leader functionality (i.e. send LeaderStatus requests) while platooning & Not Implemented & Must\\ \hline       
+    F5 & Follower Connection & The car, Dash, must be able to participate in platooning as a follower & Not Implemented & Must\\ \hline
+    F6 & Maneuvering & The car will drive forward, turn left or right on commands received over the OD4 session & Not Implemented & Must\\ \hline
+   	F7 & IMU & Dash must be able to use the IMU on its BeagleBoard Blue to calculate the distance moved and be able to send that using the V2V Protocol & Not Implemented & Must\\ \hline
+   	F8 & V2V Protocol & The car must be able to support the V2V Protocol. It is required for it to communicate with other cars and send sensors data & Not Implemented & Must\\ \hline
+   	F9 & Collision Prevention & Dash will stop/brake when ultrasonic readings return an object that is less or equals to 10 cm ahead & Not Implemented & Should\\ \hline
+   	F10 & Emergency Brake & The car will stop if it fails to receive 3 update requests (i.e. hasn’t received anything in 300ms) and/or the connection to other cars has been lost & Not Implemented & Must\\ \hline
+   	F11 & Video Streaming& The car could incorporate the RPi and camera to live stream it’s video & Not Implemented & Could\\ \hline
+  	F12 & Lane Following & Via incorporation of the RPi camera, Dash could implement identification and following of straight lines & Not Implemented & Could\\ \hline
+\end{longtable}
+
+\end{document}
