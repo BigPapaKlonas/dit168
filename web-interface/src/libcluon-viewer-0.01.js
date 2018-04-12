@@ -65,10 +65,9 @@ $(document).ready(function(){
     console.log("Error: websockets not supported by your browser.");
   }
 
-  $('body').on('click', 'button#send', function() {
-    
-var jsonMessageToBeSent = "{\"percent\":0.16}";
-	    console.log("SENDING: " + jsonMessageToBeSent);
+  $('body').on('click', 'button#send', function(err) {
+    var jsonMessageToBeSent = "{\"percent\":0.16}";
+  	console.log("SENDING: " + jsonMessageToBeSent);
 
    var protoEncodedPayload = lc.encodeEnvelopeFromJSONWithoutTimeStamps(jsonMessageToBeSent, 1041, 0);  // 19 is the message identifier from your .odvd file, 0 is the senderStamp (can be 0 in your case)
 
@@ -76,7 +75,12 @@ var jsonMessageToBeSent = "{\"percent\":0.16}";
      new Uint8Array(str.split('')
        .map(c => c.charCodeAt(0))).buffer;
 
-   ws.send(strToAB(protoEncodedPayload), { binary: true });
+   let logMsg = strToAB(protoEncodedPayload);
+    ws.send(logMsg, { binary: true });
+
+    onMessageReceived(lc, logMsg);
+
+
 
   });
   
