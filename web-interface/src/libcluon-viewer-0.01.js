@@ -50,6 +50,7 @@ $(document).ready(function(){
 
  setupViewer();
 
+//Updates global speed variable according to the sliders position
   sliderSpeed.oninput = function() {
     speed = this.value/100;
   }
@@ -60,10 +61,14 @@ $(document).ready(function(){
 
 });
 
+  
+  // Send PedalPositionReading to od4 session
   function move(direction) {
 
+    // Default speed request
     var jsonMessageToBeSent = "{\"percent\":0.0}";      
 
+    //In case provided parameter is going forward, take speed from global variable
     if (direction == "forward"){
           jsonMessageToBeSent = "{\"percent\":" + speed + "}";      
     }
@@ -81,14 +86,17 @@ $(document).ready(function(){
 
   };
 
+  // Send GroundSteeringReading to od4 session
     function turn(direction) {
     
+    //Default steeringAngle
     var jsonMessageToBeSent = "{\"steeringAngle\":0.0}";      
 
+    //In case the provided parameter codes for an acutal turn
     if (direction == "left"){
-          jsonMessageToBeSent = "{\"steeringAngle\":-" + angle + "}";      
-    }else if (direction == "right"){
           jsonMessageToBeSent = "{\"steeringAngle\":" + angle + "}";      
+    }else if (direction == "right"){
+          jsonMessageToBeSent = "{\"steeringAngle\":-" + angle + "}";      
     }
 
    var protoEncodedPayload = lc.encodeEnvelopeFromJSONWithoutTimeStamps(jsonMessageToBeSent, 1045, 0);  // 19 is the message identifier from your .odvd file, 0 is the senderStamp (can be 0 in your case)

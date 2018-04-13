@@ -20,7 +20,7 @@ function initializeNavKeys() {
     var keyState = [false, false, false];
 
 
-    //when arrow key is pressed down and keyState is false
+    //when arrow key is pressed down and keyState is false (keyState used to not flood with messages)
     $(document).keydown(function (e) {
         if ((e.keyCode == key_left || e.keyCode == key_A_left) && !keyState[0]){
             
