@@ -14,7 +14,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 FROM alpine:edge
-MAINTAINER Christian Berger "christian.berger@gu.se"
+MAINTAINER dashFTab "guslauer@gu.se"
 
 
 RUN cat /etc/apk/repositories && \

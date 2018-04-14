@@ -22,7 +22,7 @@ message opendlv.proxy.GroundSteeringReading [id = 1045] {
   float steeringAngle [id = 1];
 }
 
-message LeaderStatus [id = 2002] {
+message LeaderStatus [id = 2001] {
   uint32 timestamp [id = 1];
   uint8 speed [id = 2];
   uint8 steeringAngle [id = 3];
