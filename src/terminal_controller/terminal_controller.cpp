@@ -9,14 +9,30 @@
 
 #include "messages.hpp"
 
-int main() {
+int main(int argc, char **argv) {
 
-    // Message objects used to broadcast into OD4 session
+    auto commandlineArguments = cluon::getCommandlineArguments(argc, argv);
+    int CID;
+
+    // In case no CID is provided
+    if (commandlineArguments.count("cid") == 0) {
+        std::cerr << "You must specify which OpenDaVINCI session identifier (CID) the terminal_controller "
+                "shall use (most likely the same as the pwm-motor and the odsupercomponent are using)." << std::endl;
+        std::cerr << "Example: " << argv[0] << " --cid=120" << std::endl;
+        return -1;
+    }else {
+        CID = std::stoi(commandlineArguments["cid"]);
+    }
+
+    // Checks CID range
+    if (CID < 1 || CID > 254){
+        std::cerr << "The OpenDaVINCI session identifier (CID) must be in the range 1 to 254" << std::endl;
+        return -1;
+    }
+
+    // Message objects used to broadcast into specified OD4 session
     opendlv::proxy::GroundSteeringReading msgSteering;
     opendlv::proxy::PedalPositionReading msgPedal;
-
-    // 	OpenDaVINCI v4 session identifier [1 .. 254]
-    uint16_t const cid = 111;
 
     // Variables
     float speed = 0.3;
@@ -39,13 +55,13 @@ int main() {
             "e - exit \n";
 
     // Initializing od4 session
-    cluon::OD4Session od4(cid, [&msgPedal, &od4, &stopBeforeObstacleDistance, &moving](cluon::data::Envelope &&envelope) noexcept {
+    cluon::OD4Session od4(CID, [&msgPedal, &od4, &stopBeforeObstacleDistance, &moving](cluon::data::Envelope &&envelope) noexcept {
         if (envelope.dataType() == opendlv::proxy::DistanceReading::ID()) {
             opendlv::proxy::DistanceReading receivedMsg = cluon::extractMessage<opendlv::proxy::DistanceReading>(
                     std::move(envelope));
 
             // Stops the car in case obstacle is detected within specified distance
-            if(moving && (receivedMsg.distance() < stopBeforeObstacleDistance)){
+            if(moving && (receivedMsg.  distance() < stopBeforeObstacleDistance)){
                 moving = false;
                 msgPedal.percent(0.0);
                 od4.send(msgPedal);
@@ -54,7 +70,7 @@ int main() {
         }
     });
 
-    std::cerr << "Group1's remote control" << std::endl;
+    std::cerr << "Group1's remote terminal control v1.0" << std::endl;
 
     if (od4.isRunning() == 0) {
         std::cout << "ERROR: No OD4 is running!" << std::endl;
