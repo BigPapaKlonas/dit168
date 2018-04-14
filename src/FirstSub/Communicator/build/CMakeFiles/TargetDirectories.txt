@@ -1,0 +1,5 @@
+/home/jeberlen/Documents/dit168/src/FirstSub/Communicator/build/CMakeFiles/test.dir
+/home/jeberlen/Documents/dit168/src/FirstSub/Communicator/build/CMakeFiles/Communicator.dir
+/home/jeberlen/Documents/dit168/src/FirstSub/Communicator/build/CMakeFiles/Communicator-Runner.dir
+/home/jeberlen/Documents/dit168/src/FirstSub/Communicator/build/CMakeFiles/rebuild_cache.dir
+/home/jeberlen/Documents/dit168/src/FirstSub/Communicator/build/CMakeFiles/edit_cache.dir

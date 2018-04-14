@@ -1,0 +1,1 @@
+/usr/bin/c++      CMakeFiles/Communicator-Runner.dir/TestNumModifier.cpp.o CMakeFiles/Communicator-Runner.dir/NumModifier.cpp.o CMakeFiles/Communicator-Runner.dir/messages.cpp.o  -o Communicator-Runner -rdynamic -lcluon -lpthread 

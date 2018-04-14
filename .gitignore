@@ -1,5 +1,7 @@
 # Build sub-directory
 build/*
+.idea/
+.vscode/
 
 # Prerequisites
 *.d
@@ -83,3 +85,5 @@ com_crashlytics_export_strings.xml
 crashlytics.properties
 crashlytics-build.properties
 fabric.properties
+
+web-interface/node_modules
