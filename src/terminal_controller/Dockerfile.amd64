@@ -11,9 +11,10 @@ RUN apk update && \
         g++ \
         make \
 	cppcheck \
-	#vera++\
+#	vera++ \
 	&& \
     apk add libcluon --no-cache --repository https://chrberger.github.io/libcluon/alpine/v3.7 --allow-untrusted
+
 ADD . /opt/sources
 WORKDIR /opt/sources
 RUN cd /opt/sources && \

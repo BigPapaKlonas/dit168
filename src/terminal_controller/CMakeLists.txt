@@ -25,22 +25,13 @@ enable_testing()
 # Treat warnings as errors
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror")
 
-### CMAKE modules ###
-# Link to cmake modules
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/../../cmake")
-
-# Use to detect bugs and dangerous code constructs
-#find_package(cppcheck)
-
-# Use for styling checks
-#find_package(vera++)
-
+# Files to test
 file(GLOB_RECURSE src_to_check
   ${CMAKE_CURRENT_SOURCE_DIR}/terminal_controller.cpp
 )
 
 ### TESTS ### To see the test logs, navigate to build and run 'ctest -VV'
-# Set up vera style test
+# Set up vera++ test - used for styling checks
 # add_test(
 #  NAME vera++
 #  COMMAND vera++
@@ -49,11 +40,11 @@ file(GLOB_RECURSE src_to_check
 #  ${src_to_check}
 # )
 
-# Set up cppcheck test
+# Set up cppcheck test - used to detect bugs and dangerous code constructs
 add_test(
         NAME cppcheck
         COMMAND /usr/bin/cppcheck
-        --enable=warning,performance,portability,information,missingInclude,style
+        --enable=warning,performance,portability,information,missingInclude
 	--error-exitcode=1
         --inconclusive
         --std=c++11
