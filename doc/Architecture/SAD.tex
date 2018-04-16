@@ -6,7 +6,9 @@
 \usepackage{indentfirst}  % Indents 1st paragraph (by default its off)
 \usepackage{longtable}    % Tables than can span over multiple pages
 
+% Define Global Variables
 \setlength{\parindent}{20pt}
+\graphicspath{ {/Diagrams} }
 
 \begin{document}
 
@@ -204,6 +206,18 @@ This document section attempts to identify the main behaviour exhibited by Dash.
       \item ???
   \end{enumerate}\\ \hline
 \end{longtable}
+
+\subsection{Use Case Diagram}
+To depict use case interactions amongst each other, a use case diagram was created. Moreover, the diagram also servers as a visual aid, aimed to improve understanding of actor interactions with project functionality. The diagram depicts the interactions between the most significant use cases, mentioned in previous sections.\par
+
+% Adding use case diagram image
+\begin{figure}
+\centering
+% Make image as wide as the line
+\includegraphics[width=\linewidth]{Diagrams/UseCaseDiagram.png}
+\caption{Use Case Diagram}
+\label{fig:usecasediagram}
+\end{figure}
 
 
 \end{document}
