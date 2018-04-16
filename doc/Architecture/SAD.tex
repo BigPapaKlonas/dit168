@@ -85,6 +85,9 @@ The purpose of this document is to familiarize the reader with the architectural
 
 \subsection{Audience}
   The document contains technical details of the project and utilizes Unified Modeling Language (UML for short) to express architecture. Therefore, the reader must possess some minimal or introductory knowledge of UML. As such the intended readers are members or somewhat affiliated with software engineering. Moreover, the document is intended for the project’s stakeholders, which include, but not exclusively, the development team, the course representatives and the teaching assistants.
+    
+\subsection{4+1 View Model}
+Text coming soon
 \pagebreak
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -211,13 +214,53 @@ This document section attempts to identify the main behaviour exhibited by Dash.
 To depict use case interactions amongst each other, a use case diagram was created. Moreover, the diagram also servers as a visual aid, aimed to improve understanding of actor interactions with project functionality. The diagram depicts the interactions between the most significant use cases, mentioned in previous sections.\par
 
 % Adding use case diagram image
-\begin{figure}
+\begin{figure}[ht!]
 \centering
 % Make image as wide as the line
 \includegraphics[width=\linewidth]{Diagrams/UseCaseDiagram.png}
 \caption{Use Case Diagram}
 \label{fig:usecasediagram}
 \end{figure}
+\pagebreak
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Adding section about microservice communication
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Process View}
+The Process View section aims to inform the reader on subjects such as communication between the designed software components i.e. the developed microservices. The section graphically express the architecturally significant use cases (See section Use Case View). Sequence diagrams were used for use case realization, while natural language was used to improve the readers’ understanding of the architectural significance the use cases provide.\par
+
+\subsection{Connect As Follower}
+% Adding image
+\begin{figure}[ht!]
+\centering
+% Make image as wide as the line
+\includegraphics[width=\linewidth]{Diagrams/ConnectAsFollower.png}
+\caption{Connect As Follower SD}
+\label{fig:connectasfollower}
+\end{figure}
+\pagebreak
+
+\subsection{Connect As Leader}
+% Adding image
+\begin{figure}[ht!]
+\centering
+% Make image as wide as the line
+\includegraphics[width=\linewidth]{Diagrams/ConnectAsLeader.png}
+\caption{Connect As Leader}
+\label{fig:connectasleader}
+\end{figure}
+\pagebreak
+
+\subsection{Stop Following}
+% Adding image
+\begin{figure}[ht!]
+\centering
+% Make image as wide as the line
+\includegraphics[width=\linewidth]{Diagrams/StopFollowing.png}
+\caption{Stop Following}
+\label{fig:stopfollowing}
+\end{figure}
+\pagebreak
 
 
 \end{document}
