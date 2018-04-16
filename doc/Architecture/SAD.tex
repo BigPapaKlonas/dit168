@@ -110,4 +110,100 @@ Functional requirements were used to identify and narrow down the project scope.
     F12 & Lane Following & Via incorporation of the RPi camera, Dash could implement identification and following of straight lines & Not Implemented & Could\\ \hline
 \end{longtable}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Adding section about project use cases
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Use Case View}
+This document section attempts to identify the main behaviour exhibited by Dash. This is done by expressing the behaviour as use case scenarios. The chosen scenarios depicts some of the significant features of developed project. Moreover, the identified scenarios all utilize the V2V Protocol in different aspects, meaning the use case scenarios use different messages from the protocol. Therefore, the identified scenarios fulfil different aspects of the functional requirements of F8 (V2V Protocol).\par
+
+\subsection{Use Case Scenarios}
+
+%%% Use Case 1 Table
+\subsubsection{Connect As Follower}
+\begin{longtable}{| p{0.2\linewidth} | p{0.8\linewidth} |}\hline 
+    ID & UC1\\ \hline
+    Use Case & Connect as Follower\\ \hline
+    Description & Dash connects to another miniature car as a Follower and begins to receiving Leader Status update messages\\ \hline
+    Actors & Dash, Another Car\\ \hline
+    Preconditions & Excluding Dash there is another miniature car with the V2V protocol that are not already connected to any cars\\ \hline
+    Steps & Basic Flow: \begin{enumerate} % enumerate creates a numbered list
+      \itemsep 0em % -> Specify gaps between numbers in list 
+      \item Dash uses Announce Presence (it’s not very effective). Another car receives Dash’s IP and group number
+    \item Another Car announces presence. Dash receives it’s IP and group number
+        \item Dash uses Follow Requests. Selects which group car to follow
+        \item Another Car receives follow request and does not have a follower yet. Another Car sends Follow Response
+        \item A connection using UDP Sender and Receiver is established between Dash and Another Car 
+        \end{enumerate}
+        Alternative Flow: \begin{enumerate}
+          \setcounter{enumi}{3} % -> Starts list from a different specified index + 1
+          \item Another Car already has a Follower. 
+            \begin{enumerate} % -> nested enumerates, index list. Default index 1->a->i->A
+              \itemsep 0em % -> Specify gaps between numbers in list 
+            \item No Follower Request is sent
+            \item Display a message informing the users
+                \item Continues at Basic Flow 2
+          \end{enumerate}
+        \end{enumerate}\\ \hline
+\end{longtable}
+
+%%% Use Case 2 Table
+\subsubsection{Connect As Leader}
+\begin{longtable}{| p{0.2\linewidth} | p{0.8\linewidth} |}\hline 
+    ID & UC2\\ \hline
+    Use Case & Connect as Leader\\ \hline
+    Description & Dash connects to another miniature car as a Leader and begins to sending Leader Status update messages\\ \hline
+    Actors & Dash, Another Car\\ \hline
+    Preconditions & Excluding Dash there is another miniature car with the V2V protocol that are not already connected to any cars\\ \hline
+    Steps & Basic Flow: \begin{enumerate} % enumerate creates a numbered list
+        \itemsep 0em % -> Specify gaps between numbers in list 
+      \item Dash uses Announce Presence (it’s not very effective). Another car receives Dash’s IP and group number
+    \item Another Car announces presence. Dash receives it’s IP and group number
+        \item Dash receives follow request and does not have a follower yet. Dash sends Follow Response
+        \item Another Car receives follow request and does not have a follower yet. Another Car sends Follow Response
+        \item A connection using UDP Sender and Receiver is established between Dash and Another Car 
+        \end{enumerate}
+        Alternative Flow: \begin{enumerate}
+          \setcounter{enumi}{3} % -> Starts list from a different specified index + 1
+          \item Dash already has a Follower. 
+            \begin{enumerate} % -> nested enumerates, index list. Default index 1->a->i->A
+              \itemsep 0em % -> Specify gaps between numbers in list 
+            \item No Follower Request is sent
+            \item Display a message informing the users
+                \item Continues at Basic Flow 2
+          \end{enumerate}
+        \end{enumerate}\\ \hline
+\end{longtable}
+
+%%% Use Case 3 Table
+\subsubsection{Stop Following Leader}
+\begin{longtable}{| p{0.2\linewidth} | p{0.8\linewidth} |}\hline 
+    ID & UC3\\ \hline
+    Use Case & Connect as Leader\\ \hline
+    Description & Dash disconnect from Another Car, which acted as a Leader\\ \hline
+    Actors & Dash, Another Car\\ \hline
+    Preconditions & Dash is already connected as a Follower to Another Car\\ \hline
+    Steps & Basic Flow: \begin{enumerate} % enumerate creates a numbered list
+        \itemsep 0em % -> Specify gaps between numbers in list 
+      \item Dash sends Follower Status and receives Leader Status, indicating it’s following Another Car
+    \item Dash sends Stop Following message and stops moving
+        \item Dash removes Another Car as it’s leader
+        \item Another Car receives stop following message. Another Car removes Dash as it’s follower
+  \end{enumerate}\\ \hline
+\end{longtable}
+
+%%% Use Case 4 Table
+\subsubsection{Stop Following Leader}
+\begin{longtable}{| p{0.2\linewidth} | p{0.8\linewidth} |}\hline 
+    ID & UC4\\ \hline
+    Use Case & Drive Dash\\ \hline
+    Description & Another Car connects to Dash as a Follower, at which point a Driver uses the remote controller to maneuver Dash\\ \hline
+    Actors & Dash, Driver, Another Car\\ \hline
+    Preconditions & Another Car is already connected to Dash as a Follower\\ \hline
+    Steps & Basic Flow: \begin{enumerate} % enumerate creates a numbered list
+        \itemsep 0em % -> Specify gaps between numbers in list 
+      \item ???
+  \end{enumerate}\\ \hline
+\end{longtable}
+
+
 \end{document}
