@@ -1,0 +1,125 @@
+#include <iostream>
+#include <stdint.h>
+#include <chrono>
+
+#include "cluon/OD4Session.hpp"
+#include "cluon/Envelope.hpp"
+#include "messages.hpp"
+#include <math.h>
+#include "acceleration.hpp"
+#include "yawDegrees.hpp"
+
+
+extern "C"
+{
+#include <rc_usefulincludes.h>
+#include <roboticscape.h>
+}
+
+int main() {
+
+    	uint8_t distanceTraveled = 0;
+	uint8_t speed = 0;
+	uint8_t steeringAngle = 0;
+	float initialVelocity = 0.0;
+	float yaw = 0.0;
+	float sample_rate = 0.01;
+ 
+    	readingsIMU msg;
+	
+    	yawDegrees yd;
+    	acceleration a;	
+
+    	//This is the container for holding the sensor data from the IMU.
+    	rc_imu_data_t data;
+
+    	// Instantiate a OD4Session object
+
+    	cluon::OD4Session od4(111,
+                          [](cluon::data::Envelope &&envelope) noexcept {
+                              if (envelope.dataType() == 2202) {
+                                  readingsIMU ReceivedMsg = cluon::extractMessage
+                                          <readingsIMU>(std::move(envelope));
+                              }
+                          });
+
+    	//terminate in case no OD4 session running
+
+    	if(od4.isRunning() == 0)
+    	{
+        	std::cout << "ERROR: No od4 running!!!" << std::endl;
+		//remove for now, for debugging roboticscape business	       	
+		//return -1;
+    	}
+
+    	// initialize hardware first
+    	if(rc_initialize()){
+        	std::cout << "ERROR: failed to run rc_initialize(), are you root?\n"<< std::endl;
+        	return -1;
+    	}
+
+    	// use defaults
+     	rc_imu_config_t conf = rc_default_imu_config();
+	rc_is_gyro_calibrated();	
+	    	
+	if(rc_initialize_imu(&data, conf)){
+        	std::cout << "rc_initialize_imu_failed\n"<< std::endl;
+        	return -1;
+    	}
+	
+	//while (od4.isRunning()) {
+
+        //program flow control
+        while (rc_get_state() != EXITING) {
+
+        if(rc_read_accel_data(&data)<0){
+            std::cout <<"read accel data failed\n" << std::endl;
+        }
+
+        //XYZ readings of acceleration, in M/s²
+	//shifted, since the beaglebone blue is positioned sideways on the smartcar
+        float x_accel = data.accel[2];
+        float y_accel = data.accel[1];
+        float z_accel = data.accel[0];
+
+	printf("X acceleration: %4.2f, Y acceleration: %4.2f, Z acceleration:  %4.2f \n", x_accel, y_accel, z_accel);
+	
+        // print gyro data
+         if(rc_read_gyro_data(&data)<0){
+             std::cout <<"read gyro data failed\n" << std::endl;
+         }
+
+	float x_gyro = data.gyro[2];
+        float y_gyro = data.gyro[1];
+        float z_gyro = data.gyro[0];
+
+	printf("X gyro: %4.2f, Y gyro: %4.2f, Z gyro:  %4.2f \n", x_gyro, y_gyro, z_gyro);
+
+	yaw = yd.getHeading(x_accel, y_accel, z_gyro, yaw, sample_rate);
+
+	//For debugging
+	printf("Steering angle: %4.1f degrees\n", yaw);	
+
+	
+	//Sending data through od4 session
+       	//msg.readingDistanceTraveled(distanceTraveled);
+	//msg.readingSpeed(speed);
+	//msg.readingSteeringAngle(steeringAngle);
+
+        od4.send(msg);
+
+        rc_usleep(1000000);
+        // }
+
+    }
+
+    rc_power_off_imu();
+    // exit cleanly
+    rc_cleanup();
+    return 0;
+}
+
+
+
+
+
