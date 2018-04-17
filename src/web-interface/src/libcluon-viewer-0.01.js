@@ -53,10 +53,13 @@ $(document).ready(function(){
 //Updates global speed variable according to the sliders position
   sliderSpeed.oninput = function() {
     speed = this.value/100;
+    console.log(speed);
   }
 
   sliderAngle.oninput = function() {
     angle = this.value/100;
+    console.log(angle);
+
   }
 
 });

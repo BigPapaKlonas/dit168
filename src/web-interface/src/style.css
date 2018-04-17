@@ -1,29 +1,11 @@
 
-@media(min-width: 768px){
-  .container{
-    display: flex;
-    align-content: center;
-    justify-content: flex-start;
-    background: #F6F6F6;
-  }
 
-  .log-table{
-    flex: 5;
-    background-color: #F6F6F6;
-    padding: 1.5rem;
-    margin: 1.5rem;
-  }
 
-  .NavigationKeys{
-    padding: 40px;
-    flex: 1;
-    display: flex;
-    align-content: center;
-    justify-content: flex-start;
-    flex-direction: column;
-    margin: 1.5rem;
-  }
+*, *:before, *:after {
+  box-sizing: border-box;
 }
+
+/*
 span.dots {
   color: gray;
 }
@@ -88,7 +70,7 @@ td.field-value {
   padding-left: 30px;
 }
 .slidecontainer{
-    width: 100%; /* Width of the outside container */
+    width: 100%; // Width of the outside container 
 }
 
 #speed{
@@ -115,4 +97,76 @@ td.field-value {
 h6{
   font-weight: bold;
   text-align: center;
+}
+
+
+
+/* Css Grid */
+
+/* no grid support? */
+.sidebar {
+  float: left;
+  width: 10.1489%;
+}
+
+.content {
+  float: right;
+  width: 88.7872%;
+}
+
+/* make a grid */
+.wrapper {
+  max-width: 940px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  grid-gap: 10px;
+}
+
+.wrapper > * {
+  background-color: #ccc;
+  color: #fff;
+  border-radius: 5px;
+  padding: 20px;
+  font-size: 150%;
+  margin-bottom: 10px;
+}
+
+.header, .footer {
+  grid-column: 1 / -1;
+  clear: both;
+}
+
+@supports (display: grid) {
+  .wrapper > * {
+    width: auto;
+    margin: 0;
+}
+
+
+/* Reponsive design */
+@media(min-width: 768px){
+  .container{
+    display: flex;
+    align-content: center;
+    justify-content: flex-start;
+    background: #F6F6F6;
+  }
+
+  .log-table{
+    flex: 5;
+    background-color: #F6F6F6;
+    padding: 1.5rem;
+    margin: 1.5rem;
+  }
+
+  .NavigationKeys{
+    padding: 40px;
+    flex: 1;
+    display: flex;
+    align-content: center;
+    justify-content: flex-start;
+    flex-direction: column;
+    margin: 1.5rem;
+  }
 }
