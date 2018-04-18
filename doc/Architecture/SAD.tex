@@ -70,7 +70,7 @@ The evolution of the Software Architectural Document for project dashFTABs is de
    	4th April, 2018 & 0.2 & Added Introduction & Justinas\\ \hline
    	5th April, 2018 & 0.3 & Added Use Case View & Justinas\\ \hline
    	12th April, 2018 & 0.4 & Added Sequence Diagrams for UC1-UC3 & Justinas\\ \hline
-    18th April, 2018 & 0.4.1 & Added 4+1 Vew Model to Introduction & Justinas\\ \hline
+    18th April, 2018 & 0.4.3 & Added 4+1 Vew Model to Introduction, V2V Protocol to Physical View, Description on UC1's Sequence Diagram & Justinas\\ \hline
 \end{longtable}
 \pagebreak
 
@@ -89,7 +89,7 @@ The document contains technical details of the project and utilizes Unified Mode
     
 \subsection{4+1 View Model}
 To further narrow down the intended audience the document incorporates 4+1 View Model. The document will focus on architectural logical, process, development and physical views. With each view providing value to specific set of stakeholders. Logical View provides most benefit to the system's end-users as it addresses whether all desired functionality has been implemented; the Process View focuses on the overall system by depicting the subsystems, meaning microservices, interactions; Development View is aimed at developers as it focuses more on individual module contents; lastly, Physical View shows the physical distribution of software, thus it provides most value to system engineers. \par
-The "+1" of the the 4+1 View Model refers to Scenarios, which are used to describe the system behaviour. The Scenarios provide value to all stakeholders as it attempts to encapsulate the system requirements.\par
+The "+1" of the the 4+1 View Model refers to Scenarios, which are used to describe the system behaviour. The Scenarios provide value to all stakeholders as it attempts to encapsulate the system requirements. The Scenarios have been expressed as a Use Case View. \par
 
 \pagebreak
 
@@ -122,7 +122,7 @@ Functional requirements were used to identify and narrow down the project scope.
 % Adding section about project use cases
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Use Case View}
-This document section attempts to identify the main behaviour exhibited by Dash. This is done by expressing the behaviour as use case scenarios. The chosen scenarios depicts some of the significant features of developed project. Moreover, the identified scenarios all utilize the V2V Protocol in different aspects, meaning the use case scenarios use different messages from the protocol. Therefore, the identified scenarios fulfil different aspects of the functional requirements of F8 (V2V Protocol).\par
+This document section attempts to identify the main behaviour exhibited by Dash. This is done by expressing the behaviour as use case scenarios. The chosen scenarios depicts some of the significant features of developed project. Moreover, the identified scenarios all utilize the V2V Protocol in different aspects, meaning the use case scenarios use different messages from the protocol. Therefore, the identified scenarios fulfil different aspects of the functional requirements of F8 (V2V Protocol). \par
 
 \subsection{Use Case Scenarios}
 
@@ -200,7 +200,7 @@ This document section attempts to identify the main behaviour exhibited by Dash.
 \end{longtable}
 
 %%% Use Case 4 Table
-\subsubsection{Stop Following Leader}
+\subsubsection{Drive Dash}
 \begin{longtable}{| p{0.2\linewidth} | p{0.8\linewidth} |}\hline 
     ID & UC4\\ \hline
     Use Case & Drive Dash\\ \hline
@@ -230,9 +230,16 @@ To depict use case interactions amongst each other, a use case diagram was creat
 % Adding section about microservice communication
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Process View}
-The Process View section aims to inform the reader on subjects such as communication between the designed software components i.e. the developed microservices. The section graphically express the architecturally significant use cases (See section Use Case View). Sequence diagrams were used for use case realization, while natural language was used to improve the readers’ understanding of the architectural significance the use cases provide.\par
+The Process View section aims to inform the reader on subjects such as communication between the designed software components and communication between the project's subsystem i.e. the developed microservices. The section graphically express the architecturally significant use cases (See section Use Case View). Sequence Diagrams (SD for short) were used for use case realization, while natural language was used to improve the readers’ understanding of the architectural significance the use cases provide.\par
+
+\subsection{V2V Protocol}
+As the focus for the project is vehicle-to-vehicle (V2V) communication, a shared V2V protocol was developed by a representative from each team for the purpose of being utilized in the project. The project group dashFTABs has altered the provided protocol to accommodate their team's needs. The changes introduced do not go against any established agreements as the protocol is licensed under GNU General Public License v3.0, a license allowing modification. Moreover, the protocol was design in a way that would require small alterations to accommodative individual teams architecture. Due to the protocol being used by all project groups the behaviour exhibited by Connect as Leader, Connect as Follower will be similar across all teams.\par
+The specific changes to the protocol include; creating an additional OD4 session for internal car communication, broadcasting the messages received from other cars to the internal channel, as well as an additional function responsible for monitoring time Leader/Follower Status request have been received. \par  
 
 \subsection{Connect As Follower}
+\subsubsection{Significance}
+ The use case was chosen as architecturally significant, as it implements functional requirement F5, Follower Connection. The requirement itself was provided by the DIT168 course representatives, as it is mandatory for every miniature vehicle to posses follower capabilities. Without a follower connection, Dash would not be able to have automated moving or platooning, as it would not receive status updates from the leader. Therefore, F5 requirement acts as a prerequisite to more advanced functionality. Due to these reasons the requirement was deemed as significant and expressed as a sequence diagram.\par
+
 % Adding image
 \begin{figure}[ht!]
 \centering
@@ -241,7 +248,10 @@ The Process View section aims to inform the reader on subjects such as communica
 \caption{Connect As Follower SD}
 \label{fig:connectasfollower}
 \end{figure}
-\pagebreak
+
+\subsubsection{Component Behaviour}
+The interactions depicted in Figure \ref{fig:connectasfollower} focus specifically on behaviour exhibited by the V2V microservice.  \par
+
 
 \subsection{Connect As Leader}
 % Adding image
@@ -249,7 +259,7 @@ The Process View section aims to inform the reader on subjects such as communica
 \centering
 % Make image as wide as the line
 \includegraphics[width=\linewidth]{Diagrams/ConnectAsLeader.png}
-\caption{Connect As Leader}
+\caption{Connect As Leader SD}
 \label{fig:connectasleader}
 \end{figure}
 \pagebreak
