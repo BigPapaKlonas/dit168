@@ -24,6 +24,9 @@ int main() {
 	float initialVelocity = 0.0;
 	float yaw = 0.0;
 	float sample_rate = 0.01;
+	float gyro = 0;
+	float old_gyro = 0;
+	float z_gyro = 0;
  
     	readingsIMU msg;
 	
@@ -81,34 +84,28 @@ int main() {
         float x_accel = data.accel[2];
         float y_accel = data.accel[1];
         float z_accel = data.accel[0];
-
-	printf("X acceleration: %4.2f, Y acceleration: %4.2f, Z acceleration:  %4.2f \n", x_accel, y_accel, z_accel);
 	
         // print gyro data
          if(rc_read_gyro_data(&data)<0){
              std::cout <<"read gyro data failed\n" << std::endl;
          }
+	old_gyro = z_gyro;
 
-	float x_gyro = data.gyro[2];
-        float y_gyro = data.gyro[1];
-        float z_gyro = data.gyro[0];
+        z_gyro = data.gyro[0];
+	if(z_gyro < 1.0 && z_gyro > -1.0){z_gyro = 0.0;}
+	float delta_gyro = old_gyro - z_gyro;
+	gyro = gyro + delta_gyro;
 
-	printf("X gyro: %4.2f, Y gyro: %4.2f, Z gyro:  %4.2f \n", x_gyro, y_gyro, z_gyro);
+	yaw = yd.getHeading(x_accel, y_accel, gyro, 0.0, sample_rate);
 
-	yaw = yd.getHeading(x_accel, y_accel, z_gyro, yaw, sample_rate);
-
-	//For debugging
-	printf("Steering angle: %4.1f degrees\n", yaw);	
-
+	printf("yaw: %4.2f degrees\n", yaw);
 	
 	//Sending data through od4 session
-       	//msg.readingDistanceTraveled(distanceTraveled);
-	//msg.readingSpeed(speed);
 	//msg.readingSteeringAngle(steeringAngle);
 
-        od4.send(msg);
-
-        rc_usleep(1000000);
+        //od4.send(msg);
+	
+        //rc_usleep(1000000);
         // }
 
     }
