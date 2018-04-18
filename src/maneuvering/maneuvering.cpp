@@ -21,154 +21,144 @@ int main(int argc, char **argv)
 {
 
     auto commandlineArguments = cluon::getCommandlineArguments(argc, argv);
-    uint16_t cidRemote;
     uint16_t cidPwmOds;
     uint16_t cidInternal;
     uint16_t mode = LEADER;
 
     // In case no CID is provided
-    if (commandlineArguments.count("cid_remote") == 0 || commandlineArguments.count("cid_pwm_ods") == 0 ||
-            commandlineArguments.count("cid_internal") == 0)
+    if (commandlineArguments.count("cid_pwm_ods") == 0 || commandlineArguments.count("cid_internal") == 0)
     {
-        std::cerr <<"You must specify which OpenDaVINCI session identifiers (CIDs) the "
-                "maneuvering script shall listen to!"  << std::endl;
-        std::cerr <<"cid_remote for the CID used by the remote_controller microservice\n"
-                "cid_pwn_ods for the pwm-motor and odsupercomponent\n"
-                "cid_internal for the internal communication CID"<< std::endl;
-        std::cerr << "Example: " << argv[0] << " --cid_remote=121 --cid_pwm_ods=120 --cid_internal=122 " << std::endl;
+        cerr <<"You must specify which OpenDaVINCI session identifiers (CIDs) the "
+                    "maneuvering script shall listen to!"  << std::endl;
+        cerr <<"cid_pwn_ods for the pwm-motor and odsupercomponent microservice\n"
+                    "and cid_internal for the internal communication CID"<< std::endl;
+        cerr << "Example: " << argv[0] << " --cid_pwm_ods=120 --cid_internal=122 " << endl;
         return -1;
     }
     else
     {
-        cidRemote = std::stoi(commandlineArguments["cid_remote"]);
-        cidPwmOds = std::stoi(commandlineArguments["cid_pwm_ods"]);
-        cidInternal = std::stoi(commandlineArguments["cid_internal"]);
+        cidPwmOds = stoi(commandlineArguments["cid_pwm_ods"]);
+        cidInternal = stoi(commandlineArguments["cid_internal"]);
     }
 
     // Checks CID range
-    if ((cidRemote < 1 || cidRemote > 254) || (cidPwmOds < 1 || cidPwmOds > 254))
+    if ((cidInternal < 1 || cidInternal > 254) || (cidPwmOds < 1 || cidPwmOds > 254))
     {
-        std::cerr << "The OpenDaVINCI session identifiers (CIDs) must be in the range 1 to 254"
-                  << std::endl;
+        cerr << "The OpenDaVINCI session identifiers (CIDs) must be in the range 1 to 254"
+                  << endl;
         return -1;
     }
 
     // Checks CID range
-    if (cidRemote == cidPwmOds)
+    if (cidInternal == cidPwmOds)
     {
-        std::cerr << "The two OpenDaVINCI session identifiers (CIDs) must not be the same"
-                  << std::endl;
+        cerr << "The two OpenDaVINCI session identifiers (CIDs) must not be the same"
+                  << endl;
         return -1;
     }
 
-    // Initializing od4 session for remote control, odsupercomponent/pwm-motor and internal communication
-    cluon::OD4Session od4Remote(cidRemote);
+    // Initializing od4 session for odsupercomponent/pwm-motor and internal communication
     cluon::OD4Session od4PwmOds(cidPwmOds);
     cluon::OD4Session od4Internal(cidInternal);
 
     // Check that the od4 sessions are running
-    if (od4Remote.isRunning() == 0)
+     if (od4PwmOds.isRunning() == 0)
     {
-        std::cout << "ERROR: No OD4 responsible for the remote controller is running!" << std::endl;
-        return -1;
-    } else if (od4PwmOds.isRunning() == 0)
-    {
-        std::cout << "ERROR: No OD4 responsible for the pwm-motor odsupercomponent is running!" << std::endl;
+        cout << "ERROR: No OD4 responsible for the pwm-motor odsupercomponent is running!" << endl;
         return -1;
     }
     else if (od4Internal.isRunning() == 0)
     {
-        std::cout << "ERROR: No OD4 responsible for the internal communication is running!" << std::endl;
+        cout << "ERROR: No OD4 responsible for the internal communication is running!" << endl;
         return -1;
     }
 
     // Struct containing the function, delegate, to be called when message, messageIdentifier, is received
     struct onMessageStruct{
         int32_t messageIdentifier;
-        std::function< void(cluon::data::Envelope &&envelope)> delegate;
+        function< void(cluon::data::Envelope &&envelope)> delegate;
     };
     onMessageStruct messageStruct;
 
     // Queues containing above structs
-    queue<onMessageStruct> queueRemote;
     queue<onMessageStruct> queueInternal;
 
     GroundSteeringReading msgSteering;
     PedalPositionReading msgPedal;
 
-    // ****** Remote control ****** //
-
+    // ****** Internal communication ****** //
     auto onRemoteModeMessage = [&mode](cluon::data::Envelope &&env){
-        RemoteModeMessage msg = cluon::extractMessage<RemoteModeMessage>(std::move(env));
-        std::cout << "Setting mode to " << std::endl;
+        RemoteModeMessage msg = cluon::extractMessage<RemoteModeMessage>(move(env));
+        cout << "Setting mode to " << endl;
         if (msg.mode())
         {
-            std::cout << "LEADER" << std::endl;
+            cout << "LEADER" << endl;
         }
         else
         {
-            std::cout << "FOLLOWER" << std::endl;
+            cout << "FOLLOWER" << endl;
         }
         mode = msg.mode();
     };
     messageStruct.delegate = onRemoteModeMessage;
     messageStruct.messageIdentifier = RemoteModeMessage::ID();
-    queueRemote.push(messageStruct);
+    queueInternal.push(messageStruct);
 
     auto onPedalPositionReadingMessage = [&mode, &msgPedal, &od4PwmOds](cluon::data::Envelope &&env){
-        PedalPositionReading msg = cluon::extractMessage<PedalPositionReading>(std::move(env));
-        std::cout << "Received pedal position reading " << msg.percent() << std::endl;
+        PedalPositionReading msg = cluon::extractMessage<PedalPositionReading>(move(env));
+        cout << "Received pedal position reading " << msg.percent() << endl;
         if(mode == LEADER)
         {
-            std::cout << "LEADER MODE ACTIVATED, forwarding pedal reading to pwm/ods " << std::endl;
+            cout << "LEADER MODE ACTIVATED, forwarding pedal reading to pwm/ods " << endl;
             msgPedal.percent(msg.percent());
             od4PwmOds.send(msgPedal);
         }
         else
         {
-            std::cout << "LEADER DEACTIVATED, ignoring to forward pedal reading" << std::endl;
+            cout << "LEADER DEACTIVATED, ignoring to forward pedal reading" << endl;
         }
     };
+
     messageStruct.delegate = onPedalPositionReadingMessage;
     messageStruct.messageIdentifier = PedalPositionReading::ID();
-    queueRemote.push(messageStruct);
+    queueInternal.push(messageStruct);
 
     auto onGroundSteeringReadingMessage = [&mode, &msgSteering, &od4PwmOds](cluon::data::Envelope &&env){
-        GroundSteeringReading msg = cluon::extractMessage<GroundSteeringReading>(std::move(env));
-        std::cout << "Received ground steering reading " << msg.steeringAngle() << std::endl;
+        GroundSteeringReading msg = cluon::extractMessage<GroundSteeringReading>(move(env));
+        cout << "Received ground steering reading " << msg.steeringAngle() << endl;
         if(mode == LEADER)
         {
-            std::cout << "LEADER MODE ACTIVATED, forwarding steering angle to pwm/ods " << std::endl;
+            cout << "LEADER MODE ACTIVATED, forwarding steering angle to pwm/ods " << endl;
             msgSteering.steeringAngle(msg.steeringAngle());
             od4PwmOds.send(msgSteering);
         }
         else
         {
-            std::cout << "LEADER DEACTIVATED, ignoring to forward steering angle" << std::endl;
+            cout << "LEADER DEACTIVATED, ignoring to forward steering angle" << endl;
         }
     };
+
     messageStruct.delegate = onGroundSteeringReadingMessage;
     messageStruct.messageIdentifier = GroundSteeringReading::ID();
-    queueRemote.push(messageStruct);
+    queueInternal.push(messageStruct);
+
+
+    //TODO add functions to carry out when V2V messages are received
 
     // Register the lambda functions and message identifiers for each instance in queue
-    while (!queueRemote.empty())
+    while (!queueInternal.empty())
     {
-        od4Remote.dataTrigger(queueRemote.front().messageIdentifier, queueRemote.front().delegate);
-        queueRemote.pop();
+        od4Internal.dataTrigger(queueInternal.front().messageIdentifier, queueInternal.front().delegate);
+        queueInternal.pop();
     }
 
 
-    // ****** Internal structs ****** //
+    // ****** Autonomous driving code ****** //
+    //TODO add code for autonomous following
 
-    //TODO similar code as in remote controller
+    cerr << "Maneuvering script v0.1" << endl;
 
-
-
-
-    std::cerr << "Maneuvering script v0.1" << std::endl;
-
-    while (od4Remote.isRunning() && od4PwmOds.isRunning() && od4Internal.isRunning())
+    while (od4PwmOds.isRunning() && od4Internal.isRunning())
     {
 
     }
