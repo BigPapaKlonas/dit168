@@ -25,5 +25,7 @@ followed by
 Run the following commands in order to complie unit tests using CMakeLists:
 
 ` mkdir build && cd build `
+
 ` cmake .. ` 
+
 ` make && make test`
