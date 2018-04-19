@@ -9,6 +9,11 @@ float acceleration::getAcceleration(float x_accel, float y_accel){
 	//rounding decimals
 	hypo_accel = floor(hypo_accel * 100.) / 100;
 	return hypo_accel;
+
+	//Method 2: account for gravity
+	//gravity = 9.8;
+	//accel = sqrt(pow(x,2)+pow(y,2)+pow(z,2) - gravity);
+	
 }
 
 

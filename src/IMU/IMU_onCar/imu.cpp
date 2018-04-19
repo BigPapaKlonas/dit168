@@ -97,13 +97,11 @@ int main() {
 	gyro = gyro + delta_gyro;
 
 	yaw = yd.getHeading(x_accel, y_accel, gyro, 0.0, sample_rate);
-
+	if (yaw < 1.0 && yaw > -1.0){yaw = 0.0;}
 	printf("yaw: %4.2f degrees\n", yaw);
-	
 	//Sending data through od4 session
-	//msg.readingSteeringAngle(steeringAngle);
-
-        //od4.send(msg);
+	msg.readingSteeringAngle(yaw);
+	od4.send(msg);
 	
         //rc_usleep(1000000);
         // }
