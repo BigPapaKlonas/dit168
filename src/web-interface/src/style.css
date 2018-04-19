@@ -15,6 +15,7 @@ span.dots {
 
 table {
   color: #333;
+  font-size: 12px;
 }
 
 table.dataFields {
@@ -50,6 +51,7 @@ th.signal-timestamp {
 
 td.field-name {
   min-width: 200px;
+  color: #fff;
 }
 
 td.field-plot {
@@ -100,10 +102,6 @@ td.field-value {
 
 #angle{
     padding-top: 15px;
-}
-
-.slider {
-  background-color: #8ACC74;
 }
 
 h6{

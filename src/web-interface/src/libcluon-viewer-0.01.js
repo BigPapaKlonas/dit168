@@ -242,11 +242,11 @@ function onMessageReceived(lc, msg) {
 
 
     // TODO: DIVIDE AND CONQUER THE MESSAGES!
-    if(data.dataType == 1041 || data.dataType == 1045){
+    if(data.dataType == 1041 || data.dataType == 1045 || data.dataType == 2001 || data.dataType == 1002 || data.dataType == 2201 || data.dataType == 2202){
       addTableData(sourceKey, data, 'dataViewLeader');
       addFieldCharts(sourceKey, data);
     } else {
-      addTableData(sourceKey, data, 'dataView');
+      addTableData(sourceKey, data, 'dataViewFollower');
       addFieldCharts(sourceKey, data);
     }
     
@@ -279,7 +279,7 @@ function addTableData(sourceKey, data, table_name) {
 
     const headerHtml = '<tr id="' + sourceKey + '" class="dataHeader"><td>' 
       + type + '</td><td>' + sender + '</td><td>' + name + '</td><td id="' 
-      + sourceKey + '_frequen1cy">N/A</td><td id="' 
+      + sourceKey + '_frequency">N/A</td><td id="' 
       + sourceKey + '_timestamp">' + timestamp + '</td></tr>';
 
     const fieldCount = data.payload.fields.length;
@@ -300,8 +300,8 @@ function addTableData(sourceKey, data, table_name) {
     
     fieldsHtml += '</td></tr></table>';
 
-    $(table_name + ' > tbody:last-child').append(headerHtml);
-    $(table_name + ' > tbody:last-child').append(fieldsHtml); 
+    $('#' + table_name + ' > tbody:last-child').append(headerHtml);
+    $('#' + table_name + ' > tbody:last-child').append(fieldsHtml); 
   }
 }
 
