@@ -24,13 +24,25 @@ var g_pause = false;
 var ws = null;
 var lc = null;
 
+
 var sliderSpeed = document.getElementById("speedRange");
 sliderSpeed.value = 20;
 speed = sliderSpeed.value/100;
 
 var sliderAngle = document.getElementById("angleRange");
-sliderAngle.value = 30;
+sliderAngle.value = 1;
 angle = sliderAngle.value/100;
+
+function updateSpeedInput(val) { 
+  document.getElementById('speed_text').innerText = val; 
+}
+
+function updateAngleInput(val) { 
+  document.getElementById('angle_text').innerText = val; 
+}
+
+
+
 
 $(document).ready(function(){
   
@@ -164,27 +176,30 @@ function onStreamClosed() {
 
 function onMessageReceived(lc, msg) {
 
-
   if (g_pause) {
     return;
   }
 
   var data_str = lc.decodeEnvelopeToJSON(msg);
 
-  lc.encodeEnvelopeFromJSONWithoutTimeStamps(msg, 1041, 1);
+  console.log(data_str.length);
+  console.log(JSON.parse(data_str));
+
+
+  //lc.encodeEnvelopeFromJSONWithoutTimeStamps(msg, 1041, 1);
 
   if (data_str.length == 2) {
     return;
   }
 
+  console.log("data_str: ", data_str)
+  
   d = JSON.parse(data_str);
-
 
   // Translate to nice JSON ..
   var payloadFields = new Array();
 
   const payloadName = Object.keys(d)[5];
-  
   for (const fieldName in d[payloadName]) {
     const fieldValue = d[payloadName][fieldName];
     const field = {
@@ -214,8 +229,26 @@ function onMessageReceived(lc, msg) {
   const dataSourceIsKnown = g_data.has(sourceKey);
 
   if (!dataSourceIsKnown) {
-    addTableData(sourceKey, data);
-    addFieldCharts(sourceKey, data);
+
+    if(data.dataType == 2201){
+      update_ultrasonic(data.payload.fields[0].value);
+      //return;
+    }
+
+    if(data.dataType == 2202){
+      update_imu(data.payload);
+      //return;
+    }
+
+
+    // TODO: DIVIDE AND CONQUER THE MESSAGES!
+    if(data.dataType == 1041 || data.dataType == 1045){
+      addTableData(sourceKey, data, 'dataViewLeader');
+      addFieldCharts(sourceKey, data);
+    } else {
+      addTableData(sourceKey, data, 'dataView');
+      addFieldCharts(sourceKey, data);
+    }
     
     g_data.set(sourceKey, new Array());
   }
@@ -235,7 +268,7 @@ function cutLongField(type, value) {
   return value;
 }
 
-function addTableData(sourceKey, data) {
+function addTableData(sourceKey, data, table_name) {  
   
   if($('tr#' + sourceKey).length == 0) {
 
@@ -246,7 +279,7 @@ function addTableData(sourceKey, data) {
 
     const headerHtml = '<tr id="' + sourceKey + '" class="dataHeader"><td>' 
       + type + '</td><td>' + sender + '</td><td>' + name + '</td><td id="' 
-      + sourceKey + '_frequency">N/A</td><td id="' 
+      + sourceKey + '_frequen1cy">N/A</td><td id="' 
       + sourceKey + '_timestamp">' + timestamp + '</td></tr>';
 
     const fieldCount = data.payload.fields.length;
@@ -267,8 +300,8 @@ function addTableData(sourceKey, data) {
     
     fieldsHtml += '</td></tr></table>';
 
-    $('#dataView > tbody:last-child').append(headerHtml);
-    $('#dataView > tbody:last-child').append(fieldsHtml); 
+    $(table_name + ' > tbody:last-child').append(headerHtml);
+    $(table_name + ' > tbody:last-child').append(fieldsHtml); 
   }
 }
 
@@ -338,6 +371,7 @@ function addFieldCharts(sourceKey, data) {
         }
       };
       
+      console.log("source %s %s", sourceKey, i)
       var ctx = document.getElementById(sourceKey + '_field' + i + '_canvas').getContext('2d');
       var chart = new Chart(ctx, config);
       

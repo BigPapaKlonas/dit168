@@ -15,117 +15,154 @@
 
 <body onload="initializeNavKeys()">
   <div class="wrapper">
-    <div class="header">Header</div>
-    <div class="remote-control">remote</div>
+    <div class="header">
+      <img id="logo" src="./tab_logo.png"/>
+    <span id="header_text">Dash control</span>
+    </div>
+    <sidebar class="remote-control sidebar">
+      <div class="NavigationKeys">
+            <h6>Controls</h6>
+            <div class="FwdKey">
+               <input id="ForwardBtn" type="button" value="^"" />
+            <div class="bottomKeys">
+              <div class="LftKey">     
+                <input id="LeftBtn" type="button" value="&#8249" />
+              </div>
+              <div class="RghtKey">  
+                <input id="RightBtn" type="button" value="&#8250" />
+              </div>
+            </div>
+              
+            </div>
+            <h6 id="speed">Speed</h6>
+            <div class="slidecontainer">
+                <p id="speed_text">15<p>
+                <input 
+                  type="range" 
+                  min="20" 
+                  max="100" 
+                  value="20" 
+                  class="slider" 
+                  id="speedRange"
+                  onchange="updateSpeedInput(this.value)">
+            </div>
+            <h6 id="angle">Steering angle</h6>
+            <div class="slidecontainer">
+                <p id="angle_text">1<p>
+                <input 
+                  type="range" 
+                  min="1" 
+                  max="38" 
+                  value="1" 
+                  class="slider" 
+                  id="angleRange"
+                  onchange="updateAngleInput(this.value)">
+            </div>
+      </div>
+    </sidebar>
+
     <div class="imu">
     
-      <svg width="377px" height="406px" viewBox="0 0 377 406" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-          <!-- Generator: Sketch 48.2 (47327) - http://www.bohemiancoding.com/sketch -->
-          <desc>Created with Sketch.</desc>
-          <defs>
-              <polygon id="path-1" points="188 2 203 32 173 32"></polygon>
-              <filter x="-23.3%" y="-16.7%" width="146.7%" height="146.7%" filterUnits="objectBoundingBox" id="filter-2">
-                  <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
-                  <feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
-                  <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.5 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
-              </filter>
-              <text id="text-3" font-family="ArialMT, Arial" font-size="14" font-weight="normal" fill="#FFFFFF" fill-opacity="0.86512115">
-                  <tspan x="182.944824" y="26">N</tspan>
-              </text>
-              <filter x="-23.3%" y="-31.2%" width="146.7%" height="187.5%" filterUnits="objectBoundingBox" id="filter-4">
-                  <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
-                  <feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
-                  <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.5 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
-              </filter>
-              <polygon id="path-5" points="181.848631 69.4632894 181.848631 206.699925 194.102494 206.699925 194.102494 69.4632894 203.009122 69.4632894 188.004561 44 173 69.4632894"></polygon>
-              <filter x="-25.0%" y="-3.4%" width="150.0%" height="109.2%" filterUnits="objectBoundingBox" id="filter-6">
-                  <feMorphology radius="0.5" operator="dilate" in="SourceAlpha" result="shadowSpreadOuter1"></feMorphology>
-                  <feOffset dx="0" dy="2" in="shadowSpreadOuter1" result="shadowOffsetOuter1"></feOffset>
-                  <feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
-                  <feComposite in="shadowBlurOuter1" in2="SourceAlpha" operator="out" result="shadowBlurOuter1"></feComposite>
-                  <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.5 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
-              </filter>
-              <linearGradient x1="50%" y1="50%" x2="50%" y2="100%" id="linearGradient-7">
-                  <stop stop-color="#78BB22" offset="0%"></stop>
-                  <stop stop-color="#243507" offset="100%"></stop>
-              </linearGradient>
-              <circle id="path-8" cx="188" cy="212" r="58"></circle>
-              <filter x="-6.5%" y="-4.7%" width="112.9%" height="112.9%" filterUnits="objectBoundingBox" id="filter-9">
-                  <feMorphology radius="0.5" operator="dilate" in="SourceAlpha" result="shadowSpreadOuter1"></feMorphology>
-                  <feOffset dx="0" dy="2" in="shadowSpreadOuter1" result="shadowOffsetOuter1"></feOffset>
-                  <feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
-                  <feComposite in="shadowBlurOuter1" in2="SourceAlpha" operator="out" result="shadowBlurOuter1"></feComposite>
-                  <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.5 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
-              </filter>
-              <linearGradient x1="50%" y1="50%" x2="50%" y2="100%" id="linearGradient-10">
-                  <stop stop-color="#B5FFE9" offset="0%"></stop>
-                  <stop stop-color="#ADEF42" offset="100%"></stop>
-              </linearGradient>
-              <path d="M188.5,399 C87.1557484,399 5,316.844252 5,215.5 C5,114.155748 87.1557484,32 188.5,32 C289.844252,32 372,114.155748 372,215.5 C372,316.844252 289.844252,399 188.5,399 Z M188.5,383 C282.112265,383 358,307.112265 358,213.5 C358,119.887735 282.112265,44 188.5,44 C94.8877349,44 19,119.887735 19,213.5 C19,307.112265 94.8877349,383 188.5,383 Z" id="path-11"></path>
-              <filter x="-2.0%" y="-1.5%" width="104.1%" height="104.1%" filterUnits="objectBoundingBox" id="filter-12">
-                  <feMorphology radius="0.5" operator="dilate" in="SourceAlpha" result="shadowSpreadOuter1"></feMorphology>
-                  <feOffset dx="0" dy="2" in="shadowSpreadOuter1" result="shadowOffsetOuter1"></feOffset>
-                  <feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
-                  <feComposite in="shadowBlurOuter1" in2="SourceAlpha" operator="out" result="shadowBlurOuter1"></feComposite>
-                  <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.5 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
-              </filter>
-              <text id="text-13" font-family="ArialMT, Arial" font-size="72" font-weight="normal" fill="#FFFFFF" fill-opacity="0.86512115">
-                  <tspan x="168.478516" y="211">0</tspan>
-              </text>
-              <filter x="-8.6%" y="-5.7%" width="117.3%" height="116.1%" filterUnits="objectBoundingBox" id="filter-14">
-                  <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
-                  <feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
-                  <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.5 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
-              </filter>
-              <text id="text-15" font-family="ArialMT, Arial" font-size="14" font-weight="normal" fill="#FFFFFF" fill-opacity="0.86512115">
-                  <tspan x="177.5" y="236">DT:</tspan>
-                  <tspan x="184.106934" y="252">0</tspan>
-              </text>
-              <filter x="-7.4%" y="-15.6%" width="114.9%" height="143.8%" filterUnits="objectBoundingBox" id="filter-16">
-                  <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
-                  <feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
-                  <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.5 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
-              </filter>
-          </defs>
-          <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-              <g id="north_triangle">
-                  <use fill="black" fill-opacity="1" filter="url(#filter-2)" xlink:href="#path-1"></use>
-                  <use fill="#000000" fill-rule="evenodd" xlink:href="#path-1"></use>
-              </g>
-              <g id="north" fill="#FFFFFF" fill-opacity="0.86512115">
-                  <use filter="url(#filter-4)" xlink:href="#text-3"></use>
-                  <use xlink:href="#text-3"></use>
-              </g>
-              <g id="heading_arrow">
-                  <use fill="black" fill-opacity="1" filter="url(#filter-6)" xlink:href="#path-5"></use>
-                  <use stroke="#15821E" stroke-width="1" fill="#000000" fill-rule="evenodd" xlink:href="#path-5"></use>
-              </g>
-              <g id="middle_cir">
-                  <use fill="black" fill-opacity="1" filter="url(#filter-9)" xlink:href="#path-8"></use>
-                  <use stroke="#314A1B" stroke-width="1" fill="url(#linearGradient-7)" fill-rule="evenodd" xlink:href="#path-8"></use>
-              </g>
-              <g id="Combined-Shape">
-                  <use fill="black" fill-opacity="1" filter="url(#filter-12)" xlink:href="#path-11"></use>
-                  <use stroke="#314A1B" stroke-width="1" fill="url(#linearGradient-10)" fill-rule="evenodd" xlink:href="#path-11"></use>
-              </g>
-              <g id="speed" fill="#FFFFFF" fill-opacity="0.86512115">
-                  <use filter="url(#filter-14)" xlink:href="#text-13"></use>
-                  <use xlink:href="#text-13"></use>
-              </g>
-              <g id="distance_traveled" fill="#FFFFFF" fill-opacity="0.86512115">
-                  <use filter="url(#filter-16)" xlink:href="#text-15"></use>
-                  <use xlink:href="#text-15"></use>
-              </g>
-          </g>
-      </svg>
-    </div>
-
-    <div class="ultrasonic">
-          
-    
-      <svg width="187px" height="181px" viewBox="0 0 187 181" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-          <!-- Generator: Sketch 48.2 (47327) - http://www.bohemiancoding.com/sketch -->
-          <desc>Created with Sketch.</desc>
+        <!-- IMU START -->
+        <svg id="imu_svg" width="377px" height="406px" viewBox="0 0 377 406" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <defs>
+                <polygon id="path-1" points="188 2 203 32 173 32"></polygon>
+                <filter x="-23.3%" y="-16.7%" width="146.7%" height="146.7%" filterUnits="objectBoundingBox" id="filter-2">
+                    <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+                    <feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+                    <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.5 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+                </filter>
+                <text id="text-3" font-family="ArialMT, Arial" font-size="14" font-weight="normal" fill="#FFFFFF" fill-opacity="0.86512115">
+                    <tspan x="182.944824" y="26">N</tspan>
+                </text>
+                <filter x="-23.3%" y="-31.2%" width="146.7%" height="187.5%" filterUnits="objectBoundingBox" id="filter-4">
+                    <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+                    <feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+                    <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.5 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+                </filter>
+                <polygon id="path-5" points="181.848631 69.4632894 181.848631 206.699925 194.102494 206.699925 194.102494 69.4632894 203.009122 69.4632894 188.004561 44 173 69.4632894"></polygon>
+                <filter x="-25.0%" y="-3.4%" width="150.0%" height="109.2%" filterUnits="objectBoundingBox" id="filter-6">
+                    <feMorphology radius="0.5" operator="dilate" in="SourceAlpha" result="shadowSpreadOuter1"></feMorphology>
+                    <feOffset dx="0" dy="2" in="shadowSpreadOuter1" result="shadowOffsetOuter1"></feOffset>
+                    <feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+                    <feComposite in="shadowBlurOuter1" in2="SourceAlpha" operator="out" result="shadowBlurOuter1"></feComposite>
+                    <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.5 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+                </filter>
+                <linearGradient x1="50%" y1="50%" x2="50%" y2="100%" id="linearGradient-7">
+                    <stop stop-color="#8ACC74" offset="0%"></stop>
+                    <stop stop-color="#243507" offset="100%"></stop>
+                </linearGradient>
+                <circle id="path-8" cx="188" cy="212" r="58"></circle>
+                <filter x="-6.5%" y="-4.7%" width="112.9%" height="112.9%" filterUnits="objectBoundingBox" id="filter-9">
+                    <feMorphology radius="0.5" operator="dilate" in="SourceAlpha" result="shadowSpreadOuter1"></feMorphology>
+                    <feOffset dx="0" dy="2" in="shadowSpreadOuter1" result="shadowOffsetOuter1"></feOffset>
+                    <feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+                    <feComposite in="shadowBlurOuter1" in2="SourceAlpha" operator="out" result="shadowBlurOuter1"></feComposite>
+                    <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.5 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+                </filter>
+                <linearGradient x1="50%" y1="50%" x2="50%" y2="100%" id="linearGradient-10">
+                    <stop stop-color="#B5FFE9" offset="0%"></stop>
+                    <stop stop-color="#8ACC74" offset="100%"></stop>
+                </linearGradient>
+                <path d="M188.5,399 C87.1557484,399 5,316.844252 5,215.5 C5,114.155748 87.1557484,32 188.5,32 C289.844252,32 372,114.155748 372,215.5 C372,316.844252 289.844252,399 188.5,399 Z M188.5,383 C282.112265,383 358,307.112265 358,213.5 C358,119.887735 282.112265,44 188.5,44 C94.8877349,44 19,119.887735 19,213.5 C19,307.112265 94.8877349,383 188.5,383 Z" id="path-11"></path>
+                <filter x="-2.0%" y="-1.5%" width="104.1%" height="104.1%" filterUnits="objectBoundingBox" id="filter-12">
+                    <feMorphology radius="0.5" operator="dilate" in="SourceAlpha" result="shadowSpreadOuter1"></feMorphology>
+                    <feOffset dx="0" dy="2" in="shadowSpreadOuter1" result="shadowOffsetOuter1"></feOffset>
+                    <feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+                    <feComposite in="shadowBlurOuter1" in2="SourceAlpha" operator="out" result="shadowBlurOuter1"></feComposite>
+                    <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.5 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+                </filter>
+                <filter x="-8.6%" y="-5.7%" width="117.3%" height="116.1%" filterUnits="objectBoundingBox" id="filter-14">
+                    <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+                    <feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+                    <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.5 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+                </filter>
+                <filter x="-7.4%" y="-15.6%" width="114.9%" height="143.8%" filterUnits="objectBoundingBox" id="filter-16">
+                    <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+                    <feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+                    <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.5 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+                </filter>
+            </defs>
+            <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                <g id="north_triangle">
+                    <use fill="black" fill-opacity="1" filter="url(#filter-2)" xlink:href="#path-1"></use>
+                    <use fill="#000000" fill-rule="evenodd" xlink:href="#path-1"></use>
+                </g>
+                <g id="north" fill="#FFFFFF" fill-opacity="0.86512115">
+                    <use filter="url(#filter-4)" xlink:href="#text-3"></use>
+                    <use xlink:href="#text-3"></use>
+                </g>
+                <g id="heading_arrow">
+                    <use fill="black" fill-opacity="1" filter="url(#filter-6)" xlink:href="#path-5"></use>
+                    <use stroke="#15821E" stroke-width="1" fill="#000000" fill-rule="evenodd" xlink:href="#path-5"></use>
+                </g>
+                <g id="middle_cir">
+                    <use fill="black" fill-opacity="1" filter="url(#filter-9)" xlink:href="#path-8"></use>
+                    <use stroke="#314A1B" stroke-width="1" fill="url(#linearGradient-7)" fill-rule="evenodd" xlink:href="#path-8"></use>
+                </g>
+                <g id="Combined-Shape">
+                    <use fill="black" fill-opacity="1" filter="url(#filter-12)" xlink:href="#path-11"></use>
+                    <use stroke="#314A1B" stroke-width="1" fill="url(#linearGradient-10)" fill-rule="evenodd" xlink:href="#path-11"></use>
+                </g>
+                <text id="speed_number" 
+                  text-anchor="middle" 
+                  fill="#FFFFFF" 
+                  font-size="100" 
+                  x="188.5" 
+                  y="230">0</text>
+                <text id="distance_traveled" 
+                  text-anchor="middle" 
+                  fill="#FFFFFF" 
+                  font-size="14" 
+                  x="188.5" 
+                  y="250">
+                    DT: 0
+                </text>
+            </g>
+        </svg>
+        <!-- IMU END -->
+        <!-- ULTRASONIC START -->
+        <svg id="ultra_sonic" width="187px" height="181px" viewBox="0 0 187 181" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
           <defs>
               <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-1">
                   <stop stop-color="#F9F9F9" stop-opacity="0.5" offset="0%"></stop>
@@ -178,34 +215,45 @@
                   <use fill="black" fill-opacity="1" filter="url(#filter-7)" xlink:href="#path-6"></use>
               </g>
               <ellipse id="wrapper" fill-opacity="0.237000006" fill="#38DD00" cx="93.5" cy="88.5" rx="86.5" ry="83.5"></ellipse>
-              <g id="number" fill="#FFFFFF" fill-opacity="0.86512115">
-                  <use filter="url(#filter-9)" xlink:href="#text-8"></use>
-                  <use xlink:href="#text-8"></use>
-              </g>
+
+              <text id="ultra_text" text-anchor="middle" font-size='100' x='94' y='120' fill='#fff'>0</text>
           </g>
       </svg>
+        <!-- ULTRASONIC END -->
     </div>
 
-    <div class="v2v">v2v</div>
 
-
-    <div class="footer">footer</div>
+    <div class="v2v">
+      
+      <div class="log-table">
+      <table id="dataView" class="table table-dark">
+        <tr>
+          <th class="signal-type">Type</th>
+          <th class="signal-sender">Sender</th>
+          <th class="signal-name">Name</th>
+          <th class="signal-frequency">Hz</th>
+          <th class="signal-timestamp">Timestamp</th>
+        </tr>
+      </table>
+    </div>
+    <div class="log-table">
+      <table id="dataViewLeader" class="table table-dark">
+        <tr>
+          <th class="signal-type">Type</th>
+          <th class="signal-sender">Sender</th>
+          <th class="signal-name">Name</th>
+          <th class="signal-frequency">Hz</th>
+          <th class="signal-timestamp">Timestamp</th>
+        </tr>
+      </table>
+    </div>
+    </div>
   </div>
 
   <!--
 
   <div class="container">
-    <div class="log-table">
-      <table id="dataView" class="table">
-        <tr>
-          <th class="signal-type">Type</th>
-          <th class="signal-sender">Sender</th>
-          <th class="signal-name">Name</th>
-          <th class="signal-frequency">Frequency</th>
-          <th class="signal-timestamp">Timestamp</th>
-        </tr>
-      </table>
-    </div>
+    
 
     <div class="NavigationKeys">
       <h6>Controls</h6>
@@ -240,6 +288,10 @@
   <script type="text/javascript" src="libcluon.js"></script>
   <script type="text/javascript" src="libcluon-viewer-0.01.js"></script>
   <script type="text/javascript" src="NavKeys.js"></script>
+  <script type="text/javascript" src="ultrasonic.js"></script>
+  <script type="text/javascript" src="imu.js"></script>
+
+
 
 
 

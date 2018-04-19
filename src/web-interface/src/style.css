@@ -5,9 +5,16 @@
   box-sizing: border-box;
 }
 
-/*
+body {
+  background-color: #000
+}
+
 span.dots {
   color: gray;
+}
+
+table {
+  color: #333;
 }
 
 table.dataFields {
@@ -52,6 +59,7 @@ td.field-plot {
 td.field-value {
 }
 
+
 .FwdKey{
     text-align: center;
 }
@@ -59,16 +67,29 @@ td.field-value {
 .bottomKeys{
   display: flex;
   align-content: center;
-  justify-content: flex-start;
+  justify-content: space-between;
 }
 
-.RghtKey{
-  padding-left: 60px;
+#ForwardBtn {
+  background-color: #8ACC74;
+  border: none;
+  border-radius: 5px;
 }
 
-.LftKey{
-  padding-left: 30px;
+#LeftBtn {
+  background-color: #8ACC74;
+  border: none;
+  border-radius: 5px;
+
 }
+
+#RightBtn {
+  background-color: #8ACC74;
+  border: none;
+  border-radius: 5px;
+
+}
+
 .slidecontainer{
     width: 100%; // Width of the outside container 
 }
@@ -81,17 +102,8 @@ td.field-value {
     padding-top: 15px;
 }
 
-#main-footer{
-  position: absolute;
-  background: #333;
-  color: #fff;
-  text-align: center;
-  padding: 20px;
-  left: 0;
-  bottom: 0;
-  height: 50px;
-  width: 100%;
-  overflow: hidden;
+.slider {
+  background-color: #8ACC74;
 }
 
 h6{
@@ -100,8 +112,6 @@ h6{
 }
 
 
-
-/* Css Grid */
 
 /* no grid support? */
 .sidebar {
@@ -116,31 +126,54 @@ h6{
 
 /* make a grid */
 .wrapper {
-  max-width: 940px;
+  width: 90vw;
+  height: 100vh;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 1fr 3fr;
+  grid-template-rows: 20% auto;
+  grid-template-columns: 200px 390px 1fr;
   grid-gap: 10px;
+  justify-content: center;
+
 }
 
 .wrapper > * {
-  background-color: #ccc;
+  background-color: #333;
   color: #fff;
   border-radius: 5px;
-  padding: 20px;
+  padding: 10px;
   font-size: 150%;
-  margin-bottom: 10px;
+  border-radius: 15px;
+  clear: both;
 }
 
 .header, .footer {
+  color: #8ACC74;
+  font-size: 100px;
   grid-column: 1 / -1;
   clear: both;
 }
+
+.header #header_text {
+  text-shadow: 2px 2px #00aa00;
+}
+
+#ultra_sonic {
+  transform: translate(92px);
+}
+
+#logo {
+  height: 150px;
+  width: 150px;
+}
+
+
 
 @supports (display: grid) {
   .wrapper > * {
     width: auto;
     margin: 0;
+    
 }
 
 
@@ -155,18 +188,19 @@ h6{
 
   .log-table{
     flex: 5;
-    background-color: #F6F6F6;
+    background-color: #111;
     padding: 1.5rem;
     margin: 1.5rem;
   }
 
   .NavigationKeys{
+    background-color: #111 ;
+    color: #fff;
     padding: 40px;
     flex: 1;
-    display: flex;
     align-content: center;
-    justify-content: flex-start;
+    justify-content: center;
     flex-direction: column;
-    margin: 1.5rem;
+    border-radius: 15px;
   }
 }
