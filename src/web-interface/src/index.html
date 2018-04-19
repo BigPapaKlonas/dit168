@@ -39,24 +39,12 @@
                 <p id="speed_text">15<p>
                 <input 
                   type="range" 
-                  min="20" 
+                  min="15" 
                   max="100" 
-                  value="20" 
+                  value="15" 
                   class="slider" 
                   id="speedRange"
                   onchange="updateSpeedInput(this.value)">
-            </div>
-            <h6 id="angle">Steering angle</h6>
-            <div class="slidecontainer">
-                <p id="angle_text">1<p>
-                <input 
-                  type="range" 
-                  min="1" 
-                  max="38" 
-                  value="1" 
-                  class="slider" 
-                  id="angleRange"
-                  onchange="updateAngleInput(this.value)">
             </div>
       </div>
     </sidebar>
@@ -216,7 +204,7 @@
               </g>
               <ellipse id="wrapper" fill-opacity="0.237000006" fill="#38DD00" cx="93.5" cy="88.5" rx="86.5" ry="83.5"></ellipse>
 
-              <text id="ultra_text" text-anchor="middle" font-size='100' x='94' y='120' fill='#fff'>0</text>
+              <text id="ultra_text" text-anchor="middle" font-size='60' x='94' y='120' fill='#fff'>0</text>
           </g>
       </svg>
         <!-- ULTRASONIC END -->
@@ -226,7 +214,7 @@
     <div class="v2v">
       
       <div class="log-table">
-        Leader data
+        Internal Messages
       <table id="dataViewLeader" class="table table-dark">
         <tr>
           <th class="signal-type">Type</th>
@@ -238,7 +226,7 @@
       </table>
     </div>
     <div class="log-table">
-      Follower data
+      External (V2V) Messages
       <table id="dataViewFollower" class="table table-dark">
         <tr>
           <th class="signal-type">Type</th>

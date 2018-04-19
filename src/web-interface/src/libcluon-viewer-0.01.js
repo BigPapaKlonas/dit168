@@ -29,20 +29,11 @@ var sliderSpeed = document.getElementById("speedRange");
 sliderSpeed.value = 20;
 speed = sliderSpeed.value/100;
 
-var sliderAngle = document.getElementById("angleRange");
-sliderAngle.value = 1;
-angle = sliderAngle.value/100;
+angle = 0.38;
 
 function updateSpeedInput(val) { 
   document.getElementById('speed_text').innerText = val; 
 }
-
-function updateAngleInput(val) { 
-  document.getElementById('angle_text').innerText = val; 
-}
-
-
-
 
 $(document).ready(function(){
   
@@ -67,13 +58,6 @@ $(document).ready(function(){
     speed = this.value/100;
     console.log(speed);
   }
-
-  sliderAngle.oninput = function() {
-    angle = this.value/100;
-    console.log(angle);
-
-  }
-
 });
 
   
@@ -186,7 +170,7 @@ function onMessageReceived(lc, msg) {
   console.log(JSON.parse(data_str));
 
 
-  //lc.encodeEnvelopeFromJSONWithoutTimeStamps(msg, 1041, 1);
+  lc.encodeEnvelopeFromJSONWithoutTimeStamps(msg, 1041, 1);
 
   if (data_str.length == 2) {
     return;
@@ -228,9 +212,7 @@ function onMessageReceived(lc, msg) {
   const sourceKey = data.dataType + '_' + data.senderStamp;
   const dataSourceIsKnown = g_data.has(sourceKey);
 
-  if (!dataSourceIsKnown) {
-
-    if(data.dataType == 2201){
+    if(data.dataType == 2201 || data.dataType == 1039){
       update_ultrasonic(data.payload.fields[0].value);
       //return;
     }
@@ -240,9 +222,10 @@ function onMessageReceived(lc, msg) {
       //return;
     }
 
+  if (!dataSourceIsKnown) {
 
     // TODO: DIVIDE AND CONQUER THE MESSAGES!
-    if(data.dataType == 1041 || data.dataType == 1045 || data.dataType == 2001 || data.dataType == 1002 || data.dataType == 2201 || data.dataType == 2202){
+    if(data.dataType == 1046 || data.dataType == 1045 || data.dataType == 1041 || data.dataType == 1039 || data.dataType == 2201 || data.dataType == 2202){
       addTableData(sourceKey, data, 'dataViewLeader');
       addFieldCharts(sourceKey, data);
     } else {

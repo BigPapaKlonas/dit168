@@ -55,6 +55,10 @@ message UltrasonicFront [id = 2201] {
   uint8 readingCm [id = 1];
 }
 
+message opendlv.proxy.DistanceReading [id = 1039] {
+  float distance [id = 1];
+}
+
 message readingsIMU[id = 2202] {
   uint8 readingDistanceTraveled [id = 1];
   float readingSteeringAngle [id = 2];
