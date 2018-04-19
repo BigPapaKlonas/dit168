@@ -5,6 +5,7 @@
 \usepackage{graphicx} 		% Used to for importing images
 \usepackage{indentfirst}	% Indents 1st paragraph (by default its off)
 \usepackage{longtable} 		% Tables than can span over multiple pages
+\usepackage{placeins}		% Used to keep images in place(via \FloatBarriers), and let text go infront
 
 % Define Global Variables
 \setlength{\parindent}{20pt}
@@ -70,7 +71,7 @@ The evolution of the Software Architectural Document for project dashFTABs is de
    	4th April, 2018 & 0.2 & Added Introduction & Justinas\\ \hline
    	5th April, 2018 & 0.3 & Added Use Case View & Justinas\\ \hline
    	12th April, 2018 & 0.4 & Added Sequence Diagrams for UC1-UC3 & Justinas\\ \hline
-    18th April, 2018 & 0.4.3 & Added 4+1 Vew Model to Introduction, V2V Protocol to Physical View, Description on UC1's Sequence Diagram & Justinas\\ \hline
+    18th April, 2018 & 0.4.3 & Added 4+1 Vew Model to Introduction, UC1-UC3 sequence diagram descriptions to Process View & Justinas\\ \hline
 \end{longtable}
 \pagebreak
 
@@ -81,12 +82,18 @@ The evolution of the Software Architectural Document for project dashFTABs is de
 \subsection{Purpose}
 The purpose of this document is to familiarize the reader with the architectural overview of the software, developed for the project dashFTABs, by examining different architectural viewpoints. In continuation, the document includes architectural drivers, such as system requirements, and attempts to identify significant dashFTABs system’s behaviour.\par
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% New Subsection
 \subsection{Scope}
 The software was developed as part of the DIT168 Project: Industrial IT and Embedded Systems course taught at University of Gothenburg in Gothenburg, Sweden. The project course provides a 3D printed miniature car, dubbed Dash by the project group. The project groups communicate amongst each other to implement a Vehicle-to-Vehicle (V2V) protocol. Moreover, via incorporation of the protocol the project groups must expand Dash’s functional capabilities by implement platooning.\par
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% New Subsection
 \subsection{Audience}
 The document contains technical details of the project and utilizes Unified Modeling Language (UML for short) to express architecture. Therefore, the reader must possess some minimal or introductory knowledge of UML. As such the intended readers are members or somewhat affiliated with software engineering.
-    
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% New Subsection    
 \subsection{4+1 View Model}
 To further narrow down the intended audience the document incorporates 4+1 View Model. The document will focus on architectural logical, process, development and physical views. With each view providing value to specific set of stakeholders. Logical View provides most benefit to the system's end-users as it addresses whether all desired functionality has been implemented; the Process View focuses on the overall system by depicting the subsystems, meaning microservices, interactions; Development View is aimed at developers as it focuses more on individual module contents; lastly, Physical View shows the physical distribution of software, thus it provides most value to system engineers. \par
 The "+1" of the the 4+1 View Model refers to Scenarios, which are used to describe the system behaviour. The Scenarios provide value to all stakeholders as it attempts to encapsulate the system requirements. The Scenarios have been expressed as a Use Case View. \par
@@ -126,6 +133,7 @@ This document section attempts to identify the main behaviour exhibited by Dash.
 
 \subsection{Use Case Scenarios}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Use Case 1 Table
 \subsubsection{Connect As Follower}
 \begin{longtable}{| p{0.2\linewidth} | p{0.8\linewidth} |}\hline 
@@ -154,6 +162,7 @@ This document section attempts to identify the main behaviour exhibited by Dash.
        	\end{enumerate}\\ \hline
 \end{longtable}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Use Case 2 Table
 \subsubsection{Connect As Leader}
 \begin{longtable}{| p{0.2\linewidth} | p{0.8\linewidth} |}\hline 
@@ -182,6 +191,7 @@ This document section attempts to identify the main behaviour exhibited by Dash.
        	\end{enumerate}\\ \hline
 \end{longtable}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Use Case 3 Table
 \subsubsection{Stop Following Leader}
 \begin{longtable}{| p{0.2\linewidth} | p{0.8\linewidth} |}\hline 
@@ -199,6 +209,7 @@ This document section attempts to identify the main behaviour exhibited by Dash.
 	\end{enumerate}\\ \hline
 \end{longtable}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Use Case 4 Table
 \subsubsection{Drive Dash}
 \begin{longtable}{| p{0.2\linewidth} | p{0.8\linewidth} |}\hline 
@@ -213,9 +224,12 @@ This document section attempts to identify the main behaviour exhibited by Dash.
 	\end{enumerate}\\ \hline
 \end{longtable}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% New Subcetion
 \subsection{Use Case Diagram}
 To depict use case interactions amongst each other, a use case diagram was created. Moreover, the diagram also servers as a visual aid, aimed to improve understanding of actor interactions with project functionality. The diagram depicts the interactions between the most significant use cases, mentioned in previous sections.\par
 
+\FloatBarrier % -> Wrap image with this, to make sure text does not go infront of image if theres room
 % Adding use case diagram image
 \begin{figure}[ht!]
 \centering
@@ -224,7 +238,7 @@ To depict use case interactions amongst each other, a use case diagram was creat
 \caption{Use Case Diagram}
 \label{fig:usecasediagram}
 \end{figure}
-\pagebreak
+\FloatBarrier % -> Wrap image with this, to make sure text does not go infront of image if theres room
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Adding section about microservice communication
@@ -236,11 +250,14 @@ The Process View section aims to inform the reader on subjects such as communica
 As the focus for the project is vehicle-to-vehicle (V2V) communication, a shared V2V protocol was developed by a representative from each team for the purpose of being utilized in the project. The project group dashFTABs has altered the provided protocol to accommodate their team's needs. The changes introduced do not go against any established agreements as the protocol is licensed under GNU General Public License v3.0, a license allowing modification. Moreover, the protocol was design in a way that would require small alterations to accommodative individual teams architecture. Due to the protocol being used by all project groups the behaviour exhibited by Connect as Leader, Connect as Follower will be similar across all teams.\par
 The specific changes to the protocol include; creating an additional OD4 session for internal car communication, broadcasting the messages received from other cars to the internal channel, as well as an additional function responsible for monitoring time Leader/Follower Status request have been received. \par  
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Connect As Follower
 \subsection{Connect As Follower}
 \subsubsection{Significance}
- The use case was chosen as architecturally significant, as it implements functional requirement F5, Follower Connection. The requirement itself was provided by the DIT168 course representatives, as it is mandatory for every miniature vehicle to posses follower capabilities. Without a follower connection, Dash would not be able to have automated moving or platooning, as it would not receive status updates from the leader. Therefore, F5 requirement acts as a prerequisite to more advanced functionality. Due to these reasons the requirement was deemed as significant and expressed as a sequence diagram.\par
+ The use case was chosen as architecturally significant, as it implements functional requirement F5, Follower Connection. The requirement itself was provided by the DIT168 course representatives, as it is mandatory for every miniature vehicle to posses follower capabilities. Without a follower connection, Dash would not be able to have automated moving or platooning, as it would not receive status updates from the leader. Therefore, F5 requirement acts as a prerequisite to more advanced functionality. Due to these reasons the requirement was deemed as significant and expressed as a sequence diagram. The sequence diagram depicts the behavior of UC1.\par
 
 % Adding image
+\FloatBarrier % -> Wrap image with this, to make sure text does not go in front of image if theres room
 \begin{figure}[ht!]
 \centering
 % Make image as wide as the line
@@ -248,32 +265,40 @@ The specific changes to the protocol include; creating an additional OD4 session
 \caption{Connect As Follower SD}
 \label{fig:connectasfollower}
 \end{figure}
+\FloatBarrier % -> Wrap image with this, to make sure text does not go infront of image if theres room
 
 \subsubsection{Component Behaviour}
-The interactions depicted in Figure \ref{fig:connectasfollower} focus specifically on behaviour exhibited by the V2V microservice.  \par
+The interactions depicted in Figure \ref{fig:connectasfollower} focus specifically on behaviour exhibited by the V2V microservice. The diagram consists of 5 main components; OD4 Sessions broadcast and internal, UPD Senders toLeader, toFollower, and receiver a UDP Receiver. The broadcast OD4 session listens to CID 250, a channel used for cars that wish to engage in platooning. Once a car has used announcePresence() their car IP and group number are broadcasted to everyone on the network. \par
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Connect As Leader
 \subsection{Connect As Leader}
+\subsubsection{Significance}
 % Adding image
-\begin{figure}[ht!]
+\FloatBarrier % -> Wrap image with this, to make sure text does not go infront of image if theres room
+\begin{figure}
 \centering
 % Make image as wide as the line
 \includegraphics[width=\linewidth]{Diagrams/ConnectAsLeader.png}
 \caption{Connect As Leader SD}
-\label{fig:connectasleader}
+\label{fig:stopfollowing}
 \end{figure}
-\pagebreak
+\FloatBarrier % -> Wrap image with this, to make sure text does not go infront of image if theres room
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Stop Following
 \subsection{Stop Following}
+
 % Adding image
-\begin{figure}[ht!]
+\FloatBarrier % -> Wrap image with this, to make sure text does not go infront of image if theres room
+\begin{figure}
 \centering
 % Make image as wide as the line
 \includegraphics[width=\linewidth]{Diagrams/StopFollowing.png}
 \caption{Stop Following SD}
-\label{fig:stopfollowing}
+\label{fig:connectasleader}
 \end{figure}
-\pagebreak
+\FloatBarrier % -> Wrap image with this, to make sure text does not go infront of image if theres room
 
 
 \end{document}
