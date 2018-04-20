@@ -18,7 +18,7 @@ float acceleration::getDistanceTraveled(float accel){
 	//Edit: sample rate in Hz? 
         float time = 0.01;
         
-	float distanceTraveled = accel * pow(time,2);
+	float distanceTraveled = (accel * pow(time,2)) / 2;
 	distanceTraveled = floor(distanceTraveled * 100000) / 100000;
 	//distanceTraveled = ceilf(distanceTraveled* 100000) / 100000;
 	return distanceTraveled;	
