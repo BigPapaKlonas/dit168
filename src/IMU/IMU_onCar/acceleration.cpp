@@ -17,7 +17,7 @@ float acceleration::getDistanceTraveled(float accel, float time, float speed){
 float acceleration::getSpeed(float accel, float initialVelocity){
         float time = 0.01;
 	float deltaVelocity = (accel * time);
-        float speed = (deltaVelocity - initialVelocity);
+        float speed = (deltaVelocity + initialVelocity);
 	return speed;	
 }
 
