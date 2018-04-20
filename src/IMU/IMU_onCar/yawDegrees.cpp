@@ -12,7 +12,7 @@ double yawDegrees::getSteeringAngle(float x_accel, float y_accel){
 		double y = std::abs(y_accel);
     		double x = std::abs(x_accel);
 
-    		yawRad = acos(y/(pow(y,2) + pow(x,2)));
+    		yawRad = acos(y/(sqrt(pow(y,2) + pow(x,2))));
 		yaw =  (yawRad * 180) / M_PI;
 		yaw = floor(yaw * 100) / 100;
 		yaw = yaw * -1;	

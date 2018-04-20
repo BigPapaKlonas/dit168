@@ -21,7 +21,7 @@ int main() {
     	uint8_t distanceTraveled = 0;
 	
 	uint8_t steeringAngle = 0;
-	float initialVelocity = 0.0;
+	float initial_speed = 0.0;
 	float yaw = 0.0;
 	float sample_rate = 0.01;
 	float gyro = 0;
@@ -30,8 +30,8 @@ int main() {
 	float old_yaw = 0;
 	float distance = 0; 
 	float speed = 0;
-	
-    	readingsIMU msg;
+    	
+	readingsIMU msg;
 	
     	yawDegrees yd;
     	acceleration a;	
@@ -84,18 +84,23 @@ int main() {
 	//shifted, since the beaglebone blue is positioned sideways on the smartcar
         float x_accel = data.accel[2];
         float y_accel = data.accel[1];
-        float z_accel = data.accel[0];
-	
-        // print gyro data
+
+	if(x_accel<0.2 && x_accel>-0.1){x_accel=0.0;}
+	if(y_accel<0.5 && y_accel>-0.1){y_accel=0.0;}
+        
+	// print gyro data
          if(rc_read_gyro_data(&data)<0){
              std::cout <<"read gyro data failed\n" << std::endl;
          }
+
 	old_gyro = z_gyro;
         z_gyro = data.gyro[0];
 	
 	if(z_gyro < 1.0 && z_gyro > -1.0){z_gyro = 0.0;}
 	float delta_gyro = old_gyro - z_gyro;
 	gyro = gyro + delta_gyro;
+	
+	//
 	old_yaw = yaw;
 	yaw = yd.getHeading(x_accel, y_accel, gyro, sample_rate);
 	if (yaw < 1.0 && yaw > -1.0){yaw = 0.0;}
@@ -106,17 +111,15 @@ int main() {
 		//msg.readingSteeringAngle(yaw);
 	}
 	float accel = a.getAcceleration(x_accel, y_accel);
-	if(a.getDistanceTraveled(accel) > 0.00007){
-		distance += a.getDistanceTraveled(accel);	
+	initial_speed = speed;
+	speed = a.getSpeed(accel, initial_speed);
+	speed = std::abs(speed);
+	
+	if(a.getDistanceTraveled(accel, sample_rate) > 0.00007){
+		distance += a.getDistanceTraveled(accel, sample_rate, speed);	
 	}
-	speed = a.getSpeed(accel, initialVelocity);
-	initialVelocity = speed;
-	printf("x_accel: %4.4f   y_accel: %4.4f\n", x_accel, y_accel);
-
-	
-	printf("acceleration: %4.2f   | distanceTraveled: %4.7f\n", accel, distance);
+	//printf("distance: %4.4f \n", distance);
 	//od4.send(msg);
-	
         //rc_usleep(1000000);
         // }
 
