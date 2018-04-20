@@ -95,19 +95,17 @@ int main() {
 
 	old_gyro = z_gyro;
         z_gyro = data.gyro[0];
-	
 	if(z_gyro < 1.0 && z_gyro > -1.0){z_gyro = 0.0;}
 	float delta_gyro = old_gyro - z_gyro;
 	gyro = gyro + delta_gyro;
 	
-	//
 	old_yaw = yaw;
 	yaw = yd.getHeading(x_accel, y_accel, gyro, sample_rate);
 	if (yaw < 1.0 && yaw > -1.0){yaw = 0.0;}
 	float delta_yaw = old_yaw - yaw;
 	
 	if(delta_yaw < -5.0 || delta_yaw > 5.0 || delta_yaw == 0){
-		//printf("yaw: %4.2f degrees\n", yaw);	
+		printf("yaw: %4.2f degrees\n", yaw);	
 		//msg.readingSteeringAngle(yaw);
 	}
 	float accel = a.getAcceleration(x_accel, y_accel);
@@ -115,10 +113,9 @@ int main() {
 	speed = a.getSpeed(accel, initial_speed);
 	speed = std::abs(speed);
 	
-	if(a.getDistanceTraveled(accel, sample_rate) > 0.00007){
+	if(a.getDistanceTraveled(accel, sample_rate, speed) > 0.00007){
 		distance += a.getDistanceTraveled(accel, sample_rate, speed);	
 	}
-	//printf("distance: %4.4f \n", distance);
 	//od4.send(msg);
         //rc_usleep(1000000);
         // }

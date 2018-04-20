@@ -37,4 +37,12 @@ float yawDegrees::getHeading(float x_accel, float y_accel, float z_gyro, float d
 	return theta;
 }
 
+float yawDegrees::getGyro(float old_gyro, float z_gyro){
+	float gyro;
+	if(z_gyro < 1.0 && z_gyro > -1.0){z_gyro = 0.0;}
+	float delta_gyro = old_gyro - z_gyro;
+	gyro = gyro + delta_gyro;
+	return gyro;
+}
+
 
