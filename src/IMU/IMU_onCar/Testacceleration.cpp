@@ -18,7 +18,7 @@ TEST_CASE("Test speed 2.") {
 
 TEST_CASE("Test acceleration 3.") {
     acceleration a;		
-    float result = 1.06; // m/s		
+    float result = 1.06; // m/s²		
     REQUIRE(result == (a.getAcceleration(1.05, -0.17)));
 }
 

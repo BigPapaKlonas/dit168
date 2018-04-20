@@ -19,7 +19,7 @@ extern "C"
 int main() {
 
     	uint8_t distanceTraveled = 0;
-	uint8_t speed = 0;
+	
 	uint8_t steeringAngle = 0;
 	float initialVelocity = 0.0;
 	float yaw = 0.0;
@@ -27,7 +27,10 @@ int main() {
 	float gyro = 0;
 	float old_gyro = 0;
 	float z_gyro = 0;
- 
+	float old_yaw = 0;
+	float distance = 0; 
+	float speed = 0;
+	
     	readingsIMU msg;
 	
     	yawDegrees yd;
@@ -37,7 +40,6 @@ int main() {
     	rc_imu_data_t data;
 
     	// Instantiate a OD4Session object
-
     	cluon::OD4Session od4(111,
                           [](cluon::data::Envelope &&envelope) noexcept {
                               if (envelope.dataType() == 2202) {
@@ -47,7 +49,6 @@ int main() {
                           });
 
     	//terminate in case no OD4 session running
-
     	if(od4.isRunning() == 0)
     	{
         	std::cout << "ERROR: No od4 running!!!" << std::endl;
@@ -90,18 +91,31 @@ int main() {
              std::cout <<"read gyro data failed\n" << std::endl;
          }
 	old_gyro = z_gyro;
-
         z_gyro = data.gyro[0];
+	
 	if(z_gyro < 1.0 && z_gyro > -1.0){z_gyro = 0.0;}
 	float delta_gyro = old_gyro - z_gyro;
 	gyro = gyro + delta_gyro;
-
-	yaw = yd.getHeading(x_accel, y_accel, gyro, 0.0, sample_rate);
+	old_yaw = yaw;
+	yaw = yd.getHeading(x_accel, y_accel, gyro, sample_rate);
 	if (yaw < 1.0 && yaw > -1.0){yaw = 0.0;}
-	printf("yaw: %4.2f degrees\n", yaw);
-	//Sending data through od4 session
-	msg.readingSteeringAngle(yaw);
-	od4.send(msg);
+	float delta_yaw = old_yaw - yaw;
+	
+	if(delta_yaw < -5.0 || delta_yaw > 5.0 || delta_yaw == 0){
+		//printf("yaw: %4.2f degrees\n", yaw);	
+		//msg.readingSteeringAngle(yaw);
+	}
+	float accel = a.getAcceleration(x_accel, y_accel);
+	if(a.getDistanceTraveled(accel) > 0.00007){
+		distance += a.getDistanceTraveled(accel);	
+	}
+	speed = a.getSpeed(accel, initialVelocity);
+	initialVelocity = speed;
+	printf("x_accel: %4.4f   y_accel: %4.4f\n", x_accel, y_accel);
+
+	
+	printf("acceleration: %4.2f   | distanceTraveled: %4.7f\n", accel, distance);
+	//od4.send(msg);
 	
         //rc_usleep(1000000);
         // }
