@@ -1,0 +1,174 @@
+\documentclass[12pt]{article}
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage{amsmath}
+\usepackage{algorithm}
+\usepackage{graphicx} 		% Used to for importing images
+\usepackage{indentfirst}	% Indents 1st paragraph (by default its off)
+
+
+\setlength{\parindent}{20pt}
+
+\begin{document}
+
+\begin{titlepage}
+
+% Defines a new command to draw horizontal lines
+\newcommand{\Line}{\rule{\linewidth}{0.5mm}} 
+
+% Center everything on the page
+\center
+ 
+% textsc - capitalizes every letter
+\textsc{\LARGE University of Gothenburg}
+% Define gap after text line
+\\[3.5cm] 
+
+% Course code and name
+\textsc{\Large DIT168}\\[0.3cm]
+\textsc{\large Project: Industrial IT and Embedded Systems}\\[0.5cm]
+
+% Use the defined command to draw lines
+\Line \\[0.4cm]
+{\huge \bfseries  Appropriate Algorithms and Adapting Available Concepts for IMU Regarding Acceleration and Yaw Calculation}\\[0.4cm]
+\Line \\[0.5cm]
+ 
+% Large italic text
+\Large \textit{Author:}
+\\Isabelle Törnqvist
+ \\[4cm]
+
+% Original date for the document
+{\large Group 01} \\[0.2cm]
+{\large April 20th, 2018}
+
+
+\end{titlepage}
+
+% Creating table of contents
+\tableofcontents
+\pagebreak
+
+\section{Introduction} 
+Using an Inertial Measurement Unit to measure the yaw, velocity and distance traveled of a miniature smartcar. This specific implementation is a part of the project dashFTAB\cite{gitrepo}. 
+\section{Background}
+\subsection{Data specific to Beaglebone Blue IMU}
+The component concerned in this document is the MPU9250 9-axis IMU, included in the BeagleBone Blue board by StrawsonDesign\cite{strawson}.  
+\vspace{5mm} %5mm vertical space
+
+
+This implementation makes use of the roboticscape library. There are two modes to the roboticscape IMU: Random and DMP mode. According to documentation available by Strawson Design, the two modes can not be used simultaneously, as the DMP mode needs another configuration than the random mode.
+
+Random mode: uses a random mode to get raw readings.
+ 
+DMP mode: uses raw readings of accelerometer, magnetometer and gyroscope to calculate a filtered quaternion, useful when estimating orientation.
+
+
+\subsection{Components within the IMU}  
+
+\begin{enumerate}  
+\item Accelerometer - measures proper acceleration in the rooms three dimensions, $R^3$  
+\item Gyroscope - measures angular velocity in the rooms three dimensions, $R^3$ 
+\item Magnetometer - measures magnetism. Deemed unreliable due to the positioning of the IMU on the smartcar: magnetic interference will be high due to surrounding electronic currents.   
+\item Thermometer - will not be used in this project.
+\end{enumerate}
+
+\section{Yaw}
+
+\subsection{Background}
+
+\subsubsection{Specifics to project implementation}
+In the case of this implementation, the BeagleBone Blue board is positioned sideways on the miniature smartcar, as opposed to face-up. This will results in readings that indicate that the car is pitching, when it is in fact yawing. The interpretation of the readings in the axis must be shifted. Therefore, the z-axis becomes the x-axis, and the x-axis becomes the z-axis. For future readability within this documentation, the axises will be referred to in their shifted state, i.e. how they would be interpreted if the IMU was positioned face-up. 
+
+\subsubsection{Accelerometer}
+Accelerometer will give readings in the x-axis, $roll$, y-axis, $pitch$, and z-axis, $yaw$. Assumption would be that x and y are in the plane, $R^2$ and z-axis is in the room, $R^3$. Readings of acceleration in the z-axis would - in a idle car - always measure around  $9.8 m/s^2$ due to the earth gravitational pull.
+
+"Yaw" refers to the steering angle of a vehicle - the rotation around its z-axis. The first step is to find the yaw from the accelerometer readings. Assuming that the acceleration in the x-axis, $a_x$ and the y-axis, $a_y$ can be regarded to form the sides of a right angled triangle. 
+
+Firstly, the direction of the yaw must be accounted for: if the direction is negative, it can be assumed that the direction of the steering clockwise. 
+Formula then used is a basic trigonometric function: The cosine of an angle is the adjacent side to the hypotenuse. To get yaw, arc cosine is used on the acceleration of the y-axis to the hypotenuse. The hypotenuse is the addition of acceleration in the x-axis squared, to the acceleration in the y-axis squared. This result will be in radians:
+
+
+\begin{algorithm}                 
+    \caption{yaw in radius calculation for clockwise steering}    
+		\[yawRad = arccos\frac{a_y}{\sqrt[]{_y^2 + a_x^2}}\]
+\end{algorithm}
+
+If the direction of the yaw instead is counterclockwise, this algorithm may be used: 
+
+
+\begin{algorithm}                 
+    \caption{yaw in radius calculation for counterclockwise steering}    
+		\[yawRad = arctan2(a_x,a_y)\]
+\end{algorithm}
+
+\subsubsection{Gyroscope}
+The gyroscope readings given in this implementation needed to be stabilized. 
+ 
+
+\subsection{Method}
+
+DMP mode will not be used. It is deemed unreliable due to the unreliability of the magnetometer as previously stated, in addition to the fact that the IMU is positioned sideways. 
+
+Instead, this project will make use of a version of a complementary filter, using sensor fusion of the accelerometer and gyroscope. 
+
+\subsubsection{Sensor fusion}
+The idea of sensor fusion is to get cleaner data, by canceling out the errors and weaknesses of the two types of sensors.
+This implementation of a complementary filter high-passes readings from the fast and sensitive sensor, and low-passing data from the steady sensor, giving a result that is responsive in the short term while remaining accurate in the long term. The Low pass constant used in this project is $lpf = 0.02$ and the high pass one is defined as $hpf = 0.98$
+
+The idea of these numbers are that they add up to a frequency of 1. The high pass is derived from 
+\begin{algorithm}                 
+    \caption{high pass filter}    
+		\[hpf = \frac{\tau}{\tau + \Delta t}\]
+\end{algorithm}
+
+, where $\Delta$t is the sample rate of the gyroscope readings. Yaw is then derived from algorithm 4:
+
+
+\begin{algorithm}                 
+    \caption{yaw in radius calculation using sensor fusion}    
+		\[\theta = hpf\times ( (gyro\times \Delta t) + lpf\times acceldata\]
+\end{algorithm}
+where $\Delta$t is the sampling rate of the gyroscope readings, $accelData$ is the result of either of the two previously mentioned algorithms, and $gyro$ is the raw readings of the gyroscope in the z-axis. 
+
+\section{Velocity}
+\subsection{Background}
+
+The assumption for this project is that the acceleration in the x-axis and the acceleration in the y-axis can be interpreted as the sides of a right angled triangle. This implementation will be done in the plane $R^2$, as the car will be assumed to stay on a flat surface at all times, and not travel uphill nor downhill. This will simplify the implementation, as it doesn't account for the gravitational pull. The trade-off is as mentioned that the acceleration will be inaccurate if the car travels downhill or uphill. The combined acceleration will be derived from Pythagorean theorem regarding right angled triangles.
+
+\subsection{Method}
+As mentioned previously, the acceleration is the hypotenuse $a_h$ in the assumed right angled triangle that is composed of the sides $a_x$ and $a_y$ - which are the acceleration in x-axis and y-axis. 
+\begin{algorithm}                 
+    \caption{acceleration using Pythagorean theorem}    
+		\[a_h = \sqrt[]{{a_x² + a_y²}}\]
+\end{algorithm}
+The acceleration is used to get the distance traveled by the smartcar, in Algorithm 6. Where $s$ is the distance traveled within the sample period of $\Delta t$, and $v_0$ is the current velocity of vehicle. 
+\begin{algorithm}                 
+    \caption{Distance traveled}    
+		\[ s = vt+\frac{a\Delta t ^2}{2}\]
+\end{algorithm}
+
+The velocity of the smartcar is in turn given from the acceleration $a$ and previous velocity, $v_0$
+
+\begin{algorithm}                 
+    \caption{Speed}    
+		\[ v = a\Delta t + v_0\]
+\end{algorithm}
+
+
+\section{Result}
+The results of these implementations are quite unreliable due to the very nature of the sensors used. Both gyroscope and accelerometer give relative values and will be effected by irregularities in the environment, such as vibrations and rough ground. 
+
+The speed of the vehicle, as well as the distance traveled rely on the accelerometer alone. The sensor is sensitive to vibrations, and this will effect the given result of speed and distance.    
+
+\begin{thebibliography}{9}
+\bibitem{gitrepo} 
+https://github.com/justasAtGU/dit168
+
+\bibitem{strawson} 
+http://www.strawsondesign.com/
+
+\end{thebibliography}
+ 
+
+\end{document}
