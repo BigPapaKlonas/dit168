@@ -1,0 +1,1 @@
+The container running the image must be ran with --cid=<OpenDaVINCI session identifier> --net=host to provide the CID to the od4 session that will be created inside the container and to allow it to access other microservices such as motor-pwm
