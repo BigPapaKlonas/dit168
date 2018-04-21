@@ -1,4 +1,4 @@
-// Vera requires this "Copyright" notice
+// Vera requires this "Copyright" notice - dashFtabs 2018
 #include <cstdint>
 #include <chrono>
 #include <iostream>
@@ -7,7 +7,6 @@
 
 #include "cluon/OD4Session.hpp"
 #include "cluon/Envelope.hpp"
-
 #include "messages.hpp"
 
 int main(int argc, char **argv)
@@ -32,7 +31,7 @@ int main(int argc, char **argv)
     }
 
     // Checks CID range
-    if (CID < 1 || CID > 254)
+    if (CID <= 120 || CID >= 129)
     {
         std::cerr << "The OpenDaVINCI session identifier (CID) must be in the range 1 to 254"
                   << std::endl;
@@ -154,11 +153,11 @@ int main(int argc, char **argv)
                 od4.send(msgPedal);
                 moving = false;
                 std::this_thread::sleep_for(std::chrono::milliseconds(100));
-                std::cout << "Angle - enter a value in the range 0 to 20: " << std::endl;
+                std::cout << "Angle - enter a value in the range 0 to 38: " << std::endl;
                 std::cin >> steeringAngle;
-                while (steeringAngle < 0 || steeringAngle > 20)
+                while (steeringAngle < 0 || steeringAngle > 38)
                 {
-                    std::cout << "ERROR: the value must be in the range 0 to 20! Try again: "
+                    std::cout << "ERROR: the value must be in the range 0 to 38! Try again: "
                               << std::endl;
                     std::cin >> steeringAngle;
                 }
