@@ -71,7 +71,9 @@ The evolution of the Software Architectural Document for project dashFTABs is de
    	4th April, 2018 & 0.2 & Added Introduction & Justinas\\ \hline
    	5th April, 2018 & 0.3 & Added Use Case View & Justinas\\ \hline
    	12th April, 2018 & 0.4 & Added Sequence Diagrams for UC1-UC3 & Justinas\\ \hline
-    18th April, 2018 & 0.4.3 & Added 4+1 Vew Model to Introduction, UC1-UC3 sequence diagram descriptions to Process View & Justinas\\ \hline
+	18th April, 2018 & 0.4.3 & Added 4+1 Vew Model to Introduction, UC1-UC3 sequence diagram descriptions to Process View & Justinas\\ \hline
+	21st April, 2018 & 0.5 & Added System Context & Erik\\ \hline
+
 \end{longtable}
 \pagebreak
 
@@ -99,6 +101,50 @@ To further narrow down the intended audience the document incorporates 4+1 View 
 The "+1" of the the 4+1 View Model refers to Scenarios, which are used to describe the system behaviour. The Scenarios provide value to all stakeholders as it attempts to encapsulate the system requirements. The Scenarios have been expressed as a Use Case View. \par
 
 \pagebreak
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Adding System Context section
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{System Context}   
+\subsection{Project Context}
+Putting our software on the miniature car provides the user of the car with two main features; the ability to maneuver the car and the ability to make the car follow another car of the same type. The user controls, and maneuvers, the car through a web-based interface, the web remote controller, where one also can engage the car's following mode which shall result in the car starting to follow another.
+
+A simple domain model was created further improve the understanding of data flow and the interactions between different system parts. 
+%Adding image
+\FloatBarrier % -> Wrap image with this, to make sure text does not go infront of image if theres room
+\begin{figure}
+\centering
+%Make image as wide as the line
+\includegraphics[width=\linewidth]{Diagrams/DomainModel.png}
+\caption{Domain Model}
+\label{fig:domainmodel}
+\end{figure}
+\FloatBarrier % -> Wrap image with this, to make sure text does not go infront of image if theres room
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% New Subsection    
+\subsection{System Interface}
+The software provides the user two way of interfacing withthe car; the so called terminal remote controller and the web remote controller. 
+
+The terminal remote controller provides the user with the ability to control the car through a simple computer terminal. Here, the user controls the car through the use of the keys. Furthermore, the user may also set the speed and the steering angle car should have when driving. Lastly, in case an obstacle is detected within a set distance, the car will break.
+
+The more extensive web remote controller provides aforementioned features, (apart from being able to set the steering angle and distance before breaking for obstacles) together with another set of functionalities. Through the web remote controller, the car's speed, heading, distance traveled and the distance to obstacles are presented. In addition, most data that the car sends, receives and processes are displayed in the interface. Lastly, the interface provides the user with a switch that chooses which mode the car shall be in; leader (the user controls the car) or follower (the car follows another car autonomously).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% New Subsection    
+\subsection{External Libraries/Images}
+To realize our software, various libraries and Docker images were used.
+
+\begin{longtable}{ | p{0.15\linewidth} | p{0.11\linewidth} | p{0.74\linewidth} | }\hline 
+	\textbf{Name} & \textbf{Link} & \textbf{Description} \\ \hline
+	libcluon & goo.gl/ jwGbj8 & Christian Berger's C++ library libcluon is the hub of our software. It is used for all communication, both internally in the car and externally to other car's.\\ \hline
+    seresearch/ 2018-dit-168 & goo.gl/ qR4uqi & From this image we run two microservices, odsupercomponent and the proxy-miniature-pwm-motor which allow our software to control the miniature car through sending messages with the libcluon library.\\ \hline
+	opendlv-device-ultrasonic-srf08-armhf & goo.gl/ N4LpsK & This image gets the front ultrasonic sensor's reading and make it available for our code to use.\\ \hline
+    Robotics Cape & goo.gl/ D4mynE & This library allows our software to access data readings from the sensors that are placed on the BeagleBone.\\ \hline
+\end{longtable}
+
+\pagebreak
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Adding section detailing architecture motivations
