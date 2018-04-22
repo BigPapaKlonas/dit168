@@ -31,9 +31,9 @@ int main(int argc, char **argv)
     }
 
     // Checks CID range
-    if (CID <= 120 || CID >= 129)
+    if (CID < 120 || CID > 129)
     {
-        std::cerr << "The OpenDaVINCI session identifier (CID) must be in the range 1 to 254"
+        std::cerr << "The OpenDaVINCI session identifier (CID) must be in the range 120 to 129"
                   << std::endl;
         return -1;
     }
