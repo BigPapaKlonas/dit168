@@ -1,18 +1,44 @@
+/********************************************************/
+/** V2V Protocol specific messages **********************/
+/********************************************************/
 message AnnouncePresence [id = 1001] {
   string vehicleIp [id = 1];
-  uint16 activePort [id = 2];
   string groupId [id = 3];
 }
 
 message FollowRequest [id = 1002] {
+  uint8 status [id = 1];
 }
 
 message FollowResponse [id = 1003] {
-  string ntpServerIp [id = 1];
+  uint8 status [id = 1];
 }
 
 message StopFollow [id = 1004] {
+  float status [id = 1];
 }
+
+message LeaderStatus [id = 2001] {
+  uint32 timestamp [id = 1];
+  float speed [id = 2];
+  float steeringAngle [id = 3];
+  uint8 distanceTraveled [id = 4];
+}
+
+message FollowerStatus [id = 3001] {
+  uint8 status [id = 1];
+}
+
+
+/********************************************************/
+/** Internal Messages ***********************************/
+/********************************************************/
+message opendlv.proxy.AccelerationReading [id = 1030] {
+  float accelerationX [id = 1];
+  float accelerationY [id = 2];
+  float accelerationZ [id = 3];
+}
+
 
 message opendlv.proxy.DistanceReading [id = 1039] {
   float distance [id = 1];
@@ -26,22 +52,21 @@ message opendlv.proxy.GroundSteeringReading [id = 1045] {
   float steeringAngle [id = 1];
 }
 
-message LeaderStatus [id = 2001] {
-  uint32 timestamp [id = 1];
-  uint8 speed [id = 2];
-  uint8 steeringAngle [id = 3];
-  uint8 distanceTraveled [id = 4];
+message opendlv.proxy.GroundSpeedReading [id = 1046] {
+  float groundSpeed [id = 1];
 }
 
+message UltrasonicFront [id = 2201] {
+  uint8 readingCm [id = 1];
+}
+
+message readingsIMU[id = 2202] {
+  uint8 readingDistanceTraveled [id = 1];
+  float readingSteeringAngle [id = 2];
+  float readingSpeed [id = 3];  
+}
 
 message RemoteModeMessage [id = 9999] {
 	uint8 mode [id = 1];
 }
 
-message FollowerStatus [id = 3001] {
-  uint32 timestamp [id = 1];
-  uint8 speed [id = 2];
-  uint8 steeringAngle [id = 3];
-  uint8 distanceFront [id = 4];
-  uint8 distanceTraveled [id = 5];
-}

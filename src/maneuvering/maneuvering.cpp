@@ -1,10 +1,12 @@
 // Vera requires this "Copyright" notice
 #include <cstdint>
+#include <cstdlib>
 #include <chrono>
 #include <iostream>
 #include <sstream>
 #include <thread>
 #include <queue>
+#include <sys/time.h>
 
 #include "cluon/OD4Session.hpp"
 #include "cluon/Envelope.hpp"
@@ -14,26 +16,29 @@
 #define FOLLOWER 0
 #define LEADER 1
 
-using namespace std;
 using namespace opendlv::proxy;
+
+uint32_t getTime();
+void follow (int timestamp, float speed, float steeringAngle, int distanceTraveled, bool emergencyBreak, int vehicleDistanceInTimeMs);
+
 
 int main(int argc, char **argv)
 {
-
     auto commandlineArguments = cluon::getCommandlineArguments(argc, argv);
     uint16_t cidPwmOds;
     uint16_t cidInternal;
     uint16_t mode = LEADER;
     bool emergencyBreak = false;
+    int vehicleDistanceInTimeMs = 1000;
 
     // In case no CID is provided
     if (commandlineArguments.count("cid_pwm_ods") == 0 || commandlineArguments.count("cid_internal") == 0)
     {
-        cerr <<"You must specify which OpenDaVINCI session identifiers (CIDs) the "
+        std::cerr <<"You must specify which OpenDaVINCI session identifiers (CIDs) the "
                     "maneuvering script shall listen to!"  << std::endl;
-        cerr <<"cid_pwn_ods for the pwm-motor and odsupercomponent microservice\n"
+        std::cerr <<"cid_pwn_ods for the pwm-motor and odsupercomponent microservice\n"
                     "and cid_internal for the internal communication CID"<< std::endl;
-        cerr << "Example: " << argv[0] << " --cid_pwm_ods=120 --cid_internal=122 " << endl;
+        std::cerr << "Example: " << argv[0] << " --cid_pwm_ods=120 --cid_internal=122 " << std::endl;
         return -1;
     }
     else
@@ -44,16 +49,16 @@ int main(int argc, char **argv)
 
     if (cidInternal < 120 || cidInternal > 129 || cidPwmOds < 120 || cidPwmOds > 129)
     {
-        cerr << "The OpenDaVINCI session identifiers (CIDs) must be in the range 120 to 129"
-                  << endl;
+        std::cerr << "The OpenDaVINCI session identifiers (CIDs) must be in the range 120 to 129"
+                  << std::endl;
         return -1;
     }
 
     // Checks CID range
     if (cidInternal == cidPwmOds)
     {
-        cerr << "The two OpenDaVINCI session identifiers (CIDs) must not be the same"
-                  << endl;
+        std::cerr << "The two OpenDaVINCI session identifiers (CIDs) must not be the same"
+                  << std::endl;
         return -1;
     }
 
@@ -64,40 +69,39 @@ int main(int argc, char **argv)
     // Check that the od4 sessions are running
      if (od4PwmOds.isRunning() == 0)
     {
-        cout << "ERROR: No OD4 responsible for the pwm-motor odsupercomponent is running!" << endl;
+        std::cout << "ERROR: No OD4 responsible for the pwm-motor odsupercomponent is running!" << std::endl;
         return -1;
     }
     else if (od4Internal.isRunning() == 0)
     {
-        cout << "ERROR: No OD4 responsible for the internal communication is running!" << endl;
+        std::cout << "ERROR: No OD4 responsible for the internal communication is running!" << std::endl;
         return -1;
     }
 
     // Struct containing the function, delegate, to be called when message, messageIdentifier, is received
     struct onMessageStruct{
         int32_t messageIdentifier;
-        function< void(cluon::data::Envelope &&envelope)> delegate;
+        std::function< void(cluon::data::Envelope &&envelope)> delegate;
     };
     onMessageStruct messageStruct;
 
     // Queues containing above structs
-    queue<onMessageStruct> queueInternal;
+    std::queue<onMessageStruct> queueInternal;
 
     GroundSteeringReading msgSteering;
     PedalPositionReading msgPedal;
 
-    // ****** Internal communication ****** //
-
+    // ****** Remote controller messages ****** //
     auto onRemoteModeMessage = [&mode](cluon::data::Envelope &&env){
-        RemoteModeMessage msg = cluon::extractMessage<RemoteModeMessage>(move(env));
-        cout << "Setting mode to " << endl;
+        RemoteModeMessage msg = cluon::extractMessage<RemoteModeMessage>(std::move(env));
+        std::cout << "Setting mode to " << std::endl;
         if (msg.mode())
         {
-            cout << "LEADER" << endl;
+            std::cout << "LEADER" << std::endl;
         }
         else
         {
-            cout << "FOLLOWER" << endl;
+            std::cout << "FOLLOWER" << std::endl;
         }
         mode = msg.mode();
     };
@@ -105,57 +109,56 @@ int main(int argc, char **argv)
     messageStruct.messageIdentifier = RemoteModeMessage::ID();
     queueInternal.push(messageStruct);
 
-    auto onPedalPositionReadingMessage = [&mode, &msgPedal, &od4PwmOds](cluon::data::Envelope &&env){
-        PedalPositionReading msg = cluon::extractMessage<PedalPositionReading>(move(env));
-        cout << "Received pedal position reading " << msg.percent() << endl;
-        if(emergencyBreakreak == false)
+    auto onPedalPositionReadingMessage = [&mode, &msgPedal, &od4PwmOds, &emergencyBreak](cluon::data::Envelope &&env){
+        PedalPositionReading msg = cluon::extractMessage<PedalPositionReading>(std::move(env));
+        std::cout << "Received pedal position reading " << msg.percent() << std::endl;
+        if(emergencyBreak == true)
         {
-            cout << "The vehicle will not move - obstacle detected within 10 cm " << endl;
-            //msgPedal.percent(0);
-            //od4PwmOds.send(msgPedal);
+            std::cout << "The vehicle will not move - obstacle detected within 10 cm " << std::endl;
             return;
         }
 
         if(mode == LEADER)
         {
-            cout << "LEADER MODE ACTIVATED, forwarding pedal reading to pwm/ods " << endl;
+            std::cout << "LEADER MODE ACTIVATED, forwarding pedal reading to pwm/ods " << std::endl;
             msgPedal.percent(msg.percent());
             od4PwmOds.send(msgPedal);
         }
         else
         {
-            cout << "LEADER DEACTIVATED, ignoring to forward pedal reading" << endl;
+            std::cout << "LEADER DEACTIVATED, ignoring to forward pedal reading" << std::endl;
         }
     };
-
     messageStruct.delegate = onPedalPositionReadingMessage;
     messageStruct.messageIdentifier = PedalPositionReading::ID();
     queueInternal.push(messageStruct);
 
     auto onGroundSteeringReadingMessage = [&mode, &msgSteering, &od4PwmOds](cluon::data::Envelope &&env){
-        GroundSteeringReading msg = cluon::extractMessage<GroundSteeringReading>(move(env));
-        cout << "Received ground steering reading " << msg.steeringAngle() << endl;
+        GroundSteeringReading msg = cluon::extractMessage<GroundSteeringReading>(std::move(env));
+        std::cout << "Received ground steering reading " << msg.steeringAngle() << std::endl;
         if(mode == LEADER)
         {
-            cout << "LEADER MODE ACTIVATED, forwarding steering angle to pwm/ods " << endl;
+            std::cout << "LEADER MODE ACTIVATED, forwarding steering angle to pwm/ods " << std::endl;
             msgSteering.steeringAngle(msg.steeringAngle());
             od4PwmOds.send(msgSteering);
         }
         else
         {
-            cout << "LEADER DEACTIVATED, ignoring to forward steering angle" << endl;
+            std::cout << "LEADER DEACTIVATED, ignoring to forward steering angle" << std::endl;
         }
     };
-
     messageStruct.delegate = onGroundSteeringReadingMessage;
     messageStruct.messageIdentifier = GroundSteeringReading::ID();
     queueInternal.push(messageStruct);
 
-    auto onUltrasonicReadingMessage = [&mode, &msgSteering, &msgPedal, &od4PwmOds](cluon::data::Envelope &&env){
-        DistanceReading msg = cluon::extractMessage<DistanceReading>(move(env));
+
+    // *********** Sensor messages ************ //
+    auto onUltrasonicReadingMessage = [&mode, &msgSteering, &msgPedal, &od4PwmOds, &emergencyBreak](cluon::data::Envelope &&env){
+        DistanceReading msg = cluon::extractMessage<DistanceReading>(std::move(env));
         if(msg.distance() <= 10 && emergencyBreak == false)
         {
-            cout << "STOPS! Ultrasonic reading below 10 cm: " << msg.distance() << endl;
+            emergencyBreak = true;
+            std::cout << "STOPS! Ultrasonic reading below 10 cm: " << msg.distance() << std::endl;
             msgSteering.steeringAngle(0);
             msgPedal.percent(0);
             od4PwmOds.send(msgSteering);
@@ -166,12 +169,23 @@ int main(int argc, char **argv)
             emergencyBreak = false;
         }
     };
-
-    messageStruct.delegate = onGroundSteeringReadingMessage;
-    messageStruct.messageIdentifier = GroundSteeringReading::ID();
+    messageStruct.delegate = onUltrasonicReadingMessage;
+    messageStruct.messageIdentifier = DistanceReading::ID();
     queueInternal.push(messageStruct);
 
-    //TODO add functions to carry out when V2V messages are received, keep emergencyBreak in mind
+    // ************ V2V messages ************** //
+    auto onLeaderStatus = [&mode, &msgSteering, &msgPedal, &od4PwmOds, &emergencyBreak, &vehicleDistanceInTimeMs](cluon::data::Envelope &&env){
+        LeaderStatus msg = cluon::extractMessage<LeaderStatus>(std::move(env));
+        std::cout << "LeaderStatus received with timestamp: " << msg.timestamp() << std::endl;
+        if(mode == FOLLOWER)
+        {
+            follow(msg.timestamp(), msg.speed(), msg.steeringAngle(), msg.distanceTraveled(), emergencyBreak, vehicleDistanceInTimeMs);
+        }
+
+    };
+    messageStruct.delegate = onUltrasonicReadingMessage;
+    messageStruct.messageIdentifier = DistanceReading::ID();
+    queueInternal.push(messageStruct);
 
     // Register the lambda functions and message identifiers for each instance in queue
     while (!queueInternal.empty())
@@ -181,15 +195,54 @@ int main(int argc, char **argv)
     }
 
 
-    // ****** Autonomous driving code ****** //
-    //TODO add code for autonomous following, keep emergencyBreak in mind
-
-    cerr << "Maneuvering script v0.1" << endl;
-
+    std::cerr << "Maneuvering script v0.2" << std::endl;
     while (od4PwmOds.isRunning() && od4Internal.isRunning())
     {
 
     }
 
     return 0;
+}
+
+
+/**
+ * Function handles the autonomous following logic
+ *
+ */
+void follow (int timestamp, float speed, float steeringAngle, int distanceTraveled, bool emergencyBreak, int vehicleDistanceInTimeMs)
+{
+    if(emergencyBreak == true)
+    {
+        std::cout << "The vehicle will not move - obstacle detected within 10 cm " << std::endl;
+        return;
+    }
+    else
+    {
+        if ((getTime() + vehicleDistanceInTimeMs) < timestamp)
+        {
+            std::this_thread::sleep_for(std::chrono::milliseconds(getTime() + vehicleDistanceInTimeMs - timestamp));
+
+        }
+        else if (abs(getTime() + vehicleDistanceInTimeMs - timestamp) < 200)
+        {
+            // Execute action
+        }
+        else
+        {
+            std::cout << " The LeaderStatus received is too old to act on realibly " << std::endl;
+        }
+
+    }
+}
+
+/**
+* Gets current time in milliseconds.
+*
+* @return current time in milliseconds
+*/
+uint32_t getTime()
+{
+    timeval time;
+    gettimeofday(&time, nullptr);
+    return (uint32_t ) time.tv_usec / 1000;
 }
