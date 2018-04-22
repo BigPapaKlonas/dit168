@@ -24,6 +24,7 @@ int main(int argc, char **argv)
     uint16_t cidPwmOds;
     uint16_t cidInternal;
     uint16_t mode = LEADER;
+    bool emergencyBreak = false;
 
     // In case no CID is provided
     if (commandlineArguments.count("cid_pwm_ods") == 0 || commandlineArguments.count("cid_internal") == 0)
@@ -41,10 +42,9 @@ int main(int argc, char **argv)
         cidInternal = stoi(commandlineArguments["cid_internal"]);
     }
 
-    // Checks CID range
-    if ((cidInternal < 1 || cidInternal > 254) || (cidPwmOds < 1 || cidPwmOds > 254))
+    if (cidInternal < 120 || cidInternal > 129 || cidPwmOds < 120 || cidPwmOds > 129)
     {
-        cerr << "The OpenDaVINCI session identifiers (CIDs) must be in the range 1 to 254"
+        cerr << "The OpenDaVINCI session identifiers (CIDs) must be in the range 120 to 129"
                   << endl;
         return -1;
     }
@@ -87,6 +87,7 @@ int main(int argc, char **argv)
     PedalPositionReading msgPedal;
 
     // ****** Internal communication ****** //
+
     auto onRemoteModeMessage = [&mode](cluon::data::Envelope &&env){
         RemoteModeMessage msg = cluon::extractMessage<RemoteModeMessage>(move(env));
         cout << "Setting mode to " << endl;
@@ -107,6 +108,14 @@ int main(int argc, char **argv)
     auto onPedalPositionReadingMessage = [&mode, &msgPedal, &od4PwmOds](cluon::data::Envelope &&env){
         PedalPositionReading msg = cluon::extractMessage<PedalPositionReading>(move(env));
         cout << "Received pedal position reading " << msg.percent() << endl;
+        if(emergencyBreakreak == false)
+        {
+            cout << "The vehicle will not move - obstacle detected within 10 cm " << endl;
+            //msgPedal.percent(0);
+            //od4PwmOds.send(msgPedal);
+            return;
+        }
+
         if(mode == LEADER)
         {
             cout << "LEADER MODE ACTIVATED, forwarding pedal reading to pwm/ods " << endl;
@@ -142,8 +151,27 @@ int main(int argc, char **argv)
     messageStruct.messageIdentifier = GroundSteeringReading::ID();
     queueInternal.push(messageStruct);
 
+    auto onUltrasonicReadingMessage = [&mode, &msgSteering, &msgPedal, &od4PwmOds](cluon::data::Envelope &&env){
+        DistanceReading msg = cluon::extractMessage<DistanceReading>(move(env));
+        if(msg.distance() <= 10 && emergencyBreak == false)
+        {
+            cout << "STOPS! Ultrasonic reading below 10 cm: " << msg.distance() << endl;
+            msgSteering.steeringAngle(0);
+            msgPedal.percent(0);
+            od4PwmOds.send(msgSteering);
+            od4PwmOds.send(msgPedal);
+        }
+        else if(msg.distance() > 10 && emergencyBreak == true)
+        {
+            emergencyBreak = false;
+        }
+    };
 
-    //TODO add functions to carry out when V2V messages are received
+    messageStruct.delegate = onGroundSteeringReadingMessage;
+    messageStruct.messageIdentifier = GroundSteeringReading::ID();
+    queueInternal.push(messageStruct);
+
+    //TODO add functions to carry out when V2V messages are received, keep emergencyBreak in mind
 
     // Register the lambda functions and message identifiers for each instance in queue
     while (!queueInternal.empty())
@@ -154,7 +182,7 @@ int main(int argc, char **argv)
 
 
     // ****** Autonomous driving code ****** //
-    //TODO add code for autonomous following
+    //TODO add code for autonomous following, keep emergencyBreak in mind
 
     cerr << "Maneuvering script v0.1" << endl;
 
