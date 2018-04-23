@@ -1,17 +1,6 @@
 // Vera requires this "Copyright" notice
-#include <cstdint>
-#include <cstdlib>
-#include <chrono>
-#include <iostream>
-#include <sstream>
-#include <thread>
-#include <queue>
-#include <sys/time.h>
 
-#include "cluon/OD4Session.hpp"
-#include "cluon/Envelope.hpp"
-
-#include "messages.hpp"
+#include "maneuvering.h"
 
 #define FOLLOWER 0
 #define LEADER 1
@@ -19,11 +8,13 @@
 using namespace opendlv::proxy;
 
 uint32_t getTime();
-void follow (int timestamp, float speed, float steeringAngle, int distanceTraveled, bool emergencyBreak, int vehicleDistanceInTimeMs);
+void follow (int timestamp, float speed, float steeringAngle, int distanceTraveled, bool emergencyBreak,
+             int vehicleDistanceInTimeMs);
 
 
 int main(int argc, char **argv)
 {
+
     auto commandlineArguments = cluon::getCommandlineArguments(argc, argv);
     uint16_t cidPwmOds;
     uint16_t cidInternal;
@@ -63,11 +54,11 @@ int main(int argc, char **argv)
     }
 
     // Initializing od4 session for odsupercomponent/pwm-motor and internal communication
-    cluon::OD4Session od4PwmOds(cidPwmOds);
+    od4PwmOds = std::make_shared<cluon::OD4Session>(cidPwmOds);
     cluon::OD4Session od4Internal(cidInternal);
 
     // Check that the od4 sessions are running
-     if (od4PwmOds.isRunning() == 0)
+     if (od4PwmOds->isRunning() == 0)
     {
         std::cout << "ERROR: No OD4 responsible for the pwm-motor odsupercomponent is running!" << std::endl;
         return -1;
@@ -109,7 +100,7 @@ int main(int argc, char **argv)
     messageStruct.messageIdentifier = RemoteModeMessage::ID();
     queueInternal.push(messageStruct);
 
-    auto onPedalPositionReadingMessage = [&mode, &msgPedal, &od4PwmOds, &emergencyBreak](cluon::data::Envelope &&env){
+    auto onPedalPositionReadingMessage = [&mode, &msgPedal, &emergencyBreak](cluon::data::Envelope &&env){
         PedalPositionReading msg = cluon::extractMessage<PedalPositionReading>(std::move(env));
         std::cout << "Received pedal position reading " << msg.percent() << std::endl;
         if(emergencyBreak == true)
@@ -122,7 +113,7 @@ int main(int argc, char **argv)
         {
             std::cout << "LEADER MODE ACTIVATED, forwarding pedal reading to pwm/ods " << std::endl;
             msgPedal.percent(msg.percent());
-            od4PwmOds.send(msgPedal);
+            od4PwmOds->send(msgPedal);
         }
         else
         {
@@ -133,14 +124,14 @@ int main(int argc, char **argv)
     messageStruct.messageIdentifier = PedalPositionReading::ID();
     queueInternal.push(messageStruct);
 
-    auto onGroundSteeringReadingMessage = [&mode, &msgSteering, &od4PwmOds](cluon::data::Envelope &&env){
+    auto onGroundSteeringReadingMessage = [&mode, &msgSteering](cluon::data::Envelope &&env){
         GroundSteeringReading msg = cluon::extractMessage<GroundSteeringReading>(std::move(env));
         std::cout << "Received ground steering reading " << msg.steeringAngle() << std::endl;
         if(mode == LEADER)
         {
             std::cout << "LEADER MODE ACTIVATED, forwarding steering angle to pwm/ods " << std::endl;
             msgSteering.steeringAngle(msg.steeringAngle());
-            od4PwmOds.send(msgSteering);
+            od4PwmOds->send(msgSteering);
         }
         else
         {
@@ -153,7 +144,7 @@ int main(int argc, char **argv)
 
 
     // *********** Sensor messages ************ //
-    auto onUltrasonicReadingMessage = [&mode, &msgSteering, &msgPedal, &od4PwmOds, &emergencyBreak](cluon::data::Envelope &&env){
+    auto onUltrasonicReadingMessage = [&mode, &msgSteering, &msgPedal, &emergencyBreak](cluon::data::Envelope &&env){
         DistanceReading msg = cluon::extractMessage<DistanceReading>(std::move(env));
         if(msg.distance() <= 10 && emergencyBreak == false)
         {
@@ -161,8 +152,8 @@ int main(int argc, char **argv)
             std::cout << "STOPS! Ultrasonic reading below 10 cm: " << msg.distance() << std::endl;
             msgSteering.steeringAngle(0);
             msgPedal.percent(0);
-            od4PwmOds.send(msgSteering);
-            od4PwmOds.send(msgPedal);
+            od4PwmOds->send(msgSteering);
+            od4PwmOds->send(msgPedal);
         }
         else if(msg.distance() > 10 && emergencyBreak == true)
         {
@@ -174,17 +165,18 @@ int main(int argc, char **argv)
     queueInternal.push(messageStruct);
 
     // ************ V2V messages ************** //
-    auto onLeaderStatus = [&mode, &msgSteering, &msgPedal, &od4PwmOds, &emergencyBreak, &vehicleDistanceInTimeMs](cluon::data::Envelope &&env){
+    auto onLeaderStatus = [&mode, &msgSteering, &msgPedal, &emergencyBreak, &vehicleDistanceInTimeMs](cluon::data::Envelope &&env){
         LeaderStatus msg = cluon::extractMessage<LeaderStatus>(std::move(env));
         std::cout << "LeaderStatus received with timestamp: " << msg.timestamp() << std::endl;
         if(mode == FOLLOWER)
         {
-            follow(msg.timestamp(), msg.speed(), msg.steeringAngle(), msg.distanceTraveled(), emergencyBreak, vehicleDistanceInTimeMs);
+            follow(msg.timestamp(), msg.speed(), msg.steeringAngle(), msg.distanceTraveled(), emergencyBreak,
+                   vehicleDistanceInTimeMs);
         }
 
     };
-    messageStruct.delegate = onUltrasonicReadingMessage;
-    messageStruct.messageIdentifier = DistanceReading::ID();
+    messageStruct.delegate = onLeaderStatus;
+    messageStruct.messageIdentifier = LeaderStatus::ID();
     queueInternal.push(messageStruct);
 
     // Register the lambda functions and message identifiers for each instance in queue
@@ -196,7 +188,7 @@ int main(int argc, char **argv)
 
 
     std::cerr << "Maneuvering script v0.2" << std::endl;
-    while (od4PwmOds.isRunning() && od4Internal.isRunning())
+    while (od4PwmOds->isRunning() && od4Internal.isRunning())
     {
 
     }
@@ -218,6 +210,19 @@ void follow (int timestamp, float speed, float steeringAngle, int distanceTravel
     }
     else
     {
+
+        std::cout << "Forwarding speed and steering angle " << std::endl;
+
+        GroundSteeringReading msgSteering;
+        PedalPositionReading msgPedal;
+
+        msgSteering.steeringAngle(steeringAngle);
+        od4PwmOds->send(msgSteering);
+
+        msgPedal.percent(speed);
+        od4PwmOds->send(msgPedal);
+
+        /*
         if ((getTime() + vehicleDistanceInTimeMs) < timestamp)
         {
             std::this_thread::sleep_for(std::chrono::milliseconds(getTime() + vehicleDistanceInTimeMs - timestamp));
@@ -231,7 +236,7 @@ void follow (int timestamp, float speed, float steeringAngle, int distanceTravel
         {
             std::cout << " The LeaderStatus received is too old to act on realibly " << std::endl;
         }
-
+        **/
     }
 }
 
