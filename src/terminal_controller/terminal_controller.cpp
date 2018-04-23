@@ -43,8 +43,8 @@ int main(int argc, char **argv)
     opendlv::proxy::PedalPositionReading msgPedal;
 
     // Variables
-    float speed = 0.3;
-    float steeringAngle = 15.0;
+    float speed = 0.15;
+    float steeringAngle = 0.10;
     float stopBeforeObstacleDistance = 0.45;
     bool moving = false;
     bool exit = false;
@@ -153,11 +153,11 @@ int main(int argc, char **argv)
                 od4.send(msgPedal);
                 moving = false;
                 std::this_thread::sleep_for(std::chrono::milliseconds(100));
-                std::cout << "Angle - enter a value in the range 0 to 38: " << std::endl;
+                std::cout << "Angle - enter a value in the range 0 to 1: " << std::endl;
                 std::cin >> steeringAngle;
-                while (steeringAngle < 0 || steeringAngle > 38)
+                while (steeringAngle < 0 || steeringAngle > 1)
                 {
-                    std::cout << "ERROR: the value must be in the range 0 to 38! Try again: "
+                    std::cout << "ERROR: the value must be in the range 0 to 1! Try again: "
                               << std::endl;
                     std::cin >> steeringAngle;
                 }
@@ -169,11 +169,11 @@ int main(int argc, char **argv)
                 moving = false;
                 std::this_thread::sleep_for(std::chrono::milliseconds(100));
                 std::cout << "Distance to obstacle when start breaking - enter a value in the range"
-                        "0.0 - 1.0: " << std::endl;
+                        "0 - 58: " << std::endl;
                 std::cin >> stopBeforeObstacleDistance;
-                while (stopBeforeObstacleDistance < 0 || stopBeforeObstacleDistance > 1)
+                while (stopBeforeObstacleDistance < 0 || stopBeforeObstacleDistance > 58)
                 {
-                    std::cout << "ERROR: the value must be in the range 0.0 to 1.0! Try again: "
+                    std::cout << "ERROR: the value must be in the range 0 to 58! Try again: "
                               << std::endl;
                     std::cin >> stopBeforeObstacleDistance;
                 }
