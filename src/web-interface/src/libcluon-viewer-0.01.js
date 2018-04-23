@@ -24,6 +24,8 @@ var g_pause = false;
 var ws = null;
 var lc = null;
 
+var role = false;
+
 
 var sliderSpeed = document.getElementById("speedRange");
 sliderSpeed.value = 20;
@@ -59,6 +61,104 @@ $(document).ready(function(){
     console.log(speed);
   }
 });
+
+function role_choise() {
+
+  role = !role;
+  
+  let status_text = document.getElementById('status_text');
+
+  let forward_btn = document.getElementById('ForwardBtn');
+  let left_btn = document.getElementById('LeftBtn');
+  let right_btn = document.getElementById('RightBtn');
+
+  let role_btn = document.getElementById('role_btn');
+
+  var jsonMessageToBeSent;
+
+  if(role){
+    jsonMessageToBeSent = "{\"current\":1.0}";
+    status_text.innerText = "[STATUS] : Leader";
+    forward_btn.disabled = false;
+    left_btn.disabled = false;
+    right_btn.disabled = false;
+    role_btn.innerText = "Role: Leader"
+
+  } else {
+    jsonMessageToBeSent = "{\"current\":0.0}";
+    status_text.innerText = "[STATUS] : Follower";
+    forward_btn.disabled = true;
+    left_btn.disabled = true;
+    right_btn.disabled = true;
+    role_btn.innerText = "Role: Follower"
+  }
+
+  // Default speed request
+  var protoEncodedPayload = lc.encodeEnvelopeFromJSONWithoutTimeStamps(jsonMessageToBeSent, 2203, 0);  // 19 is the message identifier from your .odvd file, 0 is the senderStamp (can be 0 in your case)
+
+  strToAB = str =>
+    new Uint8Array(str.split('')
+      .map(c => c.charCodeAt(0))).buffer;
+
+  let logMsg = strToAB(protoEncodedPayload);
+  ws.send(logMsg, { binary: true });
+
+  onMessageReceived(lc, logMsg);
+
+   
+
+}
+
+function follow_request() {
+
+  // Default speed request
+  var jsonMessageToBeSent = "{\"status\":1.0}";      
+  var protoEncodedPayload = lc.encodeEnvelopeFromJSONWithoutTimeStamps(jsonMessageToBeSent, 1002, 0);  // 19 is the message identifier from your .odvd file, 0 is the senderStamp (can be 0 in your case)
+
+  strToAB = str =>
+    new Uint8Array(str.split('')
+      .map(c => c.charCodeAt(0))).buffer;
+
+  let logMsg = strToAB(protoEncodedPayload);
+  ws.send(logMsg, { binary: true });
+
+  onMessageReceived(lc, logMsg);
+
+};
+
+function follow_response() {
+
+  // Default speed request
+  var jsonMessageToBeSent = "{\"status\":1.0}";      
+  var protoEncodedPayload = lc.encodeEnvelopeFromJSONWithoutTimeStamps(jsonMessageToBeSent, 1003, 0);  // 19 is the message identifier from your .odvd file, 0 is the senderStamp (can be 0 in your case)
+
+  strToAB = str =>
+    new Uint8Array(str.split('')
+      .map(c => c.charCodeAt(0))).buffer;
+
+  let logMsg = strToAB(protoEncodedPayload);
+  ws.send(logMsg, { binary: true });
+
+  onMessageReceived(lc, logMsg);
+
+};
+
+function stop_follow() {
+
+  // Default speed request
+  var jsonMessageToBeSent = "{\"status\":1.0}";      
+  var protoEncodedPayload = lc.encodeEnvelopeFromJSONWithoutTimeStamps(jsonMessageToBeSent, 1004, 0);  // 19 is the message identifier from your .odvd file, 0 is the senderStamp (can be 0 in your case)
+
+  strToAB = str =>
+    new Uint8Array(str.split('')
+      .map(c => c.charCodeAt(0))).buffer;
+
+  let logMsg = strToAB(protoEncodedPayload);
+  ws.send(logMsg, { binary: true });
+
+  onMessageReceived(lc, logMsg);
+
+};
 
   
   // Send PedalPositionReading to od4 session

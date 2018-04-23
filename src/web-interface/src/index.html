@@ -46,6 +46,14 @@
                   id="speedRange"
                   onchange="updateSpeedInput(this.value)">
             </div>
+
+            <div id="car_msg_group" class="btn-group-vertical">
+                <button id="role_btn" class="btn" onclick="role_choise()">Role: NaN</button>
+                <button id="announce_presence" class="btn" onclick="announce_presence()">Announce presence</button>
+                <button id="follow_request" class="btn" onclick="follow_request()">Follow request</button>
+                <button id="follow_response" class="btn" onclick="follow_response()">Follow response</button>
+                <button id="stop_follow" class="btn" onclick="stop_follow()">Stop follow</button>
+            </div>
       </div>
     </sidebar>
 
@@ -212,6 +220,8 @@
 
 
     <div class="v2v">
+
+      <p id="status_text">[STATUS] : No connection</p>
       
       <div class="log-table">
         Internal Messages

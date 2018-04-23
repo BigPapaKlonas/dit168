@@ -112,16 +112,17 @@ h6{
 
 
 /* no grid support? */
+/*
 .sidebar {
   float: left;
-  width: 10.1489%;
+  width: 20%;
 }
 
 .content {
   float: right;
-  width: 88.7872%;
+  width: 80%;
 }
-
+*/
 /* make a grid */
 .wrapper {
   width: 90vw;
@@ -129,7 +130,7 @@ h6{
   margin: 0 auto;
   display: grid;
   grid-template-rows: 20% auto;
-  grid-template-columns: 200px 390px 1fr;
+  grid-template-columns: 1fr 390px 2fr;
   grid-gap: 10px;
   justify-content: center;
 
@@ -163,6 +164,17 @@ h6{
 #logo {
   height: 150px;
   width: 150px;
+}
+
+.v2v{
+  justify-content: center;
+  margin: auto;
+  align-items: center;
+  text-align: center;
+}
+
+#car_msg_group > * {
+  background-color: #8ACC74;
 }
 
 

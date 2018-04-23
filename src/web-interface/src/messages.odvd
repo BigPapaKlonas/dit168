@@ -33,6 +33,11 @@ message FollowerStatus [id = 3001] {
 /********************************************************/
 /** Internal Messages ***********************************/
 /********************************************************/
+
+message Role [id = 2203] {
+  uint8 current [id = 1];
+}
+
 message opendlv.proxy.AccelerationReading [id = 1030] {
   float accelerationX [id = 1];
   float accelerationY [id = 2];
@@ -59,7 +64,7 @@ message opendlv.proxy.DistanceReading [id = 1039] {
   float distance [id = 1];
 }
 
-message readingsIMU[id = 2202] {
+message readingsIMU [id = 2202] {
   uint8 readingDistanceTraveled [id = 1];
   float readingSteeringAngle [id = 2];
   float readingSpeed [id = 3];  
