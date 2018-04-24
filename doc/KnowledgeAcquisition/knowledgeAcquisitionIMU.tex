@@ -91,7 +91,7 @@ Formula then used is a basic trigonometric function: The cosine of an angle is t
 
 \begin{algorithm}                 
     \caption{yaw in radius calculation for clockwise steering}    
-		\[yawRad = arccos\frac{a_y}{\sqrt[]{_y^2 + a_x^2}}\]
+		\[yawRad = arccos\frac{a_y}{\sqrt[]{a_y^2 + a_x^2}}\]
 \end{algorithm}
 
 If the direction of the yaw instead is counterclockwise, this algorithm may be used: 
@@ -118,7 +118,7 @@ This implementation of a complementary filter high-passes readings from the fast
 
 The idea of these numbers are that they add up to a frequency of 1. The high pass is derived from 
 \begin{algorithm}                 
-    \caption{high pass filter}    
+    \caption{high pass constant}    
 		\[hpf = \frac{\tau}{\tau + \Delta t}\]
 \end{algorithm}
 
@@ -127,7 +127,7 @@ The idea of these numbers are that they add up to a frequency of 1. The high pas
 
 \begin{algorithm}                 
     \caption{yaw in radius calculation using sensor fusion}    
-		\[\theta = hpf\times ( (gyro\times \Delta t) + lpf\times acceldata\]
+		\[\theta = hpf\times (gyro\times \Delta t) + lpf\times acceldata\]
 \end{algorithm}
 where $\Delta$t is the sampling rate of the gyroscope readings, $accelData$ is the result of either of the two previously mentioned algorithms, and $gyro$ is the raw readings of the gyroscope in the z-axis. 
 
