@@ -19,23 +19,26 @@ int main(int argc, char **argv)
     uint16_t cidPwmOds;
     uint16_t cidInternal;
     uint16_t mode = LEADER;
+    int offset = 0;
     bool emergencyBreak = false;
     int vehicleDistanceInTimeMs = 1000;
 
     // In case no CID is provided
-    if (commandlineArguments.count("cid_pwm_ods") == 0 || commandlineArguments.count("cid_internal") == 0)
+    if (commandlineArguments.count("cid_pwm_ods") == 0 || commandlineArguments.count("cid_internal") == 0
+            || commandlineArguments.count("offset") == 0)
     {
         std::cerr <<"You must specify which OpenDaVINCI session identifiers (CIDs) the "
-                    "maneuvering script shall listen to!"  << std::endl;
+                    "maneuvering script shall listen to! And the offset!"  << std::endl;
         std::cerr <<"cid_pwn_ods for the pwm-motor and odsupercomponent microservice\n"
                     "and cid_internal for the internal communication CID"<< std::endl;
-        std::cerr << "Example: " << argv[0] << " --cid_pwm_ods=120 --cid_internal=122 " << std::endl;
+        std::cerr << "Example: " << argv[0] << " --cid_pwm_ods=120 --cid_internal=122 --offset=0.5" << std::endl;
         return -1;
     }
     else
     {
         cidPwmOds = stoi(commandlineArguments["cid_pwm_ods"]);
         cidInternal = stoi(commandlineArguments["cid_internal"]);
+        offset = stoi(commandlineArguments["offset"]);
     }
 
     if (cidInternal < 120 || cidInternal > 129 || cidPwmOds < 120 || cidPwmOds > 129)
@@ -52,6 +55,14 @@ int main(int argc, char **argv)
                   << std::endl;
         return -1;
     }
+
+    if (offset < 0 || offset > 1)
+    {
+        std::cerr << "The offset must be in the interval 0-1"
+                  << std::endl;
+        return -1;
+    }
+
 
     // Initializing od4 session for odsupercomponent/pwm-motor and internal communication
     od4PwmOds = std::make_shared<cluon::OD4Session>(cidPwmOds);
@@ -84,9 +95,9 @@ int main(int argc, char **argv)
 
     // ****** Remote controller messages ****** //
     auto onRemoteModeMessage = [&mode](cluon::data::Envelope &&env){
-        RemoteModeMessage msg = cluon::extractMessage<RemoteModeMessage>(std::move(env));
+        Role msg = cluon::extractMessage<Role>(std::move(env));
         std::cout << "Setting mode to " << std::endl;
-        if (msg.mode())
+        if (msg.current())
         {
             std::cout << "LEADER" << std::endl;
         }
@@ -94,13 +105,13 @@ int main(int argc, char **argv)
         {
             std::cout << "FOLLOWER" << std::endl;
         }
-        mode = msg.mode();
+        mode = msg.current();
     };
     messageStruct.delegate = onRemoteModeMessage;
-    messageStruct.messageIdentifier = RemoteModeMessage::ID();
+    messageStruct.messageIdentifier = Role::ID();
     queueInternal.push(messageStruct);
 
-    auto onPedalPositionReadingMessage = [&mode, &msgPedal, &emergencyBreak](cluon::data::Envelope &&env){
+    auto onPedalPositionReadingMessage = [&offset, &mode, &msgPedal, &msgSteering, &emergencyBreak](cluon::data::Envelope &&env){
         PedalPositionReading msg = cluon::extractMessage<PedalPositionReading>(std::move(env));
         std::cout << "Received pedal position reading " << msg.percent() << std::endl;
         if(emergencyBreak == true)
@@ -112,6 +123,8 @@ int main(int argc, char **argv)
         if(mode == LEADER)
         {
             std::cout << "LEADER MODE ACTIVATED, forwarding pedal reading to pwm/ods " << std::endl;
+            msgSteering.steeringAngle(-offset);
+            od4PwmOds->send(msgSteering);
             msgPedal.percent(msg.percent());
             od4PwmOds->send(msgPedal);
         }
