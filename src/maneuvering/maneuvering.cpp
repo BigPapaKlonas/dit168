@@ -19,7 +19,7 @@ int main(int argc, char **argv)
     uint16_t cidPwmOds;
     uint16_t cidInternal;
     uint16_t mode = LEADER;
-    int offset = 0;
+    float offset = 0;
     bool emergencyBreak = false;
     int vehicleDistanceInTimeMs = 1000;
 
@@ -38,7 +38,7 @@ int main(int argc, char **argv)
     {
         cidPwmOds = stoi(commandlineArguments["cid_pwm_ods"]);
         cidInternal = stoi(commandlineArguments["cid_internal"]);
-        offset = stoi(commandlineArguments["offset"]);
+        offset = stof(commandlineArguments["offset"]);
     }
 
     if (cidInternal < 120 || cidInternal > 129 || cidPwmOds < 120 || cidPwmOds > 129)
@@ -127,6 +127,7 @@ int main(int argc, char **argv)
             od4PwmOds->send(msgSteering);
             msgPedal.percent(msg.percent());
             od4PwmOds->send(msgPedal);
+
         }
         else
         {
