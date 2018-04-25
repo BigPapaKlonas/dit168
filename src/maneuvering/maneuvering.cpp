@@ -7,7 +7,7 @@
 
 using namespace opendlv::proxy;
 
-uint32_t getTime();
+uint64_t getTime();
 void follow (int timestamp, float speed, float steeringAngle, int distanceTraveled, bool emergencyBreak,
              int vehicleDistanceInTimeMs);
 
@@ -22,16 +22,18 @@ int main(int argc, char **argv)
     float offset = 0;
     bool emergencyBreak = false;
     int vehicleDistanceInTimeMs = 1000;
+    int emergencyBreakDistance = 0;
 
     // In case no CID is provided
     if (commandlineArguments.count("cid_pwm_ods") == 0 || commandlineArguments.count("cid_internal") == 0
-            || commandlineArguments.count("offset") == 0)
+            || commandlineArguments.count("offset") == 0 || commandlineArguments.count("emergency_break_distance") == 0)
     {
         std::cerr <<"You must specify which OpenDaVINCI session identifiers (CIDs) the "
-                    "maneuvering script shall listen to! And the offset!"  << std::endl;
+                    "maneuvering script shall listen to! And the offset! And emergency break distance in cm"  << std::endl;
         std::cerr <<"cid_pwn_ods for the pwm-motor and odsupercomponent microservice\n"
                     "and cid_internal for the internal communication CID"<< std::endl;
-        std::cerr << "Example: " << argv[0] << " --cid_pwm_ods=120 --cid_internal=122 --offset=0.5" << std::endl;
+        std::cerr << "Example: " << argv[0] << " --cid_pwm_ods=120 --cid_internal=122 --offset=0.5 "
+                "--emergency_break_distance=10" << std::endl;
         return -1;
     }
     else
@@ -39,6 +41,7 @@ int main(int argc, char **argv)
         cidPwmOds = stoi(commandlineArguments["cid_pwm_ods"]);
         cidInternal = stoi(commandlineArguments["cid_internal"]);
         offset = stof(commandlineArguments["offset"]);
+        emergencyBreakDistance = stoi(commandlineArguments["emergency_break_distance"]);
     }
 
     if (cidInternal < 120 || cidInternal > 129 || cidPwmOds < 120 || cidPwmOds > 129)
@@ -111,12 +114,13 @@ int main(int argc, char **argv)
     messageStruct.messageIdentifier = Role::ID();
     queueInternal.push(messageStruct);
 
-    auto onPedalPositionReadingMessage = [&offset, &mode, &msgPedal, &msgSteering, &emergencyBreak](cluon::data::Envelope &&env){
+    auto onPedalPositionReadingMessage = [&offset, &mode, &msgPedal, &msgSteering, &emergencyBreak, &emergencyBreakDistance]
+            (cluon::data::Envelope &&env){
         PedalPositionReading msg = cluon::extractMessage<PedalPositionReading>(std::move(env));
         std::cout << "Received pedal position reading " << msg.percent() << std::endl;
         if(emergencyBreak == true)
         {
-            std::cout << "The vehicle will not move - obstacle detected within 10 cm " << std::endl;
+            std::cout << "The vehicle will not move - obstacle detected within " << emergencyBreakDistance << " cm"<< std::endl;
             return;
         }
 
@@ -158,18 +162,17 @@ int main(int argc, char **argv)
 
 
     // *********** Sensor messages ************ //
-    auto onUltrasonicReadingMessage = [&mode, &msgSteering, &msgPedal, &emergencyBreak](cluon::data::Envelope &&env){
+    auto onUltrasonicReadingMessage = [&mode, &msgSteering, &msgPedal, &emergencyBreak, &emergencyBreakDistance]
+            (cluon::data::Envelope &&env){
         DistanceReading msg = cluon::extractMessage<DistanceReading>(std::move(env));
-        if(msg.distance() <= 10 && emergencyBreak == false)
+        if(msg.distance()*100 <= emergencyBreakDistance && emergencyBreak == false)
         {
             emergencyBreak = true;
-            std::cout << "STOPS! Ultrasonic reading below 10 cm: " << msg.distance() << std::endl;
-            msgSteering.steeringAngle(0);
             msgPedal.percent(0);
-            od4PwmOds->send(msgSteering);
             od4PwmOds->send(msgPedal);
+            std::cout << "STOPS! Ultrasonic reading: " << msg.distance()*100 << " cm" << std::endl;
         }
-        else if(msg.distance() > 10 && emergencyBreak == true)
+        else if(msg.distance()*100 > emergencyBreakDistance && emergencyBreak == true)
         {
             emergencyBreak = false;
         }
@@ -259,9 +262,9 @@ void follow (int timestamp, float speed, float steeringAngle, int distanceTravel
 *
 * @return current time in milliseconds
 */
-uint32_t getTime()
+uint64_t getTime()
 {
     timeval time;
     gettimeofday(&time, nullptr);
-    return (uint32_t ) time.tv_usec / 1000;
+    return (uint64_t ) time.tv_usec / 1000;
 }
