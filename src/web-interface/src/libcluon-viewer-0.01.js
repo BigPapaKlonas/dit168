@@ -83,7 +83,7 @@ function send_leader_id(){
   var id = document.getElementById("leader_id_input").value;
 
   var jsonMessageToBeSent = "{\"groupId\":" + id + "}";      
-  var protoEncodedPayload = lc.encodeEnvelopeFromJSONWithoutTimeStamps(jsonMessageToBeSent, 1002, 0);  // 19 is the message identifier from your .odvd file, 0 is the senderStamp (can be 0 in your case)
+  var protoEncodedPayload = lc.encodeEnvelopeFromJSONWithoutTimeStamps(jsonMessageToBeSent, 2204, 0);  // 19 is the message identifier from your .odvd file, 0 is the senderStamp (can be 0 in your case)
 
   strToAB = str =>
     new Uint8Array(str.split('')
