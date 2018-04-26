@@ -69,7 +69,7 @@ td.field-value {
 .bottomKeys{
   display: flex;
   align-content: center;
-  justify-content: space-between;
+  justify-content: space-evenly;
 }
 
 #ForwardBtn {
@@ -82,7 +82,12 @@ td.field-value {
   background-color: #8ACC74;
   border: none;
   border-radius: 5px;
+}
 
+#BackBtn{
+  background-color: #8ACC74;
+  border: none;
+  border-radius: 5px;
 }
 
 #RightBtn {
@@ -288,3 +293,4 @@ h6{
   border-color: transparent;
 }
 }
+

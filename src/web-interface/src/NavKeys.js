@@ -14,32 +14,39 @@ var key_right = 39;
 var key_A_left = 65;
 var key_W_forward = 87;
 var key_D_right = 68;
+var key_S_down = 83;
 
 function initializeNavKeys() {
 
-    var keyState = [false, false, false];
+    var keyState = [false, false, false, false];
 
 
     //when arrow key is pressed down and keyState is false (keyState used to not flood with messages)
     $(document).keydown(function (e) {
         if( $("#LeftBtn").is(":enabled") ) {
-            if ((e.keyCode == key_left || e.keyCode == key_A_left) && !keyState[0]){
+            if (e.keyCode == key_A_left && !keyState[0]){
                 
                 keyState[0] = true;
-                document.getElementById("LeftBtn").style.backgroundColor = "gray";
+                document.getElementById("LeftBtn").style.backgroundColor = "rgb(54, 80, 46)";
                 turn("left");
             }
-            if ((e.keyCode == key_forward || e.keyCode == key_W_forward ) && !keyState[1]){
+            if (e.keyCode == key_W_forward && !keyState[1]){
                 keyState[1] = true;
                 
-                document.getElementById("ForwardBtn").style.backgroundColor = "gray";
+                document.getElementById("ForwardBtn").style.backgroundColor = "rgb(54, 80, 46)";
                 move("forward");
             }
-            if ((e.keyCode == key_right || e.keyCode == key_D_right) && !keyState[2]){
+            if (e.keyCode == key_D_right && !keyState[2]){
                 
                 keyState[2] = true;
-                document.getElementById("RightBtn").style.backgroundColor = "gray";
+                document.getElementById("RightBtn").style.backgroundColor = "rgb(54, 80, 46)";
                 turn("right");
+            }
+            if(e.keyCode == key_S_down && !keyState[3]){
+                keyState[3] = true;
+                
+                document.getElementById("BackBtn").style.backgroundColor = "rgb(54, 80, 46)";
+                move("back");
             }
         }
     });
@@ -47,20 +54,26 @@ function initializeNavKeys() {
     //when arrow key is released
     $(document).keyup(function (e) {
         if( $("#LeftBtn").is(":enabled") ) {
-            if (e.keyCode == key_left || e.keyCode == key_A_left){
+            if (e.keyCode == key_A_left){
                 keyState[0] = false;
                 document.getElementById("LeftBtn").style.backgroundColor = "";
                 turn("straight");
             }
-            if (e.keyCode == key_forward || e.keyCode == key_W_forward){
+            if (e.keyCode == key_W_forward){
                 keyState[1] = false;
                 document.getElementById("ForwardBtn").style.backgroundColor = "";
                 move("stop");
             }
-            if (e.keyCode == key_right || e.keyCode == key_D_right){
+            if (e.keyCode == key_D_right){
                 keyState[2] = false;
                 document.getElementById("RightBtn").style.backgroundColor = "";
                 turn("straight");
+            }
+            if(e.keyCode == key_S_down){
+                keyState[3] = false;
+                
+                document.getElementById("BackBtn").style.backgroundColor = "";
+                move("stop");
             }
         }
     });

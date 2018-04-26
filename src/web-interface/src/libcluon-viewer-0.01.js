@@ -197,7 +197,9 @@ function stop_follow() {
 
     //In case provided parameter is going forward, take speed from global variable
     if (direction == "forward"){
-          jsonMessageToBeSent = "{\"percent\":" + speed + "}";      
+      jsonMessageToBeSent = "{\"percent\":" + speed + "}";      
+    } else if(direction == "back"){
+      jsonMessageToBeSent = "{\"percent\":" + (-1 * speed) + "}";
     }
 
    var protoEncodedPayload = lc.encodeEnvelopeFromJSONWithoutTimeStamps(jsonMessageToBeSent, 1041, 0);  // 19 is the message identifier from your .odvd file, 0 is the senderStamp (can be 0 in your case)
