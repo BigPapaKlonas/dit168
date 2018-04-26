@@ -38,9 +38,6 @@ th.signal-sender {
   min-width: 50px;
 }
 
-th.signal-name {
-}
-
 th.signal-frequency {
   min-width: 50px;
 }
@@ -58,9 +55,9 @@ td.field-plot {
   min-width: 300px;
 }
 
-td.field-value {
+#drop_down{
+  display: none;
 }
-
 
 .FwdKey{
     text-align: center;
@@ -182,8 +179,13 @@ h6{
   text-align: center;
 }
 
-#car_msg_group > * {
+#car_msg_group > * , #drop_down > button, #leader_id_drop{
   background-color: #8ACC74;
+  width: 100%;
+}
+
+#car_msg_group{
+  margin-top: 5px;
 }
 
 
