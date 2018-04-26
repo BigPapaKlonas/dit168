@@ -8,9 +8,8 @@
 using namespace opendlv::proxy;
 
 uint64_t getTime();
-void follow (int timestamp, float speed, float steeringAngle, int distanceTraveled, bool emergencyBreak,
-             int vehicleDistanceInTimeMs);
 
+void follow (std::queue <LeaderStatus>, float offset, int queueDelay);
 
 int main(int argc, char **argv)
 {
@@ -21,19 +20,21 @@ int main(int argc, char **argv)
     uint16_t mode = LEADER;
     float offset = 0;
     bool emergencyBreak = false;
-    int vehicleDistanceInTimeMs = 1000;
     int emergencyBreakDistance = 0;
+    int queueDelay = 0;
 
     // In case no CID is provided
     if (commandlineArguments.count("cid_pwm_ods") == 0 || commandlineArguments.count("cid_internal") == 0
-            || commandlineArguments.count("offset") == 0 || commandlineArguments.count("emergency_break_distance") == 0)
+            || commandlineArguments.count("offset") == 0 || commandlineArguments.count("emergency_break_distance") == 0
+                                                            || commandlineArguments.count("queue_delay") == 0)
     {
         std::cerr <<"You must specify which OpenDaVINCI session identifiers (CIDs) the "
-                    "maneuvering script shall listen to! And the offset! And emergency break distance in cm"  << std::endl;
+                    "maneuvering script shall listen to! And the offset! And emergency break distance in cm"
+                "and the amount of messages needed in queue before executing commands"  << std::endl;
         std::cerr <<"cid_pwn_ods for the pwm-motor and odsupercomponent microservice\n"
                     "and cid_internal for the internal communication CID"<< std::endl;
         std::cerr << "Example: " << argv[0] << " --cid_pwm_ods=120 --cid_internal=122 --offset=0.5 "
-                "--emergency_break_distance=10" << std::endl;
+                "--emergency_break_distance=10 --queue_delay=10" << std::endl;
         return -1;
     }
     else
@@ -42,6 +43,7 @@ int main(int argc, char **argv)
         cidInternal = stoi(commandlineArguments["cid_internal"]);
         offset = stof(commandlineArguments["offset"]);
         emergencyBreakDistance = stoi(commandlineArguments["emergency_break_distance"]);
+        queueDelay = stoi(commandlineArguments["queue_delay"]);
     }
 
     if (cidInternal < 120 || cidInternal > 129 || cidPwmOds < 120 || cidPwmOds > 129)
@@ -182,15 +184,23 @@ int main(int argc, char **argv)
     queueInternal.push(messageStruct);
 
     // ************ V2V messages ************** //
-    auto onLeaderStatus = [&mode, &msgSteering, &msgPedal, &emergencyBreak, &vehicleDistanceInTimeMs](cluon::data::Envelope &&env){
+    std::queue <LeaderStatus> leaderStatusQueue;
+
+    auto onLeaderStatus = [&mode, &leaderStatusQueue, &offset, &queueDelay]
+            (cluon::data::Envelope &&env){
         LeaderStatus msg = cluon::extractMessage<LeaderStatus>(std::move(env));
         std::cout << "LeaderStatus received with timestamp: " << msg.timestamp() << std::endl;
         if(mode == FOLLOWER)
         {
-            follow(msg.timestamp(), msg.speed(), msg.steeringAngle(), msg.distanceTraveled(), emergencyBreak,
-                   vehicleDistanceInTimeMs);
-        }
+            //follow(msg.timestamp(), msg.speed(), msg.steeringAngle(), msg.distanceTraveled(), emergencyBreak,
+            // vehicleDistanceInTimeMs);
 
+            if(msg.speed() != 0)
+            {
+                leaderStatusQueue.push(msg);
+                follow(leaderStatusQueue, offset, queueDelay);
+            }
+        }
     };
     messageStruct.delegate = onLeaderStatus;
     messageStruct.messageIdentifier = LeaderStatus::ID();
@@ -216,46 +226,35 @@ int main(int argc, char **argv)
 
 /**
  * Function handles the autonomous following logic
- *
+ * @param queue
+ * @param offset
  */
-void follow (int timestamp, float speed, float steeringAngle, int distanceTraveled, bool emergencyBreak, int vehicleDistanceInTimeMs)
+void follow (std::queue <LeaderStatus> queue, float offset, int queueDelay)
 {
-    if(emergencyBreak == true)
+    if(queue.size() <= queueDelay)
     {
-        std::cout << "The vehicle will not move - obstacle detected within 10 cm " << std::endl;
+        std::cout << "Less than " << queueDelay << " messages in queue. Only: " << queue.size() << std::endl;
         return;
     }
-    else
-    {
 
-        std::cout << "Forwarding speed and steering angle " << std::endl;
+    std::cout << "Following " << std::endl;
 
-        GroundSteeringReading msgSteering;
-        PedalPositionReading msgPedal;
+    GroundSteeringReading msgSteering;
+    PedalPositionReading msgPedal;
+    float steering = queue.front().steeringAngle();
 
-        msgSteering.steeringAngle(steeringAngle);
-        od4PwmOds->send(msgSteering);
+    if (steering == 0)
+         steering = -offset;
 
-        msgPedal.percent(speed);
-        od4PwmOds->send(msgPedal);
+    msgSteering.steeringAngle(steering);
+    od4PwmOds->send(msgSteering);
 
-        /*
-        if ((getTime() + vehicleDistanceInTimeMs) < timestamp)
-        {
-            std::this_thread::sleep_for(std::chrono::milliseconds(getTime() + vehicleDistanceInTimeMs - timestamp));
+    msgPedal.percent(queue.front().speed());
+    od4PwmOds->send(msgPedal);
 
-        }
-        else if (abs(getTime() + vehicleDistanceInTimeMs - timestamp) < 200)
-        {
-            // Execute action
-        }
-        else
-        {
-            std::cout << " The LeaderStatus received is too old to act on realibly " << std::endl;
-        }
-        **/
-    }
+    queue.pop();
 }
+
 
 /**
 * Gets current time in milliseconds.
