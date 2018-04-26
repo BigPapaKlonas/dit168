@@ -245,13 +245,13 @@ function stop_follow() {
 
     //In case the provided parameter codes for an acutal turn
     //Sending default if the range has not been modified
-    if(typeof angle != 'undefined'){
+  
       if (direction == "left"){
             jsonMessageToBeSent = "{\"steeringAngle\":" + angle + "}";      
       }else if (direction == "right"){
-            jsonMessageToBeSent = "{\"steeringAngle\":-" + angle + "}";      
+            jsonMessageToBeSent = "{\"steeringAngle\":" + (-1 * angle) + "}";      
       }
-    }
+    
 
    var protoEncodedPayload = lc.encodeEnvelopeFromJSONWithoutTimeStamps(jsonMessageToBeSent, 1045, 0);  // 19 is the message identifier from your .odvd file, 0 is the senderStamp (can be 0 in your case)
 
