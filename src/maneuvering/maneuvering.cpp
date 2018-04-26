@@ -10,6 +10,7 @@ using namespace opendlv::proxy;
 uint64_t getTime();
 
 void follow (std::queue <LeaderStatus>, float offset, int queueDelay);
+void follow(uint64_t timestamp, float speed, float steeringAngle, uint8_t distanceTraveled, float offset);
 
 int main(int argc, char **argv)
 {
@@ -192,14 +193,15 @@ int main(int argc, char **argv)
         std::cout << "LeaderStatus received with timestamp: " << msg.timestamp() << std::endl;
         if(mode == FOLLOWER)
         {
-            //follow(msg.timestamp(), msg.speed(), msg.steeringAngle(), msg.distanceTraveled(), emergencyBreak,
-            // vehicleDistanceInTimeMs);
+            follow(msg.timestamp(), msg.speed(), msg.steeringAngle(), msg.distanceTraveled(), offset);
 
+            /*
             if(msg.speed() != 0)
             {
                 leaderStatusQueue.push(msg);
                 follow(leaderStatusQueue, offset, queueDelay);
             }
+             **/
         }
     };
     messageStruct.delegate = onLeaderStatus;
@@ -223,7 +225,6 @@ int main(int argc, char **argv)
     return 0;
 }
 
-
 /**
  * Function handles the autonomous following logic
  * @param queue
@@ -244,7 +245,7 @@ void follow (std::queue <LeaderStatus> queue, float offset, int queueDelay)
     float steering = queue.front().steeringAngle();
 
     if (steering == 0)
-         steering = -offset;
+        steering = -offset;
 
     msgSteering.steeringAngle(steering);
     od4PwmOds->send(msgSteering);
@@ -253,6 +254,34 @@ void follow (std::queue <LeaderStatus> queue, float offset, int queueDelay)
     od4PwmOds->send(msgPedal);
 
     queue.pop();
+}
+
+/**
+ *
+ * @param timestamp
+ * @param speed
+ * @param steeringAngle
+ * @param distanceTraveled
+ * @param offset
+ */
+void follow(uint64_t timestamp, float speed, float steeringAngle, uint8_t distanceTraveled, float offset)
+{
+
+    std::cout << "Following " << std::endl;
+
+    GroundSteeringReading msgSteering;
+    PedalPositionReading msgPedal;
+
+    float steering = steeringAngle;
+
+    if (steering == 0)
+         steering = -offset;
+
+    msgSteering.steeringAngle(steering);
+    od4PwmOds->send(msgSteering);
+
+    msgPedal.percent(speed);
+    od4PwmOds->send(msgPedal);
 }
 
 
