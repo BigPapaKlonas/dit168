@@ -26,6 +26,8 @@ var lc = null;
 
 var role = true;
 
+var angle = 0.5;
+
 $("#angle_slider").roundSlider({
   circleShape: "half-top",
   radius: 80,
@@ -82,7 +84,7 @@ function send_leader_id(){
   // Default speed request
   var id = document.getElementById("leader_id_input").value;
 
-  var jsonMessageToBeSent = "{\"groupId\":" + id + "}";      
+  var jsonMessageToBeSent = "{\"groupId\":" + id.toString() + "}";      
   var protoEncodedPayload = lc.encodeEnvelopeFromJSONWithoutTimeStamps(jsonMessageToBeSent, 2204, 0);  // 19 is the message identifier from your .odvd file, 0 is the senderStamp (can be 0 in your case)
 
   strToAB = str =>
@@ -149,7 +151,8 @@ function announce_presence() {
 
   //Group 1 for our group
   var groupId = 1;
-  var ip;
+  var ip = "192.168.43.41";
+  /*
   window.RTCPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
     var con = new RTCPeerConnection({iceServers:[]}), no_operation = function(){};  
     //Create empty channel    
@@ -159,7 +162,7 @@ function announce_presence() {
       if(!server || !server.candidate || !server.candidate.candidate)  return;
       ip = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/.exec(server.candidate.candidate)[1];
       console.log('car ip: ', ip);   
-      con.onicecandidate = no_operation;
+      con.onicecandidate = no_operation; */
 
       var jsonMessageToBeSent = "{\"vehicleIp\":" + ip + ",\"groupId\":" + groupId + "}";      
       var protoEncodedPayload = lc.encodeEnvelopeFromJSONWithoutTimeStamps(jsonMessageToBeSent, 1001, 0);  // 19 is the message identifier from your .odvd file, 0 is the senderStamp (can be 0 in your case)
@@ -172,7 +175,6 @@ function announce_presence() {
       ws.send(logMsg, { binary: true });
 
       onMessageReceived(lc, logMsg);
-  };
 }
 
 function follow_request() {
@@ -241,7 +243,7 @@ function stop_follow() {
     function turn(direction) {
     
     //Default steeringAngle
-    var jsonMessageToBeSent = "{\"steeringAngle\":0.5}";      
+    var jsonMessageToBeSent = "{\"steeringAngle\":0.0}";      
 
     //In case the provided parameter codes for an acutal turn
     //Sending default if the range has not been modified
