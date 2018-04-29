@@ -1,9 +1,5 @@
-//
-// Created by erik on 2018-04-23.
-//
-
-#ifndef MANEUVERING_MANEUVERING_H
-#define MANEUVERING_MANEUVERING_H
+#ifndef MANEUVERING_MANEUVERING_HPP
+#define MANEUVERING_MANEUVERING_HPP
 
 #include <cluon/OD4Session.hpp>
 #include <cstdint>
@@ -18,9 +14,7 @@
 #include "cluon/Envelope.hpp"
 #include "messages.hpp"
 
+// OD4 session used for controlling the servo and engine
+std::shared_ptr<cluon::OD4Session> od4PwmOds;
 
-
-/** OD4 Session *****************************/
-    std::shared_ptr<cluon::OD4Session> od4PwmOds;
-
-#endif //MANEUVERING_MANEUVERING_H
+#endif
