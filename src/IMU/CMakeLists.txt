@@ -18,3 +18,9 @@ add_executable(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/imu.cpp ${CMAKE_CURRE
 
 target_link_libraries(${PROJECT_NAME} ${CLUON_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} roboticscape)
+
+enable_testing()
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror")
+
+
