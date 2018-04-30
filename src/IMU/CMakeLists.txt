@@ -23,3 +23,17 @@ enable_testing()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror")
 
+file(
+        GLOB_RECURSE src
+        ${CMAKE_CURRENT_SOURCE_DIR}/acceleration.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/yawDegrees.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/imu.cpp
+)
+
+add_test(
+         NAME veraStyleCheck
+         COMMAND vera++
+         --show-rule
+         --error
+         ${src}
+ )
