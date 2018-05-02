@@ -1,16 +1,15 @@
 var ultra_sonic = document.getElementById('wrapper');
 var ultra_text = document.getElementById('ultra_text');
 
-
+/*
+	Changes color and reading of ultrasonic image
+*/
 function update_ultrasonic(data){
 	data = data * 100; // m to cm
-	if(data > 58)
-		data = 58;
-	if(data < 0)
-		data = 0;
+	if(data > 58) data = 58;
+	if(data < 0) data = 0;
 	
 	data = Math.round(data);
-
 	ultra_text.textContent = data.toString();
 
 	if(data < 15) {

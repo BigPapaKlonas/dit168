@@ -23,29 +23,29 @@ function initializeNavKeys() {
 
     //when arrow key is pressed down and keyState is false (keyState used to not flood with messages)
     $(document).keydown(function (e) {
-        if( $("#LeftBtn").is(":enabled") ) {
+        if( $("#left_btn").is(":enabled") ) {
             if (e.keyCode == key_A_left && !keyState[0]){
                 
                 keyState[0] = true;
-                document.getElementById("LeftBtn").style.backgroundColor = "rgb(54, 80, 46)";
+                document.getElementById("left_btn").style.backgroundColor = "rgb(54, 80, 46)";
                 turn("left");
             }
             if (e.keyCode == key_W_forward && !keyState[1]){
                 keyState[1] = true;
                 
-                document.getElementById("ForwardBtn").style.backgroundColor = "rgb(54, 80, 46)";
+                document.getElementById("forward_btn").style.backgroundColor = "rgb(54, 80, 46)";
                 move("forward");
             }
             if (e.keyCode == key_D_right && !keyState[2]){
                 
                 keyState[2] = true;
-                document.getElementById("RightBtn").style.backgroundColor = "rgb(54, 80, 46)";
+                document.getElementById("right_btn").style.backgroundColor = "rgb(54, 80, 46)";
                 turn("right");
             }
             if(e.keyCode == key_S_down && !keyState[3]){
                 keyState[3] = true;
                 
-                document.getElementById("BackBtn").style.backgroundColor = "rgb(54, 80, 46)";
+                document.getElementById("back_btn").style.backgroundColor = "rgb(54, 80, 46)";
                 move("back");
             }
         }
@@ -53,26 +53,26 @@ function initializeNavKeys() {
 
     //when arrow key is released
     $(document).keyup(function (e) {
-        if( $("#LeftBtn").is(":enabled") ) {
+        if( $("#left_btn").is(":enabled") ) {
             if (e.keyCode == key_A_left){
                 keyState[0] = false;
-                document.getElementById("LeftBtn").style.backgroundColor = "";
+                document.getElementById("left_btn").style.backgroundColor = "";
                 turn("straight");
             }
             if (e.keyCode == key_W_forward){
                 keyState[1] = false;
-                document.getElementById("ForwardBtn").style.backgroundColor = "";
+                document.getElementById("forward_btn").style.backgroundColor = "";
                 move("stop");
             }
             if (e.keyCode == key_D_right){
                 keyState[2] = false;
-                document.getElementById("RightBtn").style.backgroundColor = "";
+                document.getElementById("right_btn").style.backgroundColor = "";
                 turn("straight");
             }
             if(e.keyCode == key_S_down){
                 keyState[3] = false;
                 
-                document.getElementById("BackBtn").style.backgroundColor = "";
+                document.getElementById("back_btn").style.backgroundColor = "";
                 move("stop");
             }
         }

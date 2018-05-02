@@ -59,39 +59,20 @@ td.field-plot {
   display: none;
 }
 
-.FwdKey{
+.fwd_key{
     text-align: center;
 }
 
-.bottomKeys{
+.bottom_keys{
   display: flex;
   align-content: center;
   justify-content: space-evenly;
 }
 
-#ForwardBtn {
+#forward_btn, #left_btn, #back_btn, #right_btn{
   background-color: #8ACC74;
   border: none;
   border-radius: 5px;
-}
-
-#LeftBtn {
-  background-color: #8ACC74;
-  border: none;
-  border-radius: 5px;
-}
-
-#BackBtn{
-  background-color: #8ACC74;
-  border: none;
-  border-radius: 5px;
-}
-
-#RightBtn {
-  background-color: #8ACC74;
-  border: none;
-  border-radius: 5px;
-
 }
 
 .slidecontainer{
@@ -214,7 +195,7 @@ h6{
     margin: 1.5rem;
   }
 
-  .NavigationKeys{
+  .navigation_keys{
     background-color: #111 ;
     color: #fff;
     padding: 40px;

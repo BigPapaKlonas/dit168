@@ -25,22 +25,21 @@
     <span id="header_text">Dash Controls</span>
     </div>
     <sidebar class="remote-control sidebar">
-      <div class="NavigationKeys">
+      <div class="navigation_keys">
             <h6>Controls</h6>
-            <div class="FwdKey">
-               <input id="ForwardBtn" type="button" value="W" />
-            <div class="bottomKeys">
-              <div class="LftKey">     
-                <input id="LeftBtn" type="button" value="A" />
+            <div class="fwd_key">
+               <input id="forward_btn" type="button" value="W" />
+            <div class="bottom_keys">
+              <div class="lft_key">     
+                <input id="left_btn" type="button" value="A" />
               </div>
-              <div class="BckKey">     
-                <input id="BackBtn" type="button" value="S" />
+              <div class="back_key">     
+                <input id="back_btn" type="button" value="S" />
                 </div>
-              <div class="RghtKey">  
-                <input id="RightBtn" type="button" value="D" />
+              <div class="right_key">  
+                <input id="right_btn" type="button" value="D" />
               </div>
             </div>
-              
             </div>
             <h6 id="speed">Speed</h6>
             <div class="slidecontainer">
@@ -59,7 +58,6 @@
                 <h6 id="speed">Angle</h6>
                 <div id="angle_slider"></div>
             </div>
-
             <div>
                 <div>
                     <button id="leader_id_drop" class="btn">Choose leader id</button>
@@ -69,7 +67,6 @@
                     </div>
                 </div>
             </div>
-
             <div id="car_msg_group" class="btn-group-vertical">
                 <button id="role_btn" class="btn" onclick="role_choise()">Role: Leader</button>
                 <button id="announce_presence" class="btn" onclick="announce_presence()">Announce presence</button>
@@ -80,7 +77,6 @@
             
       </div>
     </sidebar>
-
     <div class="imu">
     
         <!-- IMU START -->
@@ -241,12 +237,8 @@
       </svg>
         <!-- ULTRASONIC END -->
     </div>
-
-
     <div class="v2v">
-
       <p id="status_text">[STATUS] : Leader</p>
-      
       <div class="log-table">
         Internal Messages
       <table id="dataViewLeader" class="table table-dark">

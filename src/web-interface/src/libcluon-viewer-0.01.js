@@ -115,9 +115,10 @@ function role_choise() {
   
   let status_text = document.getElementById('status_text');
 
-  let forward_btn = document.getElementById('ForwardBtn');
-  let left_btn = document.getElementById('LeftBtn');
-  let right_btn = document.getElementById('RightBtn');
+  let forward_btn = document.getElementById('forward_btn');
+  let left_btn = document.getElementById('left_btn');
+  let right_btn = document.getElementById('right_btn');
+  let back_btn = document.getElementById('back_btn');
 
   let role_btn = document.getElementById('role_btn');
   let follow_request = document.getElementById('follow_request');
@@ -131,6 +132,7 @@ function role_choise() {
     left_btn.disabled = false;
     right_btn.disabled = false;
     follow_request.disabled = false;
+    back_btn.disabled = false;
     role_btn.innerText = "Role: Leader"
 
   } else {
@@ -140,22 +142,19 @@ function role_choise() {
     left_btn.disabled = true;
     right_btn.disabled = true;
     follow_request.disabled = true;
+    back_btn.disabled = true;
     role_btn.innerText = "Role: Follower"
   }
 
   // Default speed request
-  var protoEncodedPayload = lc.encodeEnvelopeFromJSONWithoutTimeStamps(jsonMessageToBeSent, 2203, 0);  // 19 is the message identifier from your .odvd file, 0 is the senderStamp (can be 0 in your case)
-
+  var protoEncodedPayload = lc.encodeEnvelopeFromJSONWithoutTimeStamps(jsonMessageToBeSent, 2203, 0);
   strToAB = str =>
-    new Uint8Array(str.split('')
-      .map(c => c.charCodeAt(0))).buffer;
+    new Uint8Array(str.split('').map(c => c.charCodeAt(0))).buffer;
 
   let logMsg = strToAB(protoEncodedPayload);
   ws.send(logMsg, { binary: true });
 
   onMessageReceived(lc, logMsg);
-
-   
 
 }
 
@@ -176,7 +175,7 @@ function announce_presence() {
       con.onicecandidate = no_operation;
 
       var jsonMessageToBeSent = "{\"vehicleIp\":" + ip + ",\"groupId\":" + groupId + "}";      
-      var protoEncodedPayload = lc.encodeEnvelopeFromJSONWithoutTimeStamps(jsonMessageToBeSent, 1001, 0);  // 19 is the message identifier from your .odvd file, 0 is the senderStamp (can be 0 in your case)
+      var protoEncodedPayload = lc.encodeEnvelopeFromJSONWithoutTimeStamps(jsonMessageToBeSent, 1001, 0); 
 
       strToAB = str =>
         new Uint8Array(str.split('')
@@ -193,8 +192,7 @@ function follow_request() {
 
   // Default speed request
   var jsonMessageToBeSent = "{\"status\":1.0}";      
-  var protoEncodedPayload = lc.encodeEnvelopeFromJSONWithoutTimeStamps(jsonMessageToBeSent, 1002, 0);  // 19 is the message identifier from your .odvd file, 0 is the senderStamp (can be 0 in your case)
-
+  var protoEncodedPayload = lc.encodeEnvelopeFromJSONWithoutTimeStamps(jsonMessageToBeSent, 1002, 0);  
   strToAB = str =>
     new Uint8Array(str.split('')
       .map(c => c.charCodeAt(0))).buffer;
@@ -210,8 +208,7 @@ function stop_follow() {
 
   // Default speed request
   var jsonMessageToBeSent = "{\"status\":1.0}";      
-  var protoEncodedPayload = lc.encodeEnvelopeFromJSONWithoutTimeStamps(jsonMessageToBeSent, 1004, 0);  // 19 is the message identifier from your .odvd file, 0 is the senderStamp (can be 0 in your case)
-
+  var protoEncodedPayload = lc.encodeEnvelopeFromJSONWithoutTimeStamps(jsonMessageToBeSent, 1004, 0);  
   strToAB = str =>
     new Uint8Array(str.split('')
       .map(c => c.charCodeAt(0))).buffer;
@@ -235,11 +232,10 @@ function stop_follow() {
     if (direction == "forward"){
       jsonMessageToBeSent = "{\"percent\":" + speed + "}";      
     } else if(direction == "back"){
-      jsonMessageToBeSent = "{\"percent\":" + (-1 * speed) + "}";
+      jsonMessageToBeSent = "{\"percent\":-" + speed + "}";
     }
 
-   var protoEncodedPayload = lc.encodeEnvelopeFromJSONWithoutTimeStamps(jsonMessageToBeSent, 1041, 0);  // 19 is the message identifier from your .odvd file, 0 is the senderStamp (can be 0 in your case)
-
+   var protoEncodedPayload = lc.encodeEnvelopeFromJSONWithoutTimeStamps(jsonMessageToBeSent, 1041, 0);  
    strToAB = str =>
      new Uint8Array(str.split('')
        .map(c => c.charCodeAt(0))).buffer;
@@ -247,7 +243,7 @@ function stop_follow() {
    let logMsg = strToAB(protoEncodedPayload);
     ws.send(logMsg, { binary: true });
 
-      onMessageReceived(lc, logMsg);
+      //onMessageReceived(lc, logMsg);
 
   };
 
@@ -267,8 +263,7 @@ function stop_follow() {
       }
     
 
-   var protoEncodedPayload = lc.encodeEnvelopeFromJSONWithoutTimeStamps(jsonMessageToBeSent, 1045, 0);  // 19 is the message identifier from your .odvd file, 0 is the senderStamp (can be 0 in your case)
-
+   var protoEncodedPayload = lc.encodeEnvelopeFromJSONWithoutTimeStamps(jsonMessageToBeSent, 1045, 0); 
    strToAB = str =>
      new Uint8Array(str.split('')
        .map(c => c.charCodeAt(0))).buffer;
@@ -276,7 +271,7 @@ function stop_follow() {
    let logMsg = strToAB(protoEncodedPayload);
     ws.send(logMsg, { binary: true });
 
-      onMessageReceived(lc, logMsg);
+      //onMessageReceived(lc, logMsg);
 
   };
 
@@ -393,7 +388,6 @@ function onMessageReceived(lc, msg) {
 
   if (!dataSourceIsKnown) {
 
-    // TODO: DIVIDE AND CONQUER THE MESSAGES!
     if(data.dataType == 1046 || data.dataType == 1045 || data.dataType == 1041 || data.dataType == 1039 || data.dataType == 2201 || data.dataType == 2202){
       addTableData(sourceKey, data, 'dataViewLeader');
       addFieldCharts(sourceKey, data);
