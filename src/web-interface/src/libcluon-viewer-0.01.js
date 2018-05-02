@@ -231,8 +231,7 @@ function stop_follow() {
    let logMsg = strToAB(protoEncodedPayload);
     ws.send(logMsg, { binary: true });
 
-      //onMessageReceived(lc, logMsg);
-
+      onMessageReceived(lc, logMsg);
   };
 
   // Send GroundSteeringReading to od4 session
@@ -243,7 +242,6 @@ function stop_follow() {
 
   //In case the provided parameter codes for an acutal turn
   //Sending default if the range has not been modified
-  
   if (direction == "left"){
     jsonMessageToBeSent = "{\"steeringAngle\":" + angle + "}";      
   } else if (direction == "right"){
