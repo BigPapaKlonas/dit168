@@ -82,8 +82,7 @@ $(document).ready(function(){
 
 function kill_process(){
   var jsonMessageToBeSent = "{\"init\":0}";      
-  var protoEncodedPayload = lc.encodeEnvelopeFromJSONWithoutTimeStamps(jsonMessageToBeSent, 2205, 0);  // 19 is the message identifier from your .odvd file, 0 is the senderStamp (can be 0 in your case)
-
+  var protoEncodedPayload = lc.encodeEnvelopeFromJSONWithoutTimeStamps(jsonMessageToBeSent, 2205, 0);  
   strToAB = str =>
     new Uint8Array(str.split('')
       .map(c => c.charCodeAt(0))).buffer;
@@ -98,8 +97,7 @@ function send_leader_id(){
   // Default speed request
   var id = document.getElementById("leader_id_input").value;
   var jsonMessageToBeSent = "{\"groupId\":" + id.toString() + "}";      
-  var protoEncodedPayload = lc.encodeEnvelopeFromJSONWithoutTimeStamps(jsonMessageToBeSent, 2204, 0);  // 19 is the message identifier from your .odvd file, 0 is the senderStamp (can be 0 in your case)
-
+  var protoEncodedPayload = lc.encodeEnvelopeFromJSONWithoutTimeStamps(jsonMessageToBeSent, 2204, 0); 
   strToAB = str =>
     new Uint8Array(str.split('')
       .map(c => c.charCodeAt(0))).buffer;
@@ -163,19 +161,8 @@ function announce_presence() {
 
   //Group 1 for our group
   var groupId = 1;
-  var ip = "192.168.43.41";
-  /*
-  window.RTCPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
-    var con = new RTCPeerConnection({iceServers:[]}), no_operation = function(){};  
-    //Create empty channel    
-    con.createDataChannel("");    
-    con.createOffer(con.setLocalDescription.bind(con), no_operation);
-    con.onicecandidate = function(server){
-      if(!server || !server.candidate || !server.candidate.candidate)  return;
-      ip = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/.exec(server.candidate.candidate)[1];
-      console.log('car ip: ', ip);   
-      con.onicecandidate = no_operation; */
-
+  var ip = "192.168.43.41"; 
+ 
       var jsonMessageToBeSent = "{\"vehicleIp\":" + ip + ",\"groupId\":" + groupId + "}";      
       var protoEncodedPayload = lc.encodeEnvelopeFromJSONWithoutTimeStamps(jsonMessageToBeSent, 1001, 0); 
 
@@ -249,31 +236,30 @@ function stop_follow() {
   };
 
   // Send GroundSteeringReading to od4 session
-    function turn(direction) {
+  function turn(direction) {
     
-    //Default steeringAngle
-    var jsonMessageToBeSent = "{\"steeringAngle\":0.0}";      
+  //Default steeringAngle
+  var jsonMessageToBeSent = "{\"steeringAngle\":0.0}";      
 
-    //In case the provided parameter codes for an acutal turn
-    //Sending default if the range has not been modified
+  //In case the provided parameter codes for an acutal turn
+  //Sending default if the range has not been modified
   
-      if (direction == "left"){
-            jsonMessageToBeSent = "{\"steeringAngle\":" + angle + "}";      
-      }else if (direction == "right"){
-            jsonMessageToBeSent = "{\"steeringAngle\":" + (-1 * angle) + "}";      
-      }
+  if (direction == "left"){
+    jsonMessageToBeSent = "{\"steeringAngle\":" + angle + "}";      
+  } else if (direction == "right"){
+    jsonMessageToBeSent = "{\"steeringAngle\":" + (-1 * angle) + "}";      
+  }
     
 
-   var protoEncodedPayload = lc.encodeEnvelopeFromJSONWithoutTimeStamps(jsonMessageToBeSent, 1045, 0); 
-   strToAB = str =>
-     new Uint8Array(str.split('')
-       .map(c => c.charCodeAt(0))).buffer;
+  var protoEncodedPayload = lc.encodeEnvelopeFromJSONWithoutTimeStamps(jsonMessageToBeSent, 1045, 0); 
+    strToAB = str =>
+    new Uint8Array(str.split('')
+      .map(c => c.charCodeAt(0))).buffer;
 
-   let logMsg = strToAB(protoEncodedPayload);
+  let logMsg = strToAB(protoEncodedPayload);
     ws.send(logMsg, { binary: true });
 
-      //onMessageReceived(lc, logMsg);
-
+    onMessageReceived(lc, logMsg);
   };
 
 function setupViewer() {
