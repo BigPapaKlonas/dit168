@@ -11,41 +11,265 @@
   -->
   <link rel="stylesheet" href="bootstrap.min.css">
   <link rel="stylesheet" href="style.css">
+  
+    <script src="jquery-3.2.1.slim.min.js"></script>
+    <script src="jquery-1.11.3.min.js"></script>
+    <link href="roundslider.min.css" rel="stylesheet" />
+    <script src="roundslider.min.js"></script>
 </head>
 
 <body onload="initializeNavKeys()">
-  <header id="main-header">
-
-  </header>
-
-  <nav id="navbar">
-    <div class="pos-f-t">
-      <div class="collapse" id="navbarToggleExternalContent">
-        <div class="bg-dark p-4">
-          <h4 class="text-white">libcluon signal viewer</h4>
-          <button id="pause" type="button" class="btn btn-primary">Pause</button>
-        </div>
-      </div>
-      <nav class="navbar navbar-dark bg-dark">
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-      </nav>
+  <div class="wrapper">
+    <div class="header">
+      <img id="logo" src="./tab_logo.png"/>
+    <span id="header_text">Dash Controls</span>
     </div>
-  </nav>
+    <sidebar class="remote-control sidebar">
+      <div class="navigation_keys">
+            <h6>Controls</h6>
+            <div class="fwd_key">
+               <input id="forward_btn" type="button" value="W" />
+            <div class="bottom_keys">
+              <div class="lft_key">     
+                <input id="left_btn" type="button" value="A" />
+              </div>
+              <div class="back_key">     
+                <input id="back_btn" type="button" value="S" />
+                </div>
+              <div class="right_key">  
+                <input id="right_btn" type="button" value="D" />
+              </div>
+            </div>
+            </div>
+            <h6 id="speed">Speed</h6>
+            <div class="slidecontainer">
+                <p id="speed_text">0.15<p>
+                <input 
+                  type="range" 
+                  min="0.15" 
+                  max="0.50" 
+                  value="0.15" 
+                  step="0.01"
+                  class="slider" 
+                  id="speed_range"
+                  oninput="updateSpeedInput(this.value)">
+            </div>
+            <div class="slidecontainer">
+                <h6 id="speed">Angle</h6>
+                <div id="angle_slider"></div>
+            </div>
+            <div>
+                <div>
+                    <button id="leader_id_drop" class="btn">Choose leader id</button>
+                    <div id="drop_down">
+                        <input id="leader_id_input" class="form-control" min="1" max="13" value="1" type="number">
+                        <button class="btn" onclick="send_leader_id()">Send</button>
+                    </div>
+                </div>
+            </div>
+            <div id="car_msg_group" class="btn-group-vertical">
+                <button id="role_btn" class="btn" onclick="role_choise()">Role: Leader</button>
+                <button id="announce_presence" class="btn" onclick="announce_presence()">Announce presence</button>
+                <button id="follow_request" class="btn" onclick="follow_request()">Follow request</button>
+                <button id="stop_follow" class="btn" onclick="stop_follow()">Stop follow</button>
+                <button id="kill_process" class="btn" onclick="kill_process()">Kill</button>
+            </div>
+            
+      </div>
+    </sidebar>
+    <div class="imu">
+    
+        <!-- IMU START -->
+        <svg id="imu_svg" width="377px" height="406px" viewBox="0 0 377 406" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <defs>
+                <polygon id="path-1" points="188 2 203 32 173 32"></polygon>
+                <filter x="-23.3%" y="-16.7%" width="146.7%" height="146.7%" filterUnits="objectBoundingBox" id="filter-2">
+                    <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+                    <feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+                    <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.5 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+                </filter>
+                <text id="text-3" font-family="ArialMT, Arial" font-size="14" font-weight="normal" fill="#FFFFFF" fill-opacity="0.86512115">
+                    <tspan x="182.944824" y="26">N</tspan>
+                </text>
+                <filter x="-23.3%" y="-31.2%" width="146.7%" height="187.5%" filterUnits="objectBoundingBox" id="filter-4">
+                    <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+                    <feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+                    <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.5 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+                </filter>
+                <polygon id="path-5" points="181.848631 69.4632894 181.848631 206.699925 194.102494 206.699925 194.102494 69.4632894 203.009122 69.4632894 188.004561 44 173 69.4632894"></polygon>
+                <filter x="-25.0%" y="-3.4%" width="150.0%" height="109.2%" filterUnits="objectBoundingBox" id="filter-6">
+                    <feMorphology radius="0.5" operator="dilate" in="SourceAlpha" result="shadowSpreadOuter1"></feMorphology>
+                    <feOffset dx="0" dy="2" in="shadowSpreadOuter1" result="shadowOffsetOuter1"></feOffset>
+                    <feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+                    <feComposite in="shadowBlurOuter1" in2="SourceAlpha" operator="out" result="shadowBlurOuter1"></feComposite>
+                    <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.5 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+                </filter>
+                <linearGradient x1="50%" y1="50%" x2="50%" y2="100%" id="linearGradient-7">
+                    <stop stop-color="#8ACC74" offset="0%"></stop>
+                    <stop stop-color="#243507" offset="100%"></stop>
+                </linearGradient>
+                <circle id="path-8" cx="188" cy="212" r="58"></circle>
+                <filter x="-6.5%" y="-4.7%" width="112.9%" height="112.9%" filterUnits="objectBoundingBox" id="filter-9">
+                    <feMorphology radius="0.5" operator="dilate" in="SourceAlpha" result="shadowSpreadOuter1"></feMorphology>
+                    <feOffset dx="0" dy="2" in="shadowSpreadOuter1" result="shadowOffsetOuter1"></feOffset>
+                    <feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+                    <feComposite in="shadowBlurOuter1" in2="SourceAlpha" operator="out" result="shadowBlurOuter1"></feComposite>
+                    <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.5 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+                </filter>
+                <linearGradient x1="50%" y1="50%" x2="50%" y2="100%" id="linearGradient-10">
+                    <stop stop-color="#B5FFE9" offset="0%"></stop>
+                    <stop stop-color="#8ACC74" offset="100%"></stop>
+                </linearGradient>
+                <path d="M188.5,399 C87.1557484,399 5,316.844252 5,215.5 C5,114.155748 87.1557484,32 188.5,32 C289.844252,32 372,114.155748 372,215.5 C372,316.844252 289.844252,399 188.5,399 Z M188.5,383 C282.112265,383 358,307.112265 358,213.5 C358,119.887735 282.112265,44 188.5,44 C94.8877349,44 19,119.887735 19,213.5 C19,307.112265 94.8877349,383 188.5,383 Z" id="path-11"></path>
+                <filter x="-2.0%" y="-1.5%" width="104.1%" height="104.1%" filterUnits="objectBoundingBox" id="filter-12">
+                    <feMorphology radius="0.5" operator="dilate" in="SourceAlpha" result="shadowSpreadOuter1"></feMorphology>
+                    <feOffset dx="0" dy="2" in="shadowSpreadOuter1" result="shadowOffsetOuter1"></feOffset>
+                    <feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+                    <feComposite in="shadowBlurOuter1" in2="SourceAlpha" operator="out" result="shadowBlurOuter1"></feComposite>
+                    <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.5 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+                </filter>
+                <filter x="-8.6%" y="-5.7%" width="117.3%" height="116.1%" filterUnits="objectBoundingBox" id="filter-14">
+                    <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+                    <feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+                    <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.5 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+                </filter>
+                <filter x="-7.4%" y="-15.6%" width="114.9%" height="143.8%" filterUnits="objectBoundingBox" id="filter-16">
+                    <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+                    <feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+                    <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.5 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+                </filter>
+            </defs>
+            <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                <g id="north_triangle">
+                    <use fill="black" fill-opacity="1" filter="url(#filter-2)" xlink:href="#path-1"></use>
+                    <use fill="#000000" fill-rule="evenodd" xlink:href="#path-1"></use>
+                </g>
+                <g id="north" fill="#FFFFFF" fill-opacity="0.86512115">
+                    <use filter="url(#filter-4)" xlink:href="#text-3"></use>
+                    <use xlink:href="#text-3"></use>
+                </g>
+                <g id="heading_arrow">
+                    <use fill="black" fill-opacity="1" filter="url(#filter-6)" xlink:href="#path-5"></use>
+                    <use stroke="#15821E" stroke-width="1" fill="#000000" fill-rule="evenodd" xlink:href="#path-5"></use>
+                </g>
+                <g id="middle_cir">
+                    <use fill="black" fill-opacity="1" filter="url(#filter-9)" xlink:href="#path-8"></use>
+                    <use stroke="#314A1B" stroke-width="1" fill="url(#linearGradient-7)" fill-rule="evenodd" xlink:href="#path-8"></use>
+                </g>
+                <g id="Combined-Shape">
+                    <use fill="black" fill-opacity="1" filter="url(#filter-12)" xlink:href="#path-11"></use>
+                    <use stroke="#314A1B" stroke-width="1" fill="url(#linearGradient-10)" fill-rule="evenodd" xlink:href="#path-11"></use>
+                </g>
+                <text id="speed_number" 
+                  text-anchor="middle" 
+                  fill="#FFFFFF" 
+                  font-size="100" 
+                  x="188.5" 
+                  y="230">0</text>
+                <text id="distance_traveled" 
+                  text-anchor="middle" 
+                  fill="#FFFFFF" 
+                  font-size="14" 
+                  x="188.5" 
+                  y="250">
+                    DT: 0
+                </text>
+            </g>
+        </svg>
+        <!-- IMU END -->
+        <!-- ULTRASONIC START -->
+        <svg id="ultra_sonic" width="187px" height="181px" viewBox="0 0 187 181" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+          <defs>
+              <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-1">
+                  <stop stop-color="#F9F9F9" stop-opacity="0.5" offset="0%"></stop>
+                  <stop stop-color="#0B0B0B" stop-opacity="0.787618886" offset="100%"></stop>
+              </linearGradient>
+              <ellipse id="path-2" cx="93.5" cy="88.5" rx="86.5" ry="83.5"></ellipse>
+              <filter x="-6.6%" y="-5.7%" width="113.3%" height="113.8%" filterUnits="objectBoundingBox" id="filter-3">
+                  <feMorphology radius="1.5" operator="dilate" in="SourceAlpha" result="shadowSpreadOuter1"></feMorphology>
+                  <feOffset dx="0" dy="2" in="shadowSpreadOuter1" result="shadowOffsetOuter1"></feOffset>
+                  <feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+                  <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.5 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+              </filter>
+              <ellipse id="path-4" cx="93.5" cy="89" rx="70.5" ry="70"></ellipse>
+              <filter x="-5.0%" y="-3.6%" width="109.9%" height="110.0%" filterUnits="objectBoundingBox" id="filter-5">
+                  <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+                  <feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+                  <feComposite in="shadowBlurOuter1" in2="SourceAlpha" operator="out" result="shadowBlurOuter1"></feComposite>
+                  <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.5 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+              </filter>
+              <ellipse id="path-6" cx="94.5" cy="88.5" rx="59.5" ry="58.5"></ellipse>
+              <filter x="-1.7%" y="-1.7%" width="103.4%" height="103.4%" filterUnits="objectBoundingBox" id="filter-7">
+                  <feGaussianBlur stdDeviation="1.5" in="SourceAlpha" result="shadowBlurInner1"></feGaussianBlur>
+                  <feOffset dx="0" dy="1" in="shadowBlurInner1" result="shadowOffsetInner1"></feOffset>
+                  <feComposite in="shadowOffsetInner1" in2="SourceAlpha" operator="arithmetic" k2="-1" k3="1" result="shadowInnerInner1"></feComposite>
+                  <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.5 0" type="matrix" in="shadowInnerInner1"></feColorMatrix>
+              </filter>
+              <text id="text-8" font-family="ArialMT, Arial" font-size="100" font-weight="normal" fill="#FFFFFF" fill-opacity="0.86512115">
+                  <tspan x="65.6923828" y="120">0</tspan>
+              </text>
+              <filter x="-4.0%" y="-3.0%" width="108.1%" height="108.4%" filterUnits="objectBoundingBox" id="filter-9">
+                  <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+                  <feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+                  <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.5 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+              </filter>
+          </defs>
+          <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+              <g id="outer">
+                  <use fill="black" fill-opacity="1" filter="url(#filter-3)" xlink:href="#path-2"></use>
+                  <use fill-opacity="0.1" fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-2"></use>
+                  <use fill="url(#linearGradient-1)" fill-rule="evenodd" xlink:href="#path-2"></use>
+              </g>
+              <ellipse id="first" fill-opacity="0.0210427989" fill="#DEDEDD" cx="93.5" cy="88.5" rx="78.5" ry="77.5"></ellipse>
+              <ellipse id="second" fill-opacity="0.1" fill="#D7D4D4" cx="94" cy="89" rx="76" ry="75"></ellipse>
+              <g id="third">
+                  <use fill="black" fill-opacity="1" filter="url(#filter-5)" xlink:href="#path-4"></use>
+                  <use fill-opacity="0.389999986" fill="#F9F9F9" fill-rule="evenodd" xlink:href="#path-4"></use>
+              </g>
+              <g id="inner">
+                  <use fill-opacity="0.209999993" fill="#6E6E6E" fill-rule="evenodd" xlink:href="#path-6"></use>
+                  <use fill="black" fill-opacity="1" filter="url(#filter-7)" xlink:href="#path-6"></use>
+              </g>
+              <ellipse id="wrapper" fill-opacity="0.237000006" fill="#38DD00" cx="93.5" cy="88.5" rx="86.5" ry="83.5"></ellipse>
 
-  <div class="container">
-    <div class="log-table">
-      <table id="dataView" class="table">
+              <text id="ultra_text" text-anchor="middle" font-size='60' x='94' y='120' fill='#fff'>0</text>
+          </g>
+      </svg>
+        <!-- ULTRASONIC END -->
+    </div>
+    <div class="v2v">
+      <p id="status_text">[STATUS] : Leader</p>
+      <div class="log-table">
+        Internal Messages
+      <table id="dataViewLeader" class="table table-dark">
         <tr>
           <th class="signal-type">Type</th>
           <th class="signal-sender">Sender</th>
           <th class="signal-name">Name</th>
-          <th class="signal-frequency">Frequency</th>
+          <th class="signal-frequency">Hz</th>
           <th class="signal-timestamp">Timestamp</th>
         </tr>
       </table>
     </div>
+    <div class="log-table">
+      External (V2V) Messages
+      <table id="dataViewFollower" class="table table-dark">
+        <tr>
+          <th class="signal-type">Type</th>
+          <th class="signal-sender">Sender</th>
+          <th class="signal-name">Name</th>
+          <th class="signal-frequency">Hz</th>
+          <th class="signal-timestamp">Timestamp</th>
+        </tr>
+      </table>
+    </div>
+    </div>
+  </div>
+
+  <!--
+
+  <div class="container">
+    
 
     <div class="NavigationKeys">
       <h6>Controls</h6>
@@ -71,8 +295,7 @@
       </div>
   </div>
 
-
-  <script type="text/javascript" src="jquery-3.2.1.slim.min.js"></script>
+  -->
   <script type="text/javascript" src="popper.min.js"></script>
   <script type="text/javascript" src="moment-with-locales.min.js"></script>
   <script type="text/javascript" src="Chart.js"></script>
@@ -80,12 +303,16 @@
   <script type="text/javascript" src="libcluon.js"></script>
   <script type="text/javascript" src="libcluon-viewer-0.01.js"></script>
   <script type="text/javascript" src="NavKeys.js"></script>
+  <script type="text/javascript" src="ultrasonic.js"></script>
+  <script type="text/javascript" src="imu.js"></script>
+
+
 
 
 
 
   <footer id="main-footer">
-    <p>Copyright &copy;2018 dashFTab </p>
+    
   </footer>
 
 </body>
