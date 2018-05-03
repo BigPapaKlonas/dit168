@@ -1,21 +1,5 @@
 //Vera++ requires Copyright notice
-#include <iostream>
-#include <stdint.h>
-#include <chrono>
-
-#include "cluon/OD4Session.hpp"
-#include "cluon/Envelope.hpp"
-#include "messages.hpp"
-#include <math.h>
-#include "acceleration.hpp"
-#include "yawDegrees.hpp"
-
-extern "C"
-{
-#include <rc_usefulincludes.h>
-#include <roboticscape.h>
-}
-
+#include "imu.hpp"
 int main()
 {
  uint8_t distanceTraveled = 0;
@@ -29,22 +13,33 @@ int main()
  float old_yaw = 0;
  float distance = 0;
  float speed = 0;
-
+ auto commandlineArguments = cluon::getCommandlineArguments(argc, argv);
+ uint16_t cidInternal;
+ 
  readingsIMU msg;
  yawDegrees yd;
  acceleration a;
  //This is the container for holding the sensor data from the IMU.
  rc_imu_data_t data;
- // Instantiate a OD4Session object
- cluon::OD4Session od4(111,
-    [](cluon::data::Envelope &&envelope) noexcept
-     {
-      if (envelope.dataType() == 2202)
-       {
-        readingsIMU ReceivedMsg = cluon::extractMessage
-         <readingsIMU>(std::move(envelope));
-       }
-     });
+
+ if (commandlineArguments.count("cid_internal") == 0)
+  {
+   std::cerr <<"You must provide command line arguments for CIDs" << std::endl;
+   return -1;
+  }
+ else
+  {
+   cidInternal = stoi(commandlineArguments["cid_internal"]);
+  }
+ // Checks data provided from command line arguments
+ if (cidInternal < 120 || cidInternal > 129)
+  {
+   std::cerr << "The OpenDaVINCI session identifiers (CIDs) must be in the range 120 to 129"
+   << std::endl;
+   return -1;
+  }
+
+ cluon::OD4Session od4(cidInternal);
 
  //terminate in case no OD4 session running
  if (od4.isRunning() == 0)
@@ -115,6 +110,7 @@ int main()
      float accel = a.getAcceleration(x_accel, y_accel);
      initial_speed = speed;
      speed = a.getSpeed(accel, initial_speed);
+     msg.readingSpeed(speed);
      //Removing noice from distance readings
      if (a.getDistanceTraveled(accel, sample_rate, speed) > 0.00007)
       {
