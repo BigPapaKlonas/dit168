@@ -14,7 +14,7 @@ int main()
  float distance = 0;
  float speed = 0;
  auto commandlineArguments = cluon::getCommandlineArguments(argc, argv);
- uint16_t cidInternal;
+ uint8_t cidInternal;
  
  readingsIMU msg;
  yawDegrees yd;
