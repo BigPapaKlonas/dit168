@@ -1,0 +1,6 @@
+message readingsIMU[id = 2202] {
+  uint8 readingDistanceTraveled [id = 1];
+  float readingSteeringAngle [id = 2];
+  float readingSpeed [id = 3];  
+}
+
