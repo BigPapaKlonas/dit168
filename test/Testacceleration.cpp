@@ -2,7 +2,7 @@
 // This tells Catch to provide a main() – only do this once per test-runner
 
 #include "catch.hpp"
-#include "acceleration.hpp"
+#include "../src/IMU/acceleration.hpp"
 
 TEST_CASE("Test 1. distance traveled") {
     acceleration a;

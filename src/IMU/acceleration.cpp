@@ -1,6 +1,7 @@
 //Vera++ requires Copyright notice
 #include "acceleration.hpp"
 #include <math.h>
+#include <cmath>
 
 float acceleration::getAcceleration(float x_accel, float y_accel)
  {
