@@ -238,7 +238,7 @@ int main(int argc, char **argv)
     // ************ V2V messages ************** //
     std::queue <float> steeringQueue;
 
-    auto onLeaderStatus = [&mode, &steeringQueue, &offset, &queueDelay, &verbose, &msgPedal]
+    auto onLeaderStatus = [&mode, &steeringQueue, &offset, &queueDelay, &verbose, &msgPedal, &msgSteering]
             (cluon::data::Envelope &&env)
     {
         LeaderStatus msg = cluon::extractMessage<LeaderStatus>(std::move(env));
@@ -250,13 +250,24 @@ int main(int argc, char **argv)
                           << " from LeaderStatus to motor proxy" << std::endl;
             }
 
+            // Send speed request directly to the engine
             msgPedal.percent(msg.speed());
             od4PwmOds->send(msgPedal);
-            
+
+            // Add steeringAngle to queue iff queue size is less than queueDelay
             if (msg.speed() != 0 && steeringQueue.size() < queueDelay)
             {
+
+                if (msg.steeringAngle() == 0) // If GroundSteeringReading is 0, apply offset
+                {
+                    msgSteering.steeringAngle(msg.steeringAngle() - offset);
+                    od4PwmOds->send(msgSteering);
+                }
+
                 steeringQueue.push(msg.steeringAngle());
             }
+
+            // Call followSteering method to executed delayed steering, pop first message in queue
             else if (msg.speed() != 0 && steeringQueue.size() >= queueDelay)
             {
                 steeringQueue.push(msg.steeringAngle());
