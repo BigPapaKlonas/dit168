@@ -1,0 +1,47 @@
+\documentclass[11pt]{article}
+\usepackage{enumerate}
+
+\begin{document}
+
+\centerline{\textbf{\LARGE Sprint 6 Retrospective 04.05.2018 - 11.05.2018}}
+
+\section*{What did we learn?}
+\begin{enumerate}
+	\item Technical and technological aspect
+		\begin{enumerate} 
+			\item Sprint spent on final report, so no new tech aspect were learnt
+		\end{enumerate} 
+	\item Process issues
+		\begin{enumerate} 
+			\item Sprint spent on final report, so no new process issue
+		\end{enumerate}		
+	\item Documentation related matters
+		\begin{enumerate} 
+			\item LaTeX for the final report, specifically making bibliographies, appendices, algorithms and everyone familiarizing with basic LaTeX knowledge
+			\item Draw.io used to make diagrams
+			\item Improved UML knowledge by learning activity diagrams, component diagrams and re-familiarizing with diagrams already known i.e. class,sequence, state machine diagrams.
+		\end{enumerate}	
+\end{enumerate} 
+
+\section*{What worked well during this sprint?}
+\begin{enumerate}
+	\item The team managed to meet all set deadlines set for documentation
+	\item Every team member was active contributing to the report.
+	\item Meetings were efficient and productive.
+\end{enumerate} 
+
+\section*{What went wrong/poorly this sprint?}
+\begin{enumerate}
+	\item Nothing specifically went wrong
+\end{enumerate} 
+
+\section*{What can be improved during the next sprint?}
+\begin{enumerate}
+	\item This was the last agreed upon sprint
+\end{enumerate} 
+
+
+\section*{Was this sprint affected by unavailability of any members?}
+Sort of. Some member were out of town, so some of the meeting were held through Discord. Although all members were present, just not physically
+
+\end{document}
