@@ -1,0 +1,3 @@
+[submodule "src/communicator/v2v-protocol"]
+	path = src/communicator/v2v-protocol
+	url = https://github.com/justasAtGU/v2v-protocol.git
