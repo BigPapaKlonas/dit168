@@ -1,7 +1,5 @@
 \documentclass[12pt]{article}
-\usepackage[english]{babel}
-\usepackage[utf8x]{inputenc}
-\usepackage{amsmath}
+\usepackage{placeins}		% Used to keep images in place(via \FloatBarriers), and let text go infront
 \usepackage{graphicx} 		% Used to for importing images
 \usepackage{indentfirst}	% Indents 1st paragraph (by default its off)
 \usepackage{longtable} 		% Tables than can span over multiple pages
@@ -60,11 +58,11 @@ The evolution of the Risk Management Document for project dashFTABs is detailed 
 % Define 4 aligned columns; l = left, c = center, r = right, the | = means vertical line    % \hline -> Draw horizontal line
 % p{xcm} -> specifies how much space the column should take up, 
 % 0.x\linewidth is used to make it p{} command more dynamic
-\begin{longtable}{ | p{0.15\linewidth} | p{0.15\linewidth} | p{0.5\linewidth} | p{0.3\linewidth} | }\hline 
+\begin{longtable}{ | p{0.15\linewidth} | p{0.15\linewidth} | p{0.5\linewidth} | p{0.2\linewidth} | }\hline 
     
     \textbf{Date} & \textbf{Version} & \textbf{Description} & \textbf{Author} \\ \hline
     15th April, 2018 & 0.1 & Added Risk list & Erik Laurin,  Justinas Stirbys\\ \hline
-   	XX, 2018 & XX & XX & XX\\ \hline
+   	18th May, 2018 & 0.2 & Added Heat Map & Justinas Stirbys\\ \hline
 
 \end{longtable}
 \pagebreak
@@ -88,7 +86,7 @@ Numerous risks that may interfere with the development's continuation are identi
 \par
 
 % Risk list table
-\begin{longtable}{| p{0.06\linewidth} | p{0.20\linewidth} | p{0.25\linewidth} | p{0.04\linewidth} | p{0.08\linewidth} | p{0.08\linewidth} | p{0.35\linewidth}|}
+\begin{longtable}{| p{0.06\linewidth} | p{0.20\linewidth} | p{0.25\linewidth} | p{0.04\linewidth} | p{0.05\linewidth} | p{0.05\linewidth} | p{0.35\linewidth}|}
 \caption{Risk Table}
 \label{Risk Table}
 \endfirsthead
@@ -150,7 +148,7 @@ The provided hardware; the car, starts to malfunction due to hardware faults. Th
 4 & 
 40\% & 
 0.4 &
-Confront TAs immediately with the problem to make sure it is taken cared of as soon as possible. If the car gets unavailable over a longer time, prioritize development of features that do not, somehow, require direct access to the car. Last resort, lend another group's car. \\ \hline
+Confront TAs immediately with the problem to make sure it is taken cared of as soon as possible. If the car gets unavailable over a longer time, prioritize development of features that do not, somehow, require direct access to the car. Last resort, borrow another group's car. \\ \hline
 
 	R7 & 
 Unable to find another group to test autonomous driving with (based on V2V protocol) &
@@ -184,5 +182,34 @@ The car struggles to handle the amount of messages &
 0.8 &
 Eliminate unnecessary redundant message broadcasting. Utilize more than one OD4 session. Fine-tune the broadcast frequency of different services. \\ \hline
 \end{longtable}
+\pagebreak
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% New Section
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Heat Map}
+To visualize the possible project risks a heat map was made, for the purpose of improved visualization. The individual risks are represented via blue dots, the size varying based on their magnitude. The most severe risks are located at the top-right corner, whereas the least at the bottom-left corner. \par
+Risks R3 \& R7 have the same Impact and Likilihood, therefore they have identical position on the graph. To compensate for this, the label for R3 has been positioned above the risk dot. Moreover, most of the risk are located to concentrated i
+% Adding image
+\FloatBarrier % -> Wrap image with this, to make sure text does not go in front of image if theres room
+\begin{figure}[ht!]
+\centering
+% Make image as wide as the line
+\includegraphics[width=\linewidth]{RiskMap.png}
+\caption{Risk Heat Map}
+\label{fig:heatmap}
+\end{figure}
+\FloatBarrier % -> Wrap image with this, to make sure text does not go infront of image if theres room
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% New Section
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Risk Evaluation}
+The purpose of this section is to go through the risks in Table \ref{Risk Table}, and to evaluate their mitigation stategies. \par 
+Risk R1 was encountered during the project, but it is not believed to have as a significant impact as initially believed. The mitigation stategy for the risk seemed to work fine as the project group manage to attain knowledge about Docker and CMake before work with the cars begain. Additionally, the development team would utilize the offered Q\&A session to get access to the TAs for help and guidance. \par
+R6 apperared as the miniature vehicle unable to turn right. The mitigation stategies for this issue did not work as the "right turn" issue persisted until the conclusion of the project. Moreover, it was not possible to borrow a new car. However, the mitigation stategies did work on other hardware issues that were less severe.  \par
+The last major risk encountered is identified as R8. Although, the mitigation stategy outlined was not of the most concrete it did provide value. During W17 the development team worked closely with another group. The solution to having following be as close as possible was to impose a controlled environment. Meaning the development teams used the same network to test and present, the distance between starting car were measured and the alligned of the cars at the start were controller. Moreover, the development team encorporated a number of command line parameters to attempt to make the code as dynamic as possible for the purpose of fine tuning the V2V following. \par
+Risks R2 and R5, relating to team communication did not occur, as there were no major conflicts during the project. Furthermore, R7 did not occur as the development team found 2 teams to test the V2V-Protocol and V2V following.  \par
+R3 and R4 were not present in the project, since all hard deadlines were met. Moreover, the brunt of the project started on Study Period 2, meaning the development team was not hindered by other courses or exams as initially thought. \par
+The identified V2V-Protocol risks, R9 and R10 were not present either. Although, there were minor protocol issues that were addressed and fixed, due to the project team being allowed to tailor the protocol to an extent.
 \end{document}
