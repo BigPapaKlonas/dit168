@@ -373,7 +373,8 @@ function onMessageReceived(lc, msg) {
 
   if (!dataSourceIsKnown) {
 
-    if(data.dataType == 1046 || data.dataType == 1045 || data.dataType == 1041 || data.dataType == 1039 || data.dataType == 2201 || data.dataType == 2202){
+    if(data.dataType == 1046 || data.dataType == 1045 || data.dataType == 1041 || data.dataType == 1039 || data.dataType == 2201 || data.dataType == 2202 
+    	|| data.dataType == 2203 || data.dataType == 2204 || data.dataType == 2205){
       addTableData(sourceKey, data, 'dataViewLeader');
       addFieldCharts(sourceKey, data);
     } else {
