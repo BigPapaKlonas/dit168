@@ -6,6 +6,7 @@
 \usepackage{indentfirst}	% Indents 1st paragraph (by default its off)
 \usepackage{longtable} 		% Tables than can span over multiple pages
 \usepackage{placeins}		% Used to keep images in place(via \FloatBarriers), and let text go infront
+\usepackage[hidelinks]{hyperref}
 
 % Define Global Variables
 \setlength{\parindent}{20pt}
@@ -73,6 +74,7 @@ The evolution of the Software Architectural Document for project dashFTABs is de
    	12th April, 2018 & 0.4 & Added Sequence Diagrams for UC1-UC3 & Justinas\\ \hline
 	18th April, 2018 & 0.4.3 & Added 4+1 Vew Model to Introduction, UC1-UC3 sequence diagram descriptions to Process View & Justinas\\ \hline
 	21st April, 2018 & 0.5 & Added System Context & Erik\\ \hline
+	17th May, 2018 & 0.6 & Added Logical View & Isabelle\\ \hline
 
 \end{longtable}
 \pagebreak
@@ -347,4 +349,28 @@ The interactions depicted in Figure \ref{fig:connectasfollower} focus specifical
 \FloatBarrier % -> Wrap image with this, to make sure text does not go infront of image if theres room
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Logical View
+\section{Logical View}
+This section aims to provide a logical overview of the overall structure of the product. The intended audience for this section is someone seeking fundamental understanding of the developed system, and will therefor describe necessary architectural and design decisions on a high level. 
+
+Visualized in Figure \ref{fig:classDiagramLogigal} are the relevant components and their connections in the dashFTABs system. 
+
+'odsupercomponent' and 'pwm-motor' both are components that were provided to the development team by the product owner. The use of microservices are consistent throughout, and was a considered decision made in the inception of the project. For the rationale of this decision, please refer to section 5.2 of the Final report \cite{FinalReport} published on the team's GitHub.   
+
+The communication line between all components shown here makes use of the Libcluon library, also provided by the project's product owner. The message exchange is done through 'OD4 sessions': utilizing channels and assigning ID's to messages, in this context referenced to as 'CID's. For further explanation of the channels, please again refer to the Final report \cite{FinalReport}, section 5.1.1.
+% Adding image
+\FloatBarrier % -> Wrap image with this, to make sure text does not go infront of image if theres room
+\begin{figure}
+\centering
+% Make image as wide as the line
+\includegraphics[width=\linewidth]{Diagrams/logical_view.png}
+\caption{Diagram of components with architectural significance}
+\label{fig:classDiagramLogigal}
+\end{figure}
+\FloatBarrier % -> Wrap image with this, to make sure text does not go infront of image if theres room
+\begin{thebibliography}{9}
+\bibitem{FinalReport} Laurin, E., Törnqvist, I., Eberlen, J., \& Stirbys, J. Final Report, GitHub repository:
+\url{https://github.com/justasAtGU/dit168/tree/master/doc/ProjectManagement/FinalReport}
+\end{thebibliography}
 \end{document}
