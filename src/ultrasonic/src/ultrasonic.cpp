@@ -1,16 +1,15 @@
 #include <iostream>
 #include <chrono>
 #include <thread>
-#include "cluon/OD4Session.hpp"
-#include "cluon/Envelope.hpp"
+#include "cluon-complete.hpp"
 #include "messages.hpp"
 
 // Includes Robotics Cape libraries written in C
-extern "C"
-{
-#include <rc_usefulincludes.h>
-#include <roboticscape.h>
-}
+//extern "C"
+//{
+//#include <rc_usefulincludes.h>
+//#include <roboticscape.h>
+//}
 
 // Global definitions
 #define BUS                             1
@@ -51,7 +50,7 @@ int main() {
         std::cout << "ERROR: no OD4 session running\n" << std::endl;
         return -1;
     }
-
+    /*
     // Initialize cape library
     std::cout << "Initialize roboticscape library" << std::endl;
     if (rc_initialize()) {
@@ -99,5 +98,6 @@ int main() {
     // exit cleanly
     //roboticscape::rc_i2c_release_bus(BUS);
     rc_cleanup();
+    */
     return 0;
 }

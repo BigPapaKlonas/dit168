@@ -1,34 +1,42 @@
-cmake_minimum_required(VERSION 3.0.2)
-project(ultrasonic)
+# BASED ON https://github.com/chalmers-revere/opendlv-device-ultrasonic-srf08
+# by Chalmers-Revere
+
+cmake_minimum_required(VERSION 3.2)
 set(CMAKE_CXX_STANDARD 14)
+project(ultrasonic)
 
-#include_directories(SYSTEM ${CLUON_INCLUDE_DIRS})
+# Set constants
+set(MESSAGES messages.odvd)
+set(CLUON_COMPLETE cluon-complete.hpp)
+# Make sure cluon-complete, messages.odvd and the .cpp files are in the microservices src folder (not root)
+# or you will need to change the pathing for the custom commands
 
-#add_library(libcluon STATIC cluon-complete.hpp)
-#set_target_properties(libcluon PROPERTIES CXX_STANDARD 14 LINKER_LANGUAGE CXX)
+# Require pthreads
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
 
-add_library(libcluon INTERFACE)
-target_include_directories(libcluon INTERFACE ${./CMAKE_SOURCE_DIR})
-
-install(TARGETS libcluon EXPORT libcluon DESTINATION include)
-install(EXPORT libcluon DESTINATION libcluon)
-
-find_package(libcluon REQUIRED ${CMAKE_BINARY_DIR}/CMakeFiles/Export/libcluon)
+# Extract cluon-msc from cluon-complete.hpp.
+add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/cluon-msc
+	WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_SOURCE_DIR}/src/${CLUON_COMPLETE} ${CMAKE_BINARY_DIR}/cluon-complete.hpp
+    COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_BINARY_DIR}/cluon-complete.hpp ${CMAKE_BINARY_DIR}/cluon-complete.cpp
+    COMMAND ${CMAKE_CXX_COMPILER} -o ${CMAKE_BINARY_DIR}/cluon-msc ${CMAKE_BINARY_DIR}/cluon-complete.cpp -std=c++14 -pthread -D HAVE_CLUON_MSC
+    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/src/${CLUON_COMPLETE}) 
 
 add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/messages.cpp
-        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-        COMMAND cluon-msc --cpp-sources --cpp-add-include-file=messages.hpp --out=${CMAKE_BINARY_DIR}/messages.cpp ${CMAKE_CURRENT_SOURCE_DIR}/messages.odvd
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    COMMAND ${CMAKE_BINARY_DIR}/cluon-msc --cpp-sources --cpp-add-include-file=messages.hpp --out=${CMAKE_BINARY_DIR}/messages.cpp ${CMAKE_CURRENT_SOURCE_DIR}/src/${MESSAGES}
+    COMMAND ${CMAKE_BINARY_DIR}/cluon-msc --cpp-headers --out=${CMAKE_BINARY_DIR}/messages.hpp ${CMAKE_CURRENT_SOURCE_DIR}/src/${MESSAGES}
+    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/src/${MESSAGES} ${CMAKE_BINARY_DIR}/cluon-msc)
 
-        COMMAND cluon-msc --cpp-headers --out=${CMAKE_BINARY_DIR}/messages.hpp ${CMAKE_CURRENT_SOURCE_DIR}/messages.odvd
-
-       DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/messages.odvd)
+# Add current build directory as include directory as it contains generated files.
 include_directories(SYSTEM ${CMAKE_BINARY_DIR})
-include_directories(SYSTEM ${CMAKE_BINARY_DIR}/CMakeFiles/Export/libcluon)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 
-#link_directories(/etc/roboticscape)
+# Gather all object code first to avoid double compilation.
+add_library(${PROJECT_NAME}-core OBJECT  ${CMAKE_BINARY_DIR}/messages.cpp)
+set(LIBRARIES Threads::Threads ${CURSES_LIBRARIES})
 
-add_executable(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp ${CMAKE_BINARY_DIR}/messages.cpp)
-
-#target_link_libraries(${PROJECT_NAME} roboticscape)
-
+add_executable(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/src/ultrasonic.cpp ${CMAKE_BINARY_DIR}/messages.cpp)
+target_link_libraries(${PROJECT_NAME} ${LIBRARIES})
 
