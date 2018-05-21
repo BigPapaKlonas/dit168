@@ -1,3 +1,7 @@
+### Note 2018-05-21
+
+This version has been modified to exclude Libcluon, in order to work for the demo on the 23rd of May.
+
 # Inertial Measurement Unit
 
 Reads the IMU sensor registers. The hardware used is in this project is a 9-Axis IMU with 3 accelerometers, gyroscopes and magnetometers.

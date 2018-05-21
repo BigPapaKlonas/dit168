@@ -1,4 +1,7 @@
 //Vera++ requires Copyright notice
+/*
+* This file has been modified to exclude Libcluon, in order to function on the demo 23rd of May. 
+*/
 #include "imu.hpp"
 int main()
 {
@@ -13,8 +16,8 @@ int main()
  float old_yaw = 0;
  float distance = 0;
  float speed = 0;
- auto commandlineArguments = cluon::getCommandlineArguments(argc, argv);
- uint8_t cidInternal;
+ //auto commandlineArguments = cluon::getCommandlineArguments(argc, argv);
+ //uint8_t cidInternal;
  
  readingsIMU msg;
  yawDegrees yd;
@@ -22,7 +25,7 @@ int main()
  //This is the container for holding the sensor data from the IMU.
  rc_imu_data_t data;
 
- if (commandlineArguments.count("cid_internal") == 0)
+/* if (commandlineArguments.count("cid_internal") == 0)
   {
    std::cerr <<"You must provide command line arguments for CIDs" << std::endl;
    return -1;
@@ -47,7 +50,7 @@ int main()
     std::cout << "ERROR: No od4 running!!!" << std::endl;
     return -1;
   }
-
+*/
  // initialize hardware first
  if (rc_initialize())
   {
@@ -65,8 +68,8 @@ int main()
    return -1;
   }
 
- while (od4.isRunning())
-  {
+// while (od4.isRunning())
+//  {
 
    //program flow control
    while (rc_get_state() != EXITING)
@@ -104,22 +107,24 @@ int main()
      //Broadcast yaw only when there is a significant difference
      if (delta_yaw < -5.0 || delta_yaw > 5.0 || delta_yaw == 0)
       {
-       msg.readingSteeringAngle(yaw);
+       //msg.readingSteeringAngle(yaw);
+       //Print line has been added to demo
+       printf("yaw: %4.2f degrees\n", yaw);
       }
 
      float accel = a.getAcceleration(x_accel, y_accel);
      initial_speed = speed;
      speed = a.getSpeed(accel, initial_speed);
-     msg.readingSpeed(speed);
+     //msg.readingSpeed(speed);
      //Removing noice from distance readings
      if (a.getDistanceTraveled(accel, sample_rate, speed) > 0.00007)
       {
        distance += a.getDistanceTraveled(accel, sample_rate, speed);
       }
-     msg.readingDistanceTraveled(distance);
-     od4.send(msg);
+     //msg.readingDistanceTraveled(distance);
+     //od4.send(msg);
     }
-  }
+  //}
   rc_power_off_imu();
   //exit cleanly
   rc_cleanup();
