@@ -5,8 +5,8 @@
 #include "imu.hpp"
 int main()
 {
- uint8_t distanceTraveled = 0;
- uint8_t steeringAngle = 0;
+ //uint8_t distanceTraveled = 0;
+ //uint8_t steeringAngle = 0;
  float initial_speed = 0.0;
  float yaw = 0.0;
  float sample_rate = 0.01;
@@ -19,7 +19,7 @@ int main()
  //auto commandlineArguments = cluon::getCommandlineArguments(argc, argv);
  //uint8_t cidInternal;
  
- readingsIMU msg;
+ //readingsIMU msg;
  yawDegrees yd;
  acceleration a;
  //This is the container for holding the sensor data from the IMU.
